@@ -1,0 +1,61 @@
+server:
+  port: 8088
+swagger:
+  base-package: com.drelephant.elephantadmin.business.basedata.controller
+spring:
+  application:
+    name: elephantadmin-business-basedata
+    auth_server_url: http://127.0.0.1:8050
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/drelephant?useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      filters: stat,wall,log4j2
+      initialSize: 10
+      minIdle: 1
+      maxActive: 50
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 'drelephant'
+      testWhileIdle: true
+      testOnBorrow: true
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: /druid/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        resetEnable: true
+management:
+  security:
+    enabled: false
+logging:
+  file: ${user.home}/log/${spring.application.name}.log
+  level:
+    org.nutz: debug
+    com.drelephant: debug
+    io.swagger: off
+nutz:
+  dao:
+    runtime:
+      add-column: true
+      basepackage:
+      - com.djp.cloud.config.bean
+      check-index: true
+      create: true
+      delete-column: true
+      foce-create: false
+      migration: true
+    sqlmanager:
+      paths:
+      - sqls
+  json:
+    enabled: true
+    mode: compact
