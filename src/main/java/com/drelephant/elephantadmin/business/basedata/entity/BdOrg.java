@@ -2,6 +2,8 @@ package com.drelephant.elephantadmin.business.basedata.entity;
 
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ import java.io.Serializable;
  * @author com.drelephant
  * @since 2018-10-09
  */
+@TableName("bd_org")
 public class BdOrg implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -79,7 +82,16 @@ public class BdOrg implements Serializable {
 	private String updateUserName;
 	private String version;
 	private String status;
+	@TableField("deptCount")
+	private Integer deptCount;
 
+	public Integer getDeptCount() {
+		return deptCount;
+	}
+
+	public void setDeptCount(Integer deptCount) {
+		this.deptCount = deptCount;
+	}
 
 	public String getId() {
 		return id;

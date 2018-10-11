@@ -3,4 +3,8 @@
 <mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdOrgMapper">
 
 	<!-- 开启二级缓存 -->
+	<!-- 查询公司编码是否已存在 -->
+	<select id="selectCompanyCode" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from bd_org where code = #{code}  
+	</select>
 </mapper>

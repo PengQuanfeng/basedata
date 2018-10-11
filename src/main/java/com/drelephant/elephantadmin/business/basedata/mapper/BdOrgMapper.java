@@ -14,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface BdOrgMapper extends BaseMapper<BdOrg> {
-
+	int selectCompanyCode(String code);//查询公司编码是否存在
+	int updateName(BdOrg bdOrg);//根据code更新公司名称
 }

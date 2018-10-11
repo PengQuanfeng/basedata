@@ -3,4 +3,17 @@
 <mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdCompanyDeptMapper">
 
 	<!-- 开启二级缓存 -->
+	
+	<!-- 查询公司下的部门个数 -->
+	<select id="selectDeptCount" parameterType="String" resultType="Integer">
+		select count(*) from bd_company_dept where companyCode=#{companyCode} and code is not null 
+	</select>
+	<!-- 查询公司编码是否已存在 -->
+	<select id="selectCompanyCode" parameterType="String" resultType="java.lang.Integer">
+		select count(companyCode) from bd_company_dept where companyCode=#{companyCode}  
+	</select>
+	<!--查询所有的公司名称和编码  -->
+	<select id="selectCodeOrName"  resultType="java.lang.Integer">
+		select companyName,companyCode from bd_company_dept where code is null 
+	</select>
 </mapper>

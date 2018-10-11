@@ -55,5 +55,24 @@ public class BdCompanyDeptController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdCompanyDeptService.selectById(id));
     }
-
+    @ApiOperation("添加部门")
+    @PostMapping("/addCompany")
+    public R addCompany(@ApiParam("数据对象")BdCompanyDept data){
+    	return bdCompanyDeptService.addCompany(data);
+    }
+    @ApiOperation("编辑部门")
+    @PostMapping("/updateDept")
+    public R updateDept(@ApiParam("数据对象")BdCompanyDept data){
+        return bdCompanyDeptService.updateCompany(data);
+    }
+    @ApiOperation("删除部门")
+    @PostMapping("/deleteDept")
+    public R deleteDept(@ApiParam("数据对象id")String id){
+        return bdCompanyDeptService.delectCompany(id);
+    }
+    @ApiOperation("获取部门信息列表的list")
+    @PostMapping("/getDeptList")
+    public R getDeptList(@ApiParam(value="当前页",required = true)int current,@ApiParam(value="分页大小",required = true)int pageSize){        
+        return bdCompanyDeptService.getListDept(current, pageSize);
+    }
 }

@@ -2,6 +2,8 @@ package com.drelephant.elephantadmin.business.basedata.entity;
 
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ import java.io.Serializable;
  * @author com.drelephant
  * @since 2018-10-09
  */
+@TableName("bd_company_dept")
 public class BdCompanyDept implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,6 +33,11 @@ public class BdCompanyDept implements Serializable {
      */
 	@TableField("companyCode")
 	private String companyCode;
+	/**
+	 * 公司名称
+	 */
+	@TableField("companyName")
+	private String companyName;
     /**
      * 部门邮箱
      */
@@ -66,7 +74,9 @@ public class BdCompanyDept implements Serializable {
 	public String getName() {
 		return name;
 	}
-
+	/**
+     * 部门名称
+     */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -86,7 +96,13 @@ public class BdCompanyDept implements Serializable {
 	public void setCompanyCode(String companyCode) {
 		this.companyCode = companyCode;
 	}
+	public String getCompanyName() {
+		return companyName;
+	}
 
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
 	public String getDeptEmail() {
 		return deptEmail;
 	}
@@ -174,6 +190,7 @@ public class BdCompanyDept implements Serializable {
 			", name=" + name +
 			", code=" + code +
 			", companyCode=" + companyCode +
+			", companyName=" + companyName +
 			", deptEmail=" + deptEmail +
 			", remark=" + remark +
 			", createTime=" + createTime +

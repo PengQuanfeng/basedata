@@ -6,9 +6,13 @@ import com.drelephant.framework.base.common.R;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
 import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
 import com.drelephant.elephantadmin.business.basedata.service.BdAreaRegionService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,5 +59,43 @@ public class BdAreaRegionController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdAreaRegionService.selectById(id));
     }
-
-}
+    
+    @ApiOperation("行政地区新增")
+    @PostMapping("/saveAdmin")
+    public R saveAdmin(@ApiParam("数据对象")BdAreaRegion data){
+        return bdAreaRegionService.insertBdAreaRegion(data);
+    }
+    @ApiOperation("更新状态")
+    @PostMapping("/updateStatus")
+    public R updateStatus(@ApiParam("数据对象")BdAreaRegion data){
+        return bdAreaRegionService.updateStatus(data);
+    }
+    @ApiOperation("单条删除")
+    @PostMapping("/deleteCode")
+    public R deleteCode(@ApiParam("数据对象id")BdAreaRegion data){
+        return bdAreaRegionService.deleteBdAreaRegion(data);
+    }
+    @ApiOperation("批量更新地区状态")
+    @PostMapping("/updateBatchCode")
+    public R updateBatchCode(@ApiParam(value="是否启用")String status,@ApiParam("地区编码")String codes ){
+    	if(StringUtils.isNotBlank(status)){
+    		if(status.equals(Constans.ACTIVE)){
+    			status=Constans.ACTIVE;
+    		}else{
+    			status=Constans.INVALID;
+    		}
+    	}
+        return bdAreaRegionService.updateBatchBdAreaRegion(status,codes);
+    }
+    @ApiOperation("获取行政地区list")
+    @PostMapping("/getListAdmin")
+    public R getListAdmin(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,
+    		@ApiParam("地区编码")String code,@ApiParam("省份")String provinceName,
+    		@ApiParam("城市")String cityName,@ApiParam("区县")String countyName,
+    		@ApiParam("层级")Integer lever,@ApiParam("状态")String status ){  
+    	Page<BdAreaRegion> page=new Page<>(current,pageSize);
+    	bdAreaRegionService.getListBdAreaRegion(page, code, provinceName, cityName, countyName, lever, status);
+        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
+    }
+    
+};

@@ -2,7 +2,11 @@ package com.drelephant.elephantadmin.business.basedata.mapper;
 
 import com.drelephant.elephantadmin.business.basedata.entity.BdCompanyDept;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -14,5 +18,4 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface BdCompanyDeptMapper extends BaseMapper<BdCompanyDept> {
-
 }

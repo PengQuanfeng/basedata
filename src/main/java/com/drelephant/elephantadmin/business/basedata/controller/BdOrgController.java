@@ -1,6 +1,7 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.drelephant.framework.base.common.R;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
@@ -55,5 +56,47 @@ public class BdOrgController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdOrgService.selectById(id));
     }
-
+    @ApiOperation("增加公司")
+    @PostMapping("/saveCompay")
+    public R saveCompay(@ApiParam("数据对象")String company){
+        return bdOrgService.addCompany(company)?R.ok():R.error("保存错误");
+    }
+    @ApiOperation("更新公司名称")
+    @PostMapping("/updateName")
+    public R updateName(@ApiParam("数据对象")BdOrg data){
+        return bdOrgService.updateCompany(data);
+    }
+    @ApiOperation("删除")
+    @PostMapping("/deleteCode")
+    public R deleteCode(@ApiParam("数据对象id")String id){
+        return bdOrgService.deleteCode(id);
+    }
+    @ApiOperation("获取公司信息的list")
+    @PostMapping("/admim/list")
+    public R getListName(){
+        return bdOrgService.selectCompay();
+    }
+    @ApiOperation("新增医院信息")
+    @PostMapping("/saveHospital")
+    public R saveHospital(@ApiParam("数据对象")BdOrg data){
+		return bdOrgService.addHospital(data);   	
+    }
+    @ApiOperation("获取医院信息的list")
+    @PostMapping("/getListHospital")
+    public R getListHospital(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
+    	Page<BdOrg> page=new Page<>(current,pageSize);
+    	bdOrgService.getListBdOrg(page);
+        return R.ok().put("list", page.getRecords()).put("total",page.getTotal());
+    }
+    @ApiOperation("更新医院状态")
+    @PostMapping("/updateHosStatus")
+    public R updateHosStatus(@ApiParam("数据对象") BdOrg data){   	
+		return bdOrgService.updateOneHosStatus(data);    	
+    }
+    @ApiOperation("单条删除医院状态")
+    @PostMapping("/deleteOneHosStatus")
+    public R deleteOneHosStatus(@ApiParam("数据对象")BdOrg data){
+        return bdOrgService.deleteOneHosStatus(data);
+    }
+    
 }
