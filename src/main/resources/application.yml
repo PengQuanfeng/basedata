@@ -1,15 +1,15 @@
 server:
-  port: 8088
+  port: 8102
 swagger:
   base-package: com.drelephant.elephantadmin.business.basedata.controller
 spring:
   application:
-    name: elephantadmin-business-basedata
-    auth_server_url: http://127.0.0.1:8050
+    name: business-basedata
+    auth_server_url: http://dev-auth.dr-elephant.net:8050
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/drelephant?useSSL=false
-    username: root
-    password: root
+    url: jdbc:mysql://rm-uf6q4j0blzb8y2r4nbo.mysql.rds.aliyuncs.com:3306/dev_drelephant?useSSL=false
+    username: devadmin
+    password: dev@Ms123
     driver-class-name: com.mysql.jdbc.Driver
     druid:
       filters: stat,wall,log4j2
@@ -46,7 +46,6 @@ logging:
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
-#   typeAliasesPackage: com.zy.api.entity,com.zy.job.entity,com.zy.sys.entity,
 #  typeEnumsPackage: com.baomidou.springboot.entity.enums
   global-config:
     #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
@@ -72,3 +71,11 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
     cache-enabled: false
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://dev-eureka1.dr-elephant.net:8861/eureka/,http://dev-eureka2.dr-elephant.net:8862/eureka/
+
+ 

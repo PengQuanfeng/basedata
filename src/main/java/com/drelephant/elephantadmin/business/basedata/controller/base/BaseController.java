@@ -13,8 +13,10 @@ import org.nutz.mvc.view.ForwardView;
 import org.nutz.mvc.view.JspView;
 import org.nutz.mvc.view.ServerRedirectView;
 import org.nutz.mvc.view.UTF8JsonView;
-
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.drelephant.framework.core.auth.entity.User;
+import com.drelephant.framework.core.auth.service.AuthService;
 
 /**
  * 
@@ -29,6 +31,9 @@ public class BaseController {
 	@Autowired
 	HttpServletResponse response;
 
+	@Autowired
+	AuthService authService;
+	
 	public Log logger = Logs.get();
 
 	protected void addCookie(String name, String value, int age) {
@@ -45,7 +50,9 @@ public class BaseController {
 	public String base() {
 		return request.getContextPath();
 	}
-
+	public User user(){
+		return authService.user();
+	}
 	protected String getCookie(String name) {
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
