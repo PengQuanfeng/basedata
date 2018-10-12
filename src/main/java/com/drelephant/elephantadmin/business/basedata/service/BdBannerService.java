@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-09
  */
 public interface BdBannerService extends IService<BdBanner> {
+	//数据新增
 	
 }
