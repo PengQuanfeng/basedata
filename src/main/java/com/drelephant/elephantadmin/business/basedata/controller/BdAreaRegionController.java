@@ -128,14 +128,18 @@ public class BdAreaRegionController extends BaseController {
     @ApiOperation("层级下拉数据")
     @PostMapping("/getListLevel")
     public R getListLevel(){  
-    	List<String> list=new ArrayList<String>();
-    	list.add("1");
-    	list.add("2");
-    	list.add("3");
+//    	List<String> list=new ArrayList<String>();
+//    	list.add("1");
+//    	list.add("2");
+//    	list.add("3");
 //    	List<BdAreaRegion> bd=bdAreaRegionService.getListLevel();
 //    	bd.get(1).getLevel();
-    	
+    	List<Map<Integer,String>> lm=new ArrayList<Map<Integer,String>>();
+    	Map<Integer,String> map=new HashMap<Integer,String>();
+    	map.put(1, "1");
+    	map.put(2, "2");
+    	lm.add(map);
 //    	bdAreaRegionService.getListLevel();
-    	return R.ok().put("level", list);
+    	return R.ok().put("level", map);
     }
 }
