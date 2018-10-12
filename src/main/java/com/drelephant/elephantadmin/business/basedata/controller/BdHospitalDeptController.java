@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.drelephant.framework.base.common.R;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
 import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
+import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
 import com.drelephant.elephantadmin.business.basedata.service.BdHospitalDeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -55,5 +56,29 @@ public class BdHospitalDeptController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdHospitalDeptService.selectById(id));
     }
-
+    /**********************新增接口方法***********************/
+    @ApiOperation("新增科室信息")
+    @PostMapping("/saveDept")
+    public R saveDept(@ApiParam("数据对象")BdHospitalDept data){
+        return bdHospitalDeptService.insertHost(data);
+    }
+    @ApiOperation("单条更新科室信息")
+    @PostMapping("/updateOneDept")
+    public R updateOneDept(@ApiParam("数据对象")BdHospitalDept data){
+        return bdHospitalDeptService.updateHost(data);
+    }
+    @ApiOperation("单条删除科室信息")
+    @PostMapping("/deleteOneDept")
+    public R deleteOneDept(@ApiParam("数据对象")BdHospitalDept data){
+        return bdHospitalDeptService.deleteOneHost(data);
+    }
+    @ApiOperation("获取科室信息列表")
+    @PostMapping("/getListDept")
+    public R getListDept(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,@ApiParam("科室编码")String lv1Code,
+    		@ApiParam("一级科室名称")String lv1Name,@ApiParam("二级科室名称")String lv2Name,
+    		@ApiParam("层级")String level,@ApiParam("状态")String status){
+        Page<BdHospitalDept> page=new Page<>(current,pageSize);
+        bdHospitalDeptService.getListHost(page, lv1Code, lv1Name, lv2Name, level, status);
+        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
+    }
 }

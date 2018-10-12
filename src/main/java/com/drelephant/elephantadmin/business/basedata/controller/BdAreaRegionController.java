@@ -1,6 +1,7 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.drelephant.framework.base.common.R;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
@@ -11,6 +12,11 @@ import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,5 +103,17 @@ public class BdAreaRegionController extends BaseController {
     	bdAreaRegionService.getListBdAreaRegion(page, code, provinceName, cityName, countyName, lever, status);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
-    
-};
+    @ApiOperation("层级下拉数据")
+    @PostMapping("/getListLevel")
+    public R getListLevel(){  
+    	List<String> list=new ArrayList<String>();
+    	list.add("1");
+    	list.add("2");
+    	list.add("3");
+//    	List<BdAreaRegion> bd=bdAreaRegionService.getListLevel();
+//    	bd.get(1).getLevel();
+    	
+//    	bdAreaRegionService.getListLevel();
+    	return R.ok().put("level", list);
+    }
+}

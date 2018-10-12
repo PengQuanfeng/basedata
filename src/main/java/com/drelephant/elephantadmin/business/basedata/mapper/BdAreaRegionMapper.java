@@ -2,6 +2,9 @@ package com.drelephant.elephantadmin.business.basedata.mapper;
 
 import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -14,5 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface BdAreaRegionMapper extends BaseMapper<BdAreaRegion> {
-
+	List<BdAreaRegion> listLevel();//查询层级
 }

@@ -3,4 +3,7 @@
 <mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdAreaRegionMapper">
 
 	<!-- 开启二级缓存 -->
+	<select id="listLevel" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
+		select DISTINCT level from bd_area_region 
+	</select>
 </mapper>

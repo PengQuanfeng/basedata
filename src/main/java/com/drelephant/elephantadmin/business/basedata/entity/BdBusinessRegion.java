@@ -2,6 +2,8 @@ package com.drelephant.elephantadmin.business.basedata.entity;
 
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ import java.io.Serializable;
  * @author com.drelephant
  * @since 2018-10-09
  */
+@TableName("bd_business_region")
 public class BdBusinessRegion implements Serializable {
 
     private static final long serialVersionUID = 1L;

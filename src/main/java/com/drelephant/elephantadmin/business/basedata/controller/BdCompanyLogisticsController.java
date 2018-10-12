@@ -55,5 +55,19 @@ public class BdCompanyLogisticsController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdCompanyLogisticsService.selectById(id));
     }
-
+/**********************新增接口方法***************************/
+    @ApiOperation("获取物流信息list")
+    @PostMapping("/getListLogistics")
+    public R getListLogistics(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,
+    		@ApiParam("公司名称")String name,@ApiParam("状态")String status){
+        Page<BdCompanyLogistics> page=new Page<>(current,pageSize);
+        bdCompanyLogisticsService.getListLogis(page,name,status);
+        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
+    }
+    @ApiOperation("更新公司物流状态")
+    @PostMapping("/updateLogistics")
+    public R updateLogistics(@ApiParam("数据对象")BdCompanyLogistics data){
+        return bdCompanyLogisticsService.updateLogisStatus(data);
+    }
+    
 }

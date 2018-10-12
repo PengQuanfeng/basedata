@@ -7,9 +7,13 @@ import com.drelephant.framework.base.common.R;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
 import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
 import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +60,7 @@ public class BdOrgController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdOrgService.selectById(id));
     }
+/****新增接口****/
     @ApiOperation("增加公司")
     @PostMapping("/saveCompay")
     public R saveCompay(@ApiParam("数据对象")String company){
@@ -66,7 +71,7 @@ public class BdOrgController extends BaseController {
     public R updateName(@ApiParam("数据对象")BdOrg data){
         return bdOrgService.updateCompany(data);
     }
-    @ApiOperation("删除")
+    @ApiOperation("删除公司状态")
     @PostMapping("/deleteCode")
     public R deleteCode(@ApiParam("数据对象id")String id){
         return bdOrgService.deleteCode(id);
@@ -83,9 +88,11 @@ public class BdOrgController extends BaseController {
     }
     @ApiOperation("获取医院信息的list")
     @PostMapping("/getListHospital")
-    public R getListHospital(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
+    public R getListHospital(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,@ApiParam("医院编码")String code,
+    		@ApiParam("省名称")String provinceName,@ApiParam("市名称")String cityName,
+    		@ApiParam("医院名称")String name,@ApiParam("医院等级")String hospitalLevel,@ApiParam("状态")String status){
     	Page<BdOrg> page=new Page<>(current,pageSize);
-    	bdOrgService.getListBdOrg(page);
+    	bdOrgService.getListBdOrg(page,code,provinceName,cityName,name,hospitalLevel,status);
         return R.ok().put("list", page.getRecords()).put("total",page.getTotal());
     }
     @ApiOperation("更新医院状态")
@@ -98,5 +105,16 @@ public class BdOrgController extends BaseController {
     public R deleteOneHosStatus(@ApiParam("数据对象")BdOrg data){
         return bdOrgService.deleteOneHosStatus(data);
     }
-    
+    @ApiOperation("批量更新医院状态")
+    @PostMapping("/deleteBatchHosStatus")
+    public R deleteBatchHosStatus(@ApiParam(value="是否启用")String status,@ApiParam("医院编码")String codes){
+    	if(StringUtils.isNotBlank(status)){
+    		if(status.equals(Constans.ACTIVE)){
+    			status=Constans.ACTIVE;
+    		}else{
+    			status=Constans.INVALID;
+    		}
+    	}
+        return bdOrgService.deleteBatchHosStatus(status,codes);
+    }
 }

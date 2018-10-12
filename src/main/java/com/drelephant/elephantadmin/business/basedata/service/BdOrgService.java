@@ -24,12 +24,13 @@ public interface BdOrgService extends IService<BdOrg> {
 	//新增医院字典
 	R addHospital(BdOrg data);
 	//查询医院信息列表
-	Page<BdOrg> getListBdOrg(Page<BdOrg> page);
+	Page<BdOrg> getListBdOrg(Page<BdOrg> page,String code,String provinceName,String cityName,String name
+			,String hospitalLevel,String status);
 	//单条修改医院状态
 	R updateOneHosStatus(BdOrg data);
 	//单条删除医院状态
 	R deleteOneHosStatus(BdOrg data);
 	//批量更新医院状态
-	
+	R deleteBatchHosStatus(String status,String code);
 
 }

@@ -26,7 +26,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdAreaRegion> implements BdAreaRegionService {
-
+	@Autowired
+	BdAreaRegionMapper mBdAreaRegionMapper;
 	@Override
 	public R insertBdAreaRegion(BdAreaRegion data) {
 		// TODO Auto-generated method stub
@@ -140,6 +141,12 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 			}
 		}
 		return flag?R.ok():R.error();
+	}
+
+	@Override
+	public R getListLevel() {
+		List<BdAreaRegion> list=mBdAreaRegionMapper.listLevel();
+		return R.ok().put("list", list);
 	}
 
 

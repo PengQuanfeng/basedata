@@ -55,5 +55,29 @@ public class BdBusinessRegionController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdBusinessRegionService.selectById(id));
     }
-
+/***********************业务区域信息设置新增***********************/
+    @ApiOperation("业务区域信息新增")
+    @PostMapping("/saveRegion")
+    public R saveRegion(@ApiParam("数据对象")BdBusinessRegion data){
+        return bdBusinessRegionService.inserRegion(data);
+    }
+    @ApiOperation("更新区域信息")
+    @PostMapping("/updateRegion")
+    public R updateRegion(@ApiParam("数据对象")BdBusinessRegion data){
+        return bdBusinessRegionService.updateRegion(data);
+    }
+    @ApiOperation("删除区域信息")
+    @PostMapping("/deleteRegion")
+    public R deleteRegion(@ApiParam("数据对象id")String id){
+    	BdBusinessRegion m=new BdBusinessRegion();
+    	m.setLv1Code(id);
+        return bdBusinessRegionService.deleteOneRegion(m);
+    }
+    @ApiOperation("获取list")
+    @PostMapping("/getListRegion")
+    public R getListRegion(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
+        Page<BdBusinessRegion> page=new Page<>(current,pageSize);
+        bdBusinessRegionService.getListRegion(page);
+        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
+    }
 }

@@ -25,5 +25,9 @@ public interface BdAreaRegionService extends IService<BdAreaRegion> {
 	//根据是否传入条件查询列表
 	Page<BdAreaRegion> getListBdAreaRegion(Page<BdAreaRegion> page,String code,String provinceName,
     		String CityName,String CountyName,Integer lever,String status);
-	R updateBatchBdAreaRegion(String status,String codes);//批量更新地区信息状态
+	//批量更新地区信息状态
+	R updateBatchBdAreaRegion(String status,String codes);
+	//查询表中层级
+//	List<BdAreaRegion> getListLevel();
+	R getListLevel();
 }
