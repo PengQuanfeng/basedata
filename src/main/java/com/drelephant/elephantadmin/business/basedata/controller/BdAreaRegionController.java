@@ -1,18 +1,6 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
-import com.baomidou.mybatisplus.mapper.Condition;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.drelephant.framework.base.common.R;
-import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
-import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
-import com.drelephant.elephantadmin.business.basedata.service.BdAreaRegionService;
-import com.drelephant.elephantadmin.business.basedata.util.Constans;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
+import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
+import com.drelephant.elephantadmin.business.basedata.service.BdAreaRegionService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+import com.drelephant.framework.base.common.R;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * <p>
@@ -93,6 +92,31 @@ public class BdAreaRegionController extends BaseController {
     	}
         return bdAreaRegionService.updateBatchBdAreaRegion(status,codes);
     }
+    
+    @ApiOperation("获取行政地区tree")
+    @PostMapping("/getAreaRegionTree")
+    public R getAreaRegionTree(){  
+    	return bdAreaRegionService.getAreaRegionTree();
+    }
+    
+    @ApiOperation("获取省份列表")
+    @PostMapping("/getProvinceList")
+    public R getProvinceList(){
+    	return bdAreaRegionService.getProvinceList();
+    }
+    
+    @ApiOperation("获取城市列表")
+    @PostMapping("/getCityList")
+    public R getCityList(@ApiParam("省份编码")String provinceCode){
+    	return bdAreaRegionService.getCityList(provinceCode);
+    }
+    
+    @ApiOperation("获取区县列表")
+    @PostMapping("/getCountyList")
+    public R getCountyList(@ApiParam("城市编码")String cityCode){
+    	return bdAreaRegionService.getCountyList(cityCode);
+    }
+    
     @ApiOperation("获取行政地区list")
     @PostMapping("/getListAdmin")
     public R getListAdmin(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,
@@ -106,14 +130,18 @@ public class BdAreaRegionController extends BaseController {
     @ApiOperation("层级下拉数据")
     @PostMapping("/getListLevel")
     public R getListLevel(){  
-    	List<String> list=new ArrayList<String>();
-    	list.add("1");
-    	list.add("2");
-    	list.add("3");
+//    	List<String> list=new ArrayList<String>();
+//    	list.add("1");
+//    	list.add("2");
+//    	list.add("3");
 //    	List<BdAreaRegion> bd=bdAreaRegionService.getListLevel();
 //    	bd.get(1).getLevel();
-    	
+    	List<Map<Integer,String>> lm=new ArrayList<Map<Integer,String>>();
+    	Map<Integer,String> map=new HashMap<Integer,String>();
+    	map.put(1, "1");
+    	map.put(2, "2");
+    	lm.add(map);
 //    	bdAreaRegionService.getListLevel();
-    	return R.ok().put("level", list);
+    	return R.ok().put("level", map);
     }
 }

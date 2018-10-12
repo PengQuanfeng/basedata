@@ -77,5 +77,3 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://dev-eureka1.dr-elephant.net:8861/eureka/,http://dev-eureka2.dr-elephant.net:8862/eureka/
-
- 
