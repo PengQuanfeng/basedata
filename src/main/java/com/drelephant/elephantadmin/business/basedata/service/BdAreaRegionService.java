@@ -1,14 +1,9 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
-import com.drelephant.framework.base.common.R;
-
-import io.swagger.annotations.ApiParam;
-
-import java.util.List;
-
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
+import com.drelephant.framework.base.common.R;
 
 /**
  * <p>
@@ -29,5 +24,34 @@ public interface BdAreaRegionService extends IService<BdAreaRegion> {
 	R updateBatchBdAreaRegion(String status,String codes);
 	//查询表中层级
 //	List<BdAreaRegion> getListLevel();
+	
+	/**
+	 * 
+	 * @return
+	 */
 	R getListLevel();
+	
+	/**
+	 * 获取 区域树
+	 * @return
+	 */
+	R getAreaRegionTree();
+	
+	/**
+	 * 获取省份列表
+	 * @return
+	 */
+	R getProvinceList();
+	
+	/**
+	 * 获取城市列表
+	 * @return
+	 */
+	R getCityList(String provinceCode);
+	
+	/**
+	 * 获取区县列表
+	 * @return
+	 */
+	R getCountyList(String cityCode);
 }
