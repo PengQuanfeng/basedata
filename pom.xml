@@ -24,7 +24,7 @@
 		<repository>
 			<id>dx-group</id>
 			<name>dx-group</name>
-			<url>http://116.193.48.18:50002/repository/dx-group/</url>
+			<url>http://mvn.dr-elephant.com:60003/repository/dx-group/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -37,7 +37,7 @@
 		<pluginRepository>
 			<id>dx-group</id>
 			<name>dx-group</name>
-			<url>http://116.193.48.18:50002/repository/dx-group/</url>
+			<url>http://mvn.dr-elephant.com:60003/repository/dx-group/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
