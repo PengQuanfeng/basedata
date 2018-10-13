@@ -9,6 +9,9 @@ import com.drelephant.elephantadmin.business.basedata.service.BdHealthCalendarSe
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,4 +59,23 @@ public class BdHealthCalendarController extends BaseController {
         return R.ok().put("info",bdHealthCalendarService.selectById(id));
     }
 /*****待写接口***********/
+    /**
+     * 左侧查询出当月中上传图片的天数信息列表
+     * @return
+     */
+    public void getListDate(@ApiParam("传入的时间")Date date){
+    	
+    }
+    /**
+     * 图片上传时保存信息
+     */
+	public void fileUpload(){
+	    	
+	}
+	/**
+	 * 删除当天的图片信息
+	 */
+	public void deleteFile(){
+    	
+	}
 }

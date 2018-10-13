@@ -2,6 +2,9 @@ package com.drelephant.elephantadmin.business.basedata.mapper;
 
 import com.drelephant.elephantadmin.business.basedata.entity.BdBusinessRegion;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -14,5 +17,14 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface BdBusinessRegionMapper extends BaseMapper<BdBusinessRegion> {
-
+	/**
+	 * 一级区域编码下拉数据
+	 * @return
+	 */
+	List<BdBusinessRegion> getbdLv1List();
+	/**
+	 * 二级区域编码下拉数据
+	 * @return
+	 */
+	List<BdBusinessRegion> getbdLv2List(String lv1Code);
 }

@@ -1,5 +1,6 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
+import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
 import com.drelephant.elephantadmin.business.basedata.entity.BdBusinessRegion;
 import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdBusinessRegionMapper;
@@ -10,9 +11,14 @@ import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,7 +31,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMapper, BdBusinessRegion> implements BdBusinessRegionService {
-
+	@Autowired
+	BdBusinessRegionMapper mBdBusinessRegionMapper;
 	@Override
 	public R inserRegion(BdBusinessRegion data) {
 		BdBusinessRegion mBdBusinessRegion=new BdBusinessRegion();
@@ -45,7 +52,7 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 			flag=insert(mBdBusinessRegion);
 		}
 		int count2Name=selectCount(Condition.create().eq("level", level).eq("Lv2Name", data.getLv2Name()));
-		if(count==0&&level==2&&count2Name==0){
+		if(level==2&&count2Name==0){
 			mBdBusinessRegion.setLevel(level);
 			mBdBusinessRegion.setLv1Code(lv1Code);
 			mBdBusinessRegion.setLv1Name(data.getLv1Name());
@@ -69,16 +76,19 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 		}else{
 			mBdBusinessRegion.setLv1Name(data.getLv1Name());
 			mBdBusinessRegion.setLv2Name(data.getLv2Name());
-			flag=update(mBdBusinessRegion,Condition.create().eq("lv1Code", data.getLv1Code()));
+			flag=update(mBdBusinessRegion,Condition.create().eq("lv2Code", data.getLv2Code()));
 		}
 		return flag?R.ok():R.error("状态更新失败");
 	}
-
+/**
+ * 可以根据区域编码
+ */
 	@Override
 	public R deleteOneRegion(BdBusinessRegion data) {
 		BdBusinessRegion mBdBusinessRegion=new BdBusinessRegion();
 		mBdBusinessRegion.setStatus(Constans.DELETED);
-		boolean flag=update(mBdBusinessRegion,Condition.create().eq("lv1Code", data.getLv1Code()));
+		boolean flag=false;
+		flag=update(mBdBusinessRegion,Condition.create().eq("lv1Code", data.getLv1Code()));			 
 		return flag?R.ok():R.error("删除失败");
 	}
 
@@ -93,9 +103,45 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
 		return uuid;
 	}
+	/**
+	 * 传入对应的区域编码 lv1Code 1级和2级
+	 */
+	@Override
+	public BdBusinessRegion selectOneRegion(String codes,Integer level) {	
+		Condition con=Condition.create();
+		if(level==1){
+			con.eq("lv1Code", codes);
+			con.eq("level", 1);
+		}else{
+			con.eq("lv2Code", codes);
+		}
+		return selectOne(con);
+	}
 
 	@Override
-	public BdBusinessRegion selectOneRegion(String lv1Code) {		
-		return selectOne(Condition.create().eq("lv1Code", lv1Code));
+	public R bdLv1() {
+		List<BdBusinessRegion> list = mBdBusinessRegionMapper.getbdLv1List();
+		List<Map<String, Object>> lv1s = new ArrayList<Map<String, Object>>();
+		Map<String, Object> lv1 = null;
+		for (BdBusinessRegion bdRegion : list) {
+			lv1 = new HashMap<String, Object>();
+			lv1.put("lv1Code", bdRegion.getLv1Code());
+			lv1.put("lv1Name", bdRegion.getLv1Name());
+			lv1s.add(lv1);
+		}
+		return R.ok().put("list", lv1s);
+	}
+	@Override
+	public R bdLv2(String lv1Code) {
+		List<BdBusinessRegion> list = mBdBusinessRegionMapper.getbdLv2List(lv1Code);
+		List<Map<String, Object>> lv2s = new ArrayList<Map<String, Object>>();
+		Map<String, Object> lv2 = null;
+		for (BdBusinessRegion bdRegion : list) {
+			lv2 = new HashMap<String, Object>();
+			lv2.put("lv2Code", bdRegion.getLv2Code());
+			lv2.put("lv2Name", bdRegion.getLv2Name());
+			lv2s.add(lv2);
+		}
+		return R.ok().put("list", lv2s);
 	}
 }

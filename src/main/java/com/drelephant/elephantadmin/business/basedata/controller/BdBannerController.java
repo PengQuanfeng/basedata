@@ -55,38 +55,42 @@ public class BdBannerController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdBannerService.selectById(id));
     }
-/************待写接口*********************/
     @ApiOperation("新增首页图片信息")
     @PostMapping("/saveBaner")
     public R saveBaner(@ApiParam("数据对象")BdBanner data){
-        return null;
+        return bdBannerService.insertBdBander(data);
     }
     @ApiOperation("查询单条首页图片信息")
     @PostMapping("/getOneBaner")
-    public R getOneBaner(@ApiParam("数据对象")BdBanner data){
-        return null;
+    public R getOneBaner(@ApiParam("id列")String id){
+    	BdBanner bd=bdBannerService.selectOneBd(id);
+        return R.ok().put("list", bd);
     }
     @ApiOperation("更新单条首页图片信息")
     @PostMapping("/updateOneBaner")
     public R updateOneBaner(@ApiParam("数据对象")BdBanner data){
-        return null;
+        return bdBannerService.updateBdBander(data);
     }
     @ApiOperation("删除单条首页图片信息")
     @PostMapping("/deleteOneBaner")
-    public R deleteOneBaner(@ApiParam("文件id")String  fileId){
-    	//进行逻辑删除
-        return null;
-    }
-    @ApiOperation("上移下移字段排序")
-    @PostMapping("/updateOrderNumber")
-    public R updateOrderNumber(@ApiParam("文件id")String fileId,@ApiParam("排序字段")int orderNumber){
-    	
-        return null;
+    public R deleteOneBaner(@ApiParam("id")String  id){
+    	//进行逻辑删除   	
+        return bdBannerService.updateStatus(id);
     }
     @ApiOperation("列表查询")
-    @PostMapping("/updateOrderNumber")
+    @PostMapping("/getListBanner")
     public R getListBanner(){
-    	//最多10张图片，未要求排序
-        return null;
+    	//最多10张图片，未要求排序    	
+    	
+        return R.ok().put("list", bdBannerService.getListBd());
     }
+
+/************待写接口*********************/
+    @ApiOperation("上移下移字段排序")
+    @PostMapping("/updateOrderNumberBd")
+    public R updateOrderNumberBd(@ApiParam("id")String id,@ApiParam("排序字段")int orderNumber){
+    	
+        return R.ok();
+    }
+ 
 }

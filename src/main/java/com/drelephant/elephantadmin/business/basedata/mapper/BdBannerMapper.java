@@ -14,5 +14,18 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface BdBannerMapper extends BaseMapper<BdBanner> {
-
+	/**
+	 * 查询最大的排序号
+	 * @return
+	 */
+	Integer maxOrderNumber();
+	/**
+	 * 根据id得到当前的排序字段
+	 * @param id
+	 * @return
+	 */
+	int orderNum(String id);
+	int getId(int orderNumber);
+	int getMinOrder();
+	
 }

@@ -2,6 +2,9 @@ package com.drelephant.elephantadmin.business.basedata.mapper;
 
 import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,6 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2018-10-09
  */
 @Mapper
-public interface BdHealthCalendarMapper extends BaseMapper<BdHealthCalendar> {
-
+public interface BdHealthCalendarMapper extends BaseMapper<BdHealthCalendar> {	
+	List<BdHealthCalendar> bdHealthCalendar();
 }

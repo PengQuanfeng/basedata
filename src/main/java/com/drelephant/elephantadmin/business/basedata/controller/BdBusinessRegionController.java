@@ -88,11 +88,11 @@ public class BdBusinessRegionController extends BaseController {
         bdBusinessRegionService.getListRegion(page);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
-    /*******待写接口*****************/
     @ApiOperation("单条区域信息")
     @PostMapping("/getOneRegion")
-    public R getOneRegion(@ApiParam("区域编码")String lv1Code){
-    	BdBusinessRegion bd=bdBusinessRegionService.selectOneRegion(lv1Code);
+    public R getOneRegion(@ApiParam("区域编码")String lcodes,@ApiParam("层级")Integer level){
+    	
+    	BdBusinessRegion bd=bdBusinessRegionService.selectOneRegion(lcodes,level);
         return R.ok().put("list", bd);
     }
     @ApiOperation("层级下拉数据")
@@ -116,9 +116,14 @@ public class BdBusinessRegionController extends BaseController {
 		}
     	return R.ok().put("list", levels);
     }
-    @ApiOperation("区域列表")
-    @PostMapping("/getListLv")
-    public R getListLv(@ApiParam("数据对象")BdBusinessRegion data){
-        return null;
+    @ApiOperation("1级区域列表")
+    @PostMapping("/getListLv1")
+    public R getListLv1(){    	
+        return bdBusinessRegionService.bdLv1();
+    }
+    @ApiOperation("2级区域列表")
+    @PostMapping("/getListLv2")
+    public R getListLv2(String lv1Code){    	
+        return bdBusinessRegionService.bdLv2(lv1Code);
     }
 }

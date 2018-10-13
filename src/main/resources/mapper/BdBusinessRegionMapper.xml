@@ -3,4 +3,12 @@
 <mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdBusinessRegionMapper">
 
 	<!-- 开启二级缓存 -->
+	<select id="getbdLv1List" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdBusinessRegion">
+		select DISTINCT lv1Code,lv1Name from bd_business_region where lv1Code is not null 
+		and lv1Code !='' and status!='DEL' and level='1'
+	</select>
+	<select id="getbdLv2List" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdBusinessRegion">		
+		select DISTINCT lv2Code,lv2Name from bd_business_region 
+		where lv2Code is not null and lv2Code !='' and lv2Code !='-' and status!='DEL' and lv1Code = #{lv1Code} and level='2'
+	</select>
 </mapper>

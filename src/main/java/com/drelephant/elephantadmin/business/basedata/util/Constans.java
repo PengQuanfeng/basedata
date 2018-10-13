@@ -26,7 +26,14 @@ public final class Constans {
      * 有效.
      */
     public static final String ACTIVE = "ACT";
-
+    /**
+     * 链接开启状态
+     */
+    public static final String OPENLINK="1";
+    /**
+     * 链接关闭状态
+     */
+    public static final String NOTOPENLINK="0";
     /**
      * 删除
      */

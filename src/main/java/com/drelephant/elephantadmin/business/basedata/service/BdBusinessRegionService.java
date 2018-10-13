@@ -2,6 +2,9 @@ package com.drelephant.elephantadmin.business.basedata.service;
 
 import com.drelephant.elephantadmin.business.basedata.entity.BdBusinessRegion;
 import com.drelephant.framework.base.common.R;
+
+import java.util.List;
+
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -27,5 +30,15 @@ public interface BdBusinessRegionService extends IService<BdBusinessRegion> {
 	 * @param lv1Code
 	 * @return
 	 */
-	BdBusinessRegion selectOneRegion(String lv1Code);
+	BdBusinessRegion selectOneRegion(String codes,Integer level);
+	/**
+	 * 一级区域编码下拉数据
+	 * @return
+	 */
+	R bdLv1();
+	/**
+	 * 二级区域编码下拉数据
+	 * @return
+	 */
+	R bdLv2(String lv1Code);
 }
