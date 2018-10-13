@@ -1,11 +1,13 @@
 package com.drelephant.elephantadmin.business.basedata.mapper;
 
 
-import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
 
 /**
@@ -18,5 +20,8 @@ import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
  */
 @Mapper
 public interface BdQuickReplyMapper extends BaseMapper<BdQuickReply> {
-	
+	int saveQuickReply(BdQuickReply entity);
+	int updateQuickReply(BdQuickReply entity);
+	List<BdQuickReply> queryQuickReply(Pagination page, @Param("id") String id);
+	int deleteQuickReplyById(@Param("id") String id);
 }

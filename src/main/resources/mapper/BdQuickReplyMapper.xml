@@ -3,5 +3,75 @@
 <mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdQuickReplyMapper">
 
 	<!-- 开启二级缓存 -->
-	
+	<insert id="saveQuickReply" 
+		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply">
+		insert into bd_quick_reply (
+			<include refid="Bd_Quick_Reply" />)
+		values(#{id},#{typeCode},#{typeName},#{content},#{remark},#{orderNumber},#{createTime},
+		#{createUserCode},#{createUserName},#{updateTime},#{updateUserCode},#{updateUserName},
+		#{version},#{status})
+	</insert>
+	<update id="deleteQuickReplyById" parameterType="java.lang.String">
+		update  bd_quick_reply 
+		<set>
+			<if test="status != null and status != ''">
+				status = #{status}
+			</if> 
+			<!-- 修改操作公共字段 E-->
+		</set> 
+		where id = #{id}
+	</update>
+	<update id="updateQuickReply" 
+		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply">
+		update bd_quick_reply
+		<set>
+			<if test="content != null and content.trim() != ''">
+				content = #{content}, 
+			</if>
+			<if test="remark != null and remark.trim() != ''">
+				remark = #{remark}, 
+			</if>						
+			<!-- 修改操作公共字段 S-->
+			<if test="updateTime != null and updateTime != ''">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="updateUserCode != null and updateUserCode != ''">
+				updateUserCode = #{updateUserCode}, 
+			</if>
+			<if test="updateUserName != null and updateUserName != ''">
+				updateUserName = #{updateUserName}, 
+			</if> 
+			<if test="version != null and version != ''">
+				version = #{version}
+			</if> 
+		</set> 
+		where id = #{id}
+	</update>
+	<select id="queryQuickReply" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig">
+		SELECT 
+		<include refid="Bd_Quick_Reply" />
+		from bd_quick_reply
+		<where>
+			<if test="id != null and id !=''">
+				 id = #{id}
+			</if>
+			and status = 'ACT'
+		</where>
+	</select>
+	<sql id="Bd_Quick_Reply">
+		id,
+		typeCode,
+		typeName,
+		content,
+		remark,
+		orderNumber,
+		createTime,
+		createUserCode,
+		createUserName,
+		updateTime,
+		updateUserCode,
+		updateUserName,
+		version,
+		status		
+	</sql>
 </mapper>
