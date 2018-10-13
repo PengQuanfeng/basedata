@@ -11,10 +11,13 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,7 +30,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper, BdHospitalDept> implements BdHospitalDeptService {
-
+	@Autowired
+	BdHospitalDeptMapper bdHospitalDeptMapper;
 	@Override
 	public R insertHost(BdHospitalDept data) {
 		BdHospitalDept mBdHospitalDept=new BdHospitalDept();
@@ -127,20 +131,20 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 				flag=update(mBdHospitalDept,Condition.create().eq("lv1Code", list.get(j)));
 			}
 		}
-		return flag?R.ok():R.error();
+		return flag?R.ok():R.error("删除失败");
 	}
 	@Override
-	public Page<BdHospitalDept> getListHost(Page<BdHospitalDept> page,String lv1Code,String lv1Name,
-			String lv2Name,String level,String status) {
+	public Page<BdHospitalDept> getListHost(Page<BdHospitalDept> page,String lv1Code,String lv2Code,
+			String lv3Code,String level,String status) {
 		Condition con=Condition.create();
 		if(StringUtils.isNotBlank(lv1Code)){
 			con.eq("lv1Code", lv1Code);
 		}
-		if(StringUtils.isNotBlank(lv1Name)){
-			con.eq("lv1Name", lv1Name);
+		if(StringUtils.isNotBlank(lv2Code)){
+			con.eq("lv2Code", lv2Code);
 		}
-		if(StringUtils.isNotBlank(lv2Name)){
-			con.eq("lv2Name", lv2Name);
+		if(StringUtils.isNotBlank(lv3Code)){
+			con.eq("lv3Code", lv3Code);
 		}
 		if(StringUtils.isNotBlank(level)){
 			con.eq("level", level);
@@ -152,5 +156,49 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		}	
 		selectPage(page, con);
 		return page;
+	}
+	@Override
+	public R getLv1List() {
+		List<BdHospitalDept> list=bdHospitalDeptMapper.getLv1List();
+		List<Map<String, Object>> lv1s = new ArrayList<Map<String, Object>>();
+		Map<String, Object> lv1 = null;
+		for (BdHospitalDept bdHospitalDept : list) {
+			lv1= new HashMap<String, Object>();
+			lv1.put("lv1Code", bdHospitalDept.getLv1Code());
+			lv1.put("lv1Name", bdHospitalDept.getLv1Name());
+			lv1s.add(lv1);
+		}
+		return R.ok().put("list", lv1s);
+	}
+	@Override
+	public R getLv2List(String lv1Code) {
+		List<BdHospitalDept> list=bdHospitalDeptMapper.getLv2List(lv1Code);
+		List<Map<String, Object>> lv2s = new ArrayList<Map<String, Object>>();
+		Map<String, Object> lv2 = null;
+		for (BdHospitalDept bdHospitalDept : list) {
+			lv2= new HashMap<String, Object>();
+			lv2.put("lv2Code", bdHospitalDept.getLv2Code());
+			lv2.put("lv2Name", bdHospitalDept.getLv2Name());
+			lv2s.add(lv2);
+		}
+		return R.ok().put("list", lv2s);
+	}
+	@Override
+	public R getLv3List(String lv2Code) {
+		List<BdHospitalDept> list=bdHospitalDeptMapper.getLv3List(lv2Code);
+		List<Map<String, Object>> lv3s = new ArrayList<Map<String, Object>>();
+		Map<String, Object> lv3 = null;
+		for (BdHospitalDept bdHospitalDept : list) {
+			lv3= new HashMap<String, Object>();
+			lv3.put("lv3Code", bdHospitalDept.getLv3Code());
+			lv3.put("lv3Name", bdHospitalDept.getLv3Name());
+			lv3s.add(lv3);
+		}
+		return R.ok().put("list", lv3s);
+	}
+	@Override
+	public BdHospitalDept selectOneDept(String lv1Code) {
+		
+		return selectOne(Condition.create().eq("lv1Code", lv1Code));
 	}
 }

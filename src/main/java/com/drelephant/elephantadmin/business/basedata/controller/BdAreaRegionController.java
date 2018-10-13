@@ -64,7 +64,7 @@ public class BdAreaRegionController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdAreaRegionService.selectById(id));
     }
-    
+ /*******************新增接口地址***************/   
     @ApiOperation("行政地区新增")
     @PostMapping("/saveAdmin")
     public R saveAdmin(@ApiParam("数据对象")BdAreaRegion data){
@@ -120,28 +120,42 @@ public class BdAreaRegionController extends BaseController {
     @ApiOperation("获取行政地区list")
     @PostMapping("/getListAdmin")
     public R getListAdmin(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,
-    		@ApiParam("地区编码")String code,@ApiParam("省份")String provinceName,
-    		@ApiParam("城市")String cityName,@ApiParam("区县")String countyName,
+    		@ApiParam("地区编码")String code,@ApiParam("省份code")String provinceCode,
+    		@ApiParam("城市code")String cityCode,@ApiParam("区县code")String countyCode,
     		@ApiParam("层级")Integer lever,@ApiParam("状态")String status ){  
     	Page<BdAreaRegion> page=new Page<>(current,pageSize);
-    	bdAreaRegionService.getListBdAreaRegion(page, code, provinceName, cityName, countyName, lever, status);
+    	bdAreaRegionService.getListBdAreaRegion(page, code, provinceCode, cityCode, countyCode, lever, status);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
     @ApiOperation("层级下拉数据")
     @PostMapping("/getListLevel")
     public R getListLevel(){  
-//    	List<String> list=new ArrayList<String>();
-//    	list.add("1");
-//    	list.add("2");
-//    	list.add("3");
-//    	List<BdAreaRegion> bd=bdAreaRegionService.getListLevel();
-//    	bd.get(1).getLevel();
-    	List<Map<Integer,String>> lm=new ArrayList<Map<Integer,String>>();
-    	Map<Integer,String> map=new HashMap<Integer,String>();
-    	map.put(1, "1");
-    	map.put(2, "2");
-    	lm.add(map);
-//    	bdAreaRegionService.getListLevel();
-    	return R.ok().put("level", map);
+    	List<Map<String, Object>> levels = new ArrayList<Map<String, Object>>();
+		Map<String, Object> level = null;
+		List<Integer> list=new ArrayList<Integer>();
+		list.add(1);
+		list.add(2);
+		list.add(3);
+    	for (Integer integer : list) {
+    		level = new HashMap<String, Object>();
+    		level.put("level", integer);
+    		levels.add(level);
+		}
+    	return R.ok().put("list", levels);
+    }
+    @ApiOperation("状态下拉数据")
+    @PostMapping("/getListStatus")
+    public R getListStatus(){  
+    	List<Map<String, Object>> statuss = new ArrayList<Map<String, Object>>();
+		Map<String, Object> status = null;
+		List<String> list=new ArrayList<String>();
+		list.add(Constans.ACTIVE);
+		list.add(Constans.INVALID);
+    	for (String str : list) {
+    		status = new HashMap<String, Object>();
+    		status.put("status", str);
+    		statuss.add(status);
+		}
+    	return R.ok().put("list", statuss);
     }
 }

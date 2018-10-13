@@ -95,21 +95,21 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 	}
 
 	@Override
-	public Page<BdAreaRegion> getListBdAreaRegion(Page<BdAreaRegion> page, String code, String provinceName, String CityName,
-			String CountyName, Integer lever, String status) {
+	public Page<BdAreaRegion> getListBdAreaRegion(Page<BdAreaRegion> page,String code,String provinceCode,
+    		String cityCode,String countyCode,Integer lever,String status) {
 				
 		Condition con=Condition.create();
 		if(StringUtils.isNotBlank(code)){
 			con.eq("code", code);
 		}
-		if(StringUtils.isNotBlank(provinceName)){
-			con.eq("provinceName", provinceName);
+		if(StringUtils.isNotBlank(provinceCode)){
+			con.eq("provinceCode", provinceCode);
 		}
-		if(StringUtils.isNotBlank(CityName)){
-			con.eq("CityName", CityName);
+		if(StringUtils.isNotBlank(cityCode)){
+			con.eq("cityCode", cityCode);
 		}
-		if(StringUtils.isNotBlank(CountyName)){
-			con.eq("CountyName", CountyName);
+		if(StringUtils.isNotBlank(countyCode)){
+			con.eq("countyCode", countyCode);
 		}
 		if(lever !=null){
 			con.eq("lever", lever);
@@ -142,7 +142,7 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 				flag=update(mBdAreaRegion,Condition.create().eq("code", list.get(j)));
 			}
 		}
-		return flag?R.ok():R.error();
+		return flag?R.ok():R.error("更新失败");
 	}
 
 	@Override

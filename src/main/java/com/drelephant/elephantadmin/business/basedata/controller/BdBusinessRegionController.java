@@ -9,7 +9,14 @@ import com.drelephant.elephantadmin.business.basedata.service.BdBusinessRegionSe
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,6 +66,7 @@ public class BdBusinessRegionController extends BaseController {
     @ApiOperation("业务区域信息新增")
     @PostMapping("/saveRegion")
     public R saveRegion(@ApiParam("数据对象")BdBusinessRegion data){
+    	//确认同层级下的区域名称保持唯一
         return bdBusinessRegionService.inserRegion(data);
     }
     @ApiOperation("更新区域信息")
@@ -79,5 +87,38 @@ public class BdBusinessRegionController extends BaseController {
         Page<BdBusinessRegion> page=new Page<>(current,pageSize);
         bdBusinessRegionService.getListRegion(page);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
+    }
+    /*******待写接口*****************/
+    @ApiOperation("单条区域信息")
+    @PostMapping("/getOneRegion")
+    public R getOneRegion(@ApiParam("区域编码")String lv1Code){
+    	BdBusinessRegion bd=bdBusinessRegionService.selectOneRegion(lv1Code);
+        return R.ok().put("list", bd);
+    }
+    @ApiOperation("层级下拉数据")
+    @GetMapping("/getListLevel")
+    public R getListLevel(){
+    	//首先定义一个 集合用来存储返回数据
+    	List<Map<String, Object>> levels = new ArrayList<Map<String, Object>>();
+    	//定义一个空的Map集合
+		Map<String, Object> level = null;
+		//用来存放下拉数据的List集合
+		List<Integer> list=new ArrayList<Integer>();
+		list.add(1);
+		list.add(2);
+		//遍历存放下拉数据的集合
+    	for (Integer integer : list) {
+    		level = new HashMap<String, Object>();
+    		//数据放到map集合中
+    		level.put("level", integer);
+    		//将map集合数据放入到返回的集合中
+    		levels.add(level);
+		}
+    	return R.ok().put("list", levels);
+    }
+    @ApiOperation("区域列表")
+    @PostMapping("/getListLv")
+    public R getListLv(@ApiParam("数据对象")BdBusinessRegion data){
+        return null;
     }
 }

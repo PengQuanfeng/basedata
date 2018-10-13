@@ -75,4 +75,5 @@ public class BdCompanyDeptController extends BaseController {
     public R getDeptList(@ApiParam(value="当前页",required = true)int current,@ApiParam(value="分页大小",required = true)int pageSize){        
         return bdCompanyDeptService.getListDept(current, pageSize);
     }
+    /*************待写接口*************/
 }

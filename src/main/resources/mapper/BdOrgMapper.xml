@@ -7,4 +7,5 @@
 	<select id="selectCompanyCode" parameterType="String" resultType="java.lang.Integer">
 		select count(*) from bd_org where code = #{code}  
 	</select>
+	
 </mapper>

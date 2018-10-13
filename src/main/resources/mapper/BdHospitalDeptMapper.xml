@@ -3,4 +3,15 @@
 <mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdHospitalDeptMapper">
 
 	<!-- 开启二级缓存 -->
+	<select id="getLv1List" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept">
+		select DISTINCT lv1Code,lv1Name from bd_hospital_dept where lv1Code is not null and lv1Code != '' order by lv1Code
+	</select>
+	<select id="getLv2List" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept">
+		select DISTINCT lv2Code,lv2Name from bd_hospital_dept where lv1Code = #{lv1Code} and lv1Code is not null and lv1Code != '' 
+		and lv2Code is not null and lv2Code !='' order by lv1Code
+	</select>
+	<select id="getLv3List" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept">
+		select DISTINCT lv3Code,lv3Name from bd_hospital_dept where lv2Code = #{lv2Code} and lv2Code is not null and lv2Code != '' 
+		and lv3Code is not null and lv3Code !='' order by lv2Code
+	</select>
 </mapper>
