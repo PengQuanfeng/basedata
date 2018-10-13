@@ -6,10 +6,19 @@ import com.drelephant.framework.base.common.R;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
 import com.drelephant.elephantadmin.business.basedata.entity.BdCompanyLogistics;
 import com.drelephant.elephantadmin.business.basedata.service.BdCompanyLogisticsService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -69,5 +78,19 @@ public class BdCompanyLogisticsController extends BaseController {
     public R updateLogistics(@ApiParam("数据对象")BdCompanyLogistics data){
         return bdCompanyLogisticsService.updateLogisStatus(data);
     }
-    
+    @ApiOperation("获取物流字典状态下拉列表数据")
+    @GetMapping("/getStatusList")
+    public R getStatusList(){
+    	List<Map<String,Object>> statuss=new ArrayList<Map<String,Object>>();
+    	Map<String,Object> map=null;
+    	List<String> status=new ArrayList<String>();
+    	status.add(Constans.ACTIVE);
+    	status.add(Constans.INVALID);
+    	for (String str : status) {
+			map=new HashMap<String,Object>();
+			map.put("status", str);
+			statuss.add(map);
+		} 
+    	return R.ok().put("list", statuss);
+    }
 }

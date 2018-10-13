@@ -24,7 +24,7 @@ public interface BdOrgService extends IService<BdOrg> {
 	//新增医院字典
 	R addHospital(BdOrg data);
 	//查询医院信息列表
-	Page<BdOrg> getListBdOrg(Page<BdOrg> page,String code,String provinceName,String cityName,String name
+	Page<BdOrg> getListBdOrg(Page<BdOrg> page,String code,String provinceCode,String cityCode,String name
 			,String hospitalLevel,String status);
 	//单条修改医院状态
 	R updateOneHosStatus(BdOrg data);
@@ -32,5 +32,16 @@ public interface BdOrgService extends IService<BdOrg> {
 	R deleteOneHosStatus(BdOrg data);
 	//批量更新医院状态
 	R deleteBatchHosStatus(String status,String code);
-
+	
+	/**
+	 * 获取省份列表
+	 * @return
+	 */
+	R getProvinceList();
+	
+	/**
+	 * 获取城市列表
+	 * @return
+	 */
+	R getCityList(String provinceCode);
 }

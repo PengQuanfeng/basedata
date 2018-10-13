@@ -32,25 +32,28 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 		String lv1Code=data.getLv1Code();
 		Integer level=data.getLevel();
 		int count=selectCount(Condition.create().eq("lv1Code", lv1Code));
+		int count1Name=selectCount(Condition.create().eq("level", level).eq("Lv1Name", data.getLv1Name()));
 		boolean flag=false;
-		if(count==0&&level!=null){
-			if(level==1){
-				mBdBusinessRegion.setLevel(level);
-				mBdBusinessRegion.setLv1Code(lv1Code);
-				mBdBusinessRegion.setLv1Name(data.getLv1Name());
-				mBdBusinessRegion.setLv2Code("-");
-				mBdBusinessRegion.setLv2Name("-");
-			}else{
-				mBdBusinessRegion.setLevel(level);
-				mBdBusinessRegion.setLv1Code(lv1Code);
-				mBdBusinessRegion.setLv1Name(data.getLv1Name());
-				mBdBusinessRegion.setLv2Code(getRandom());
-				mBdBusinessRegion.setLv2Name(data.getLv2Name());
-			}
+		//1级区域下1级区域name不能重复
+		if(count==0&&level==1&&count1Name==0){			
+			mBdBusinessRegion.setLevel(level);
+			mBdBusinessRegion.setLv1Code(lv1Code);
+			mBdBusinessRegion.setLv1Name(data.getLv1Name());
+			mBdBusinessRegion.setLv2Code("-");
+			mBdBusinessRegion.setLv2Name("-");
 			mBdBusinessRegion.setStatus(Constans.ACTIVE);
 			flag=insert(mBdBusinessRegion);
 		}
-		
+		int count2Name=selectCount(Condition.create().eq("level", level).eq("Lv2Name", data.getLv2Name()));
+		if(count==0&&level==2&&count2Name==0){
+			mBdBusinessRegion.setLevel(level);
+			mBdBusinessRegion.setLv1Code(lv1Code);
+			mBdBusinessRegion.setLv1Name(data.getLv1Name());
+			mBdBusinessRegion.setLv2Code(getRandom());
+			mBdBusinessRegion.setLv2Name(data.getLv2Name());
+			mBdBusinessRegion.setStatus(Constans.ACTIVE);
+			flag=insert(mBdBusinessRegion);
+		}		
 		return flag?R.ok():R.error("插入失败");
 	}
 
@@ -59,14 +62,13 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 		BdBusinessRegion mBdBusinessRegion=new BdBusinessRegion();
 		boolean flag=false;
 		String lv1Code=data.getLv1Code();
-		Integer level=data.getLevel();
-		if(lv1Code!=null){
-			if(level==1){
-				mBdBusinessRegion.setLv1Name(data.getLv1Name());
-			}else{
-				mBdBusinessRegion.setLv1Name(data.getLv1Name());
-				mBdBusinessRegion.setLv2Name(data.getLv2Name());
-			}
+		Integer level=data.getLevel();		
+		if(level==1){
+			mBdBusinessRegion.setLv1Name(data.getLv1Name());
+			flag=update(mBdBusinessRegion,Condition.create().eq("lv1Code", data.getLv1Code()));
+		}else{
+			mBdBusinessRegion.setLv1Name(data.getLv1Name());
+			mBdBusinessRegion.setLv2Name(data.getLv2Name());
 			flag=update(mBdBusinessRegion,Condition.create().eq("lv1Code", data.getLv1Code()));
 		}
 		return flag?R.ok():R.error("状态更新失败");
@@ -90,5 +92,10 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 	public static String getRandom(){
 		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
 		return uuid;
+	}
+
+	@Override
+	public BdBusinessRegion selectOneRegion(String lv1Code) {		
+		return selectOne(Condition.create().eq("lv1Code", lv1Code));
 	}
 }

@@ -18,8 +18,8 @@ public interface BdAreaRegionService extends IService<BdAreaRegion> {
 	R updateStatus(BdAreaRegion data);
 	R deleteBdAreaRegion(BdAreaRegion data);//单条更新地区信息状态
 	//根据是否传入条件查询列表
-	Page<BdAreaRegion> getListBdAreaRegion(Page<BdAreaRegion> page,String code,String provinceName,
-    		String CityName,String CountyName,Integer lever,String status);
+	Page<BdAreaRegion> getListBdAreaRegion(Page<BdAreaRegion> page,String code,String provinceCode,
+    		String cityCode,String countyCode,Integer lever,String status);
 	//批量更新地区信息状态
 	R updateBatchBdAreaRegion(String status,String codes);
 	//查询表中层级

@@ -13,6 +13,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -89,10 +94,10 @@ public class BdOrgController extends BaseController {
     @ApiOperation("获取医院信息的list")
     @PostMapping("/getListHospital")
     public R getListHospital(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,@ApiParam("医院编码")String code,
-    		@ApiParam("省名称")String provinceName,@ApiParam("市名称")String cityName,
+    		@ApiParam("省编码")String provinceCode,@ApiParam("市编码")String cityCode,
     		@ApiParam("医院名称")String name,@ApiParam("医院等级")String hospitalLevel,@ApiParam("状态")String status){
     	Page<BdOrg> page=new Page<>(current,pageSize);
-    	bdOrgService.getListBdOrg(page,code,provinceName,cityName,name,hospitalLevel,status);
+    	bdOrgService.getListBdOrg(page,code,provinceCode,cityCode,name,hospitalLevel,status);
         return R.ok().put("list", page.getRecords()).put("total",page.getTotal());
     }
     @ApiOperation("更新医院状态")
@@ -117,4 +122,48 @@ public class BdOrgController extends BaseController {
     	}
         return bdOrgService.deleteBatchHosStatus(status,codes);
     }
+    @ApiOperation("获取省的列表")
+    @PostMapping("/getListProvince")
+    public R getListProvince(){
+    	
+        return bdOrgService.getProvinceList();
+    }
+    @ApiOperation("获取城市列表")
+    @PostMapping("/getListCity")
+    public R getListCity(@ApiParam("省编码") String provinceCode){
+        return bdOrgService.getCityList(provinceCode);
+    }
+    @ApiOperation("获取等级列表")
+    @PostMapping("/getListLevel")
+    public R getListLevel(){
+    	List<Map<String, Object>> hospitalLevels = new ArrayList<Map<String, Object>>();
+		Map<String, Object> hospitalLevel = null;
+		List<String> list=new ArrayList<String>();
+		list.add(Constans.HOSPITALLEVEL_A);
+		list.add(Constans.HOSPITALLEVEL_B);
+		list.add(Constans.HOSPITALLEVEL_C);
+		list.add(Constans.HOSPITALLEVEL_D);
+    	for (String str : list) {
+    		hospitalLevel = new HashMap<String, Object>();
+    		hospitalLevel.put("hospitalLevel", str);
+    		hospitalLevels.add(hospitalLevel);
+		}
+        return R.ok().put("list", hospitalLevels);
+    }
+    @ApiOperation("获取状态列表")
+    @PostMapping("/getListStatus")
+    public R getListStatus(){
+    	List<Map<String, Object>> statuss = new ArrayList<Map<String, Object>>();
+		Map<String, Object> status = null;
+		List<String> list=new ArrayList<String>();
+		list.add(Constans.ACTIVE);
+		list.add(Constans.INVALID);
+    	for (String str : list) {
+    		status = new HashMap<String, Object>();
+    		status.put("status", str);
+    		statuss.add(status);
+		}
+    	return R.ok().put("list", statuss);
+    }
+    
 }

@@ -2,18 +2,19 @@ package com.drelephant.elephantadmin.business.basedata.service.impl;
 
 import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
 import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
+import com.drelephant.elephantadmin.business.basedata.mapper.BdAreaRegionMapper;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdCompanyDeptMapper;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdOrgMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
-import com.drelephant.framework.core.swagger.SwaggerConfigurationProerties.Contact;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +37,8 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	BdOrgMapper bdOrgMapper;
 	@Autowired
 	BdCompanyDeptMapper mBdCompanyDeptMapper;
+	@Autowired
+	BdAreaRegionMapper mBdAreaRegionMapper;
 	@Override
 	public boolean addCompany(String name) {
 		BdOrg mBdOrg=new BdOrg();
@@ -114,9 +117,9 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			bdOrg.setCode(data.getCode());//自定义医院编码
 			bdOrg.setName(data.getName());//医院名称
 			bdOrg.setOrgNature(data.getOrgNature());
-			bdOrg.setProvinceCode("Pro100010");//省份编码
+			bdOrg.setProvinceCode(data.getProvinceCode());//省份编码
 			bdOrg.setProvinceName(data.getProvinceName());
-			bdOrg.setCityCode("CITY100010");//城市编码
+			bdOrg.setCityCode(data.getCityCode());//城市编码
 			bdOrg.setCityName(data.getCityName());
 			bdOrg.setHospitalLevel(data.getHospitalLevel());
 			String status=data.getStatus();
@@ -133,18 +136,18 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	 * 查询列表需要修改--增加搜索条件
 	 */
 	@Override
-	public Page<BdOrg> getListBdOrg(Page<BdOrg> page,String code,String provinceName,String cityName,String name
+	public Page<BdOrg> getListBdOrg(Page<BdOrg> page,String code,String provinceCode,String cityCode,String name
 			,String hospitalLevel,String status) {
 		Condition con=Condition.create();
 		con.eq("orgNature", Constans.AUTIT_HOSPITAL);//类型为医院
 		if(StringUtils.isNotBlank(code)){
 			con.eq("code", code);
 		}
-		if(StringUtils.isNotBlank(provinceName)){
-			con.eq("provinceName", provinceName);
+		if(StringUtils.isNotBlank(provinceCode)){
+			con.eq("provinceCode", provinceCode);
 		}
-		if(StringUtils.isNotBlank(cityName)){
-			con.eq("cityName", cityName);
+		if(StringUtils.isNotBlank(cityCode)){
+			con.eq("cityCode", cityCode);
 		}
 		if(StringUtils.isNotBlank(name)){
 			con.eq("name", name);
@@ -211,6 +214,34 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			}
 		}
 		return flag?R.ok():R.error();
+	}
+
+	@Override
+	public R getProvinceList() {
+		List<BdAreaRegion> list = mBdAreaRegionMapper.getProvinceList();
+		List<Map<String, Object>> provinces = new ArrayList<Map<String, Object>>();
+		Map<String, Object> province = null;
+		for (BdAreaRegion bdOrg : list) {
+			province = new HashMap<String, Object>();
+			province.put("provinceCode", bdOrg.getProvinceCode());
+			province.put("provinceName", bdOrg.getProvinceName());
+			provinces.add(province);
+		}
+		return R.ok().put("list", provinces);
+	}
+
+	@Override
+	public R getCityList(String provinceCode) {
+		List<BdAreaRegion> list = mBdAreaRegionMapper.getCityList(provinceCode);
+		List<Map<String, Object>> provinces = new ArrayList<Map<String, Object>>();
+		Map<String, Object> province = null;
+		for (BdAreaRegion bdOrg : list) {
+			province = new HashMap<String, Object>();
+			province.put("cityCode", bdOrg.getCityCode());
+			province.put("cityName", bdOrg.getCityName());
+			provinces.add(province);
+		}
+		return R.ok().put("list", provinces);
 	}
 	
 }

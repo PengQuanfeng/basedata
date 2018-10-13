@@ -12,14 +12,14 @@
 	</select>
 	
 	<select id="getProvinceList" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
-		select * from bd_area_region where provinceCode is not null and provinceCode != '' order by provinceCode
+		select DISTINCT provinceCode,provinceName from bd_area_region where provinceCode is not null and provinceCode != '' order by provinceCode
 	</select>
 	
 	<select id="getCityList" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
-		select * from bd_area_region where provinceCode = #{provinceCode} and cityCode is not null and cityCode != '' order by cityCode
+		select DISTINCT cityCode,cityName from bd_area_region where provinceCode = #{provinceCode} and cityCode is not null and cityCode != '' order by cityCode
 	</select>
 	
 	<select id="getCountyList" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
-		select * from bd_area_region where cityCode = #{cityCode} and countyCode is not null and countyCode != '' order by countyCode
+		select DISTINCT countyCode,countyName from bd_area_region where cityCode = #{cityCode} and countyCode is not null and countyCode != '' order by countyCode
 	</select>
 </mapper>
