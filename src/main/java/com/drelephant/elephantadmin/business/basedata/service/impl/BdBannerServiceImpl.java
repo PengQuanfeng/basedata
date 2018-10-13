@@ -91,11 +91,17 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 		int countMax=bdBannerMapper.maxOrderNumber();
 		int orderNumber=bdBannerMapper.orderNum(id);
 		int countMin=bdBannerMapper.getMinOrder();
+		int rId=bdBannerMapper.getId(orderNumber);
 		int temp=0;
 		//当前是否是第一条
 		if(orderNumber==countMax){
 			//只能下移
-			temp=orderNumber-1;
+			bd.setOrderNumber(orderNumber-1);
+			update(bd,Condition.create().eq("id", id));//选中的列-1
+			bd.setOrderNumber(orderNumber);
+			update(bd,Condition.create().eq("id", rId));//下一列+1
+		}
+		if(orderNumber==countMin){
 			
 		}
 		bd.setOrderNumber(++orderNumber);

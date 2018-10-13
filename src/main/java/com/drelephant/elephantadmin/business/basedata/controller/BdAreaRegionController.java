@@ -39,8 +39,18 @@ public class BdAreaRegionController extends BaseController {
     private BdAreaRegionService bdAreaRegionService;
     @ApiOperation("获取list")
     @PostMapping("/list")
-    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-        Page<BdAreaRegion> page=new Page<>(current,pageSize);
+    public R getList(@ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize){
+    	int offset = 1;
+		int limit = 1000;
+		if (StringUtils.isNotBlank(current)) {
+			// 当前记录数
+			offset = Integer.parseInt(current);
+		}
+		if (StringUtils.isNotBlank(pageSize)) {
+			// 每页限制数
+			limit = Integer.parseInt(pageSize);
+		}
+        Page<BdAreaRegion> page=new Page<>(offset,limit);
         bdAreaRegionService.selectPage(page);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
