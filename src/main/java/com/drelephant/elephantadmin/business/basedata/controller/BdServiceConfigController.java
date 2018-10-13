@@ -1,5 +1,8 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +53,12 @@ public class BdServiceConfigController extends BaseController {
 		}
 		Page<BdServiceConfig> page = bdServiceConfigService.queryServiceConfigInfo(offset, limit, id);
 		return R.ok().put("list", page.getRecords()).put("total", page.getTotal());
+	}
+	
+	@ApiOperation("服务类型")
+	@GetMapping("/serviceType")
+	public R serviceType(@ApiParam("数据字典类型") String dataType ) { 
+		return R.ok().put("serviceType", bdServiceConfigService.getServiceType(dataType));
 	}
 
     @ApiImplicitParams({
