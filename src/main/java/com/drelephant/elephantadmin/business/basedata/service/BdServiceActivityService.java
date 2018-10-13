@@ -1,7 +1,8 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdServiceActivity;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.drelephant.elephantadmin.business.basedata.entity.BdServiceActivity;
 
 /**
  * <p>
@@ -13,4 +14,11 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface BdServiceActivityService extends IService<BdServiceActivity> {
 	
+	void saveBdServiceActivity(BdServiceActivity entity);
+
+	void updateBdServiceActivity(BdServiceActivity entity);
+
+	void deleteActivityById(String id);
+	
+	Page<BdServiceActivity> queryServiceActivityInfo(int offset, int limit, String id);
 }

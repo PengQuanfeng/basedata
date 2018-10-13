@@ -1,6 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdServiceConfigMapper">
-
-	<!-- 开启二级缓存 -->
+<mapper
+	namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdServiceConfigMapper">
+	
+	<select id="queryServiceConfigInfo" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig">
+		SELECT /*查询服务配置信息*/
+		<include refid="BD_SERVICE_CONFIG_COLUMNS" />
+		from bd_service_config
+		<where>
+			<if test="id != null and id !=''">
+				 id = #{id}
+			</if>
+			and status = 'ACT'
+		</where>
+	</select>
+	
+	<insert id="saveServiceConfig"
+		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig">
+		INSERT /** 医疗服务配置表 **/ INTO bd_service_config(
+		<include refid="BD_SERVICE_CONFIG_COLUMNS" />
+		) VALUES
+		(
+		#{id},
+		#{serviceCategoryCode},
+		#{serviceCategoryName},
+		#{serviceCode},
+		#{serviceName},
+		#{isDocCanConfig},
+		#{serviceNoticeDesc},
+		#{docReplyLimitCount},
+		#{docSerTimeLength},
+		#{isPrescription},
+		#{isInspect},
+		#{frequencyLimitCount},
+		#{isCostMandatory},
+		#{urgentCost1},
+		#{urgentCost2},
+		#{urgentCost3},
+		#{isDocApCanConfig},
+		#{isApCanConfig},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{createUserCode},
+		#{createUserName},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{updateUserCode},
+		#{updateUserName},
+		#{version},
+		#{status}
+		)
+	</insert>
+	<update id="updateServiceConfig" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig">
+		update /** 修改医疗服务配置表信息 **/ dbo.bd_service_config 
+		<set>
+			<if test="serviceCode != null and serviceCode.trim() != ''">
+				serviceCode = #{serviceCode}, 
+			</if>
+			<if test="serviceName != null and serviceName.trim() != ''">
+				serviceName = #{serviceName}, 
+			</if>
+			<if test="isDocCanConfig != null and isDocCanConfig.trim() != ''">
+				isDocCanConfig = #{isDocCanConfig}, 
+			</if>
+			<if test="serviceNoticeDesc != null and serviceNoticeDesc.trim() != ''">
+				serviceNoticeDesc = #{serviceNoticeDesc}, 
+			</if>
+			<!-- 视频问诊 S -->
+			<if test="isApCanConfig != null and isApCanConfig.trim() != ''">
+				isApCanConfig = #{isApCanConfig}, 
+			</if>
+			<if test="urgentCost1 != null and urgentCost1 != ''">
+				urgentCost1 = #{urgentCost1}, 
+			</if>
+			<if test="urgentCost2 != null and urgentCost2 != ''">
+				urgentCost2 = #{urgentCost2}, 
+			</if>
+			<if test="urgentCost3 != null and urgentCost3 != ''">
+				urgentCost3 = #{urgentCost3}, 
+			</if>
+			<if test="isCostMandatory != null and isCostMandatory != ''">
+				isCostMandatory = #{isCostMandatory}, 
+			</if> 
+			<!-- 视频问诊 E -->
+			<!-- 图文资讯 S -->
+			<if test="docReplyLimitCount != null and docReplyLimitCount != ''">
+				docReplyLimitCount = #{docReplyLimitCount}, 
+			</if> 
+			<if test="docSerTimeLength != null and docSerTimeLength != ''">
+				docSerTimeLength = #{docSerTimeLength}, 
+			</if> 
+			<if test="isPrescription != null and isPrescription.trim() != ''">
+				isPrescription = #{isPrescription}, 
+			</if> 
+			<if test="isInspect != null and isInspect.trim() != ''">
+				isInspect = #{isInspect}, 
+			</if> 
+			<if test="frequencyLimitCount != null and frequencyLimitCount != ''">
+				frequencyLimitCount = #{frequencyLimitCount}, 
+			</if> 
+			<!-- 图文资讯 E -->
+			<!-- 修改操作公共字段 S-->
+			<if test="updateTime != null and updateTime != ''">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="updateUserCode != null and updateUserCode != ''">
+				updateUserCode = #{updateUserCode}, 
+			</if>
+			<if test="updateUserName != null and updateUserName != ''">
+				updateUserName = #{updateUserName}, 
+			</if> 
+			<if test="version != null and version != ''">
+				version = #{version}
+			</if> 
+			<!-- 修改操作公共字段 E-->
+		</set> 
+		where id = #{id}
+	</update>
+	
+	<sql id="BD_SERVICE_CONFIG_COLUMNS">
+		id,
+		serviceCategoryCode,
+		serviceCategoryName,
+		serviceCode,
+		serviceName,
+		isDocCanConfig,
+		serviceNoticeDesc,
+		docReplyLimitCount,
+		docSerTimeLength,
+		isPrescription,
+		isInspect,
+		frequencyLimitCount,
+		isCostMandatory,
+		urgentCost1,
+		urgentCost2,
+		urgentCost3,
+		isDocApCanConfig,
+		isApCanConfig,
+		createTime,
+		createUserCode,
+		createUserName,
+		updateTime,
+		updateUserCode,
+		updateUserName,
+		version,
+		status
+	</sql>
 </mapper>

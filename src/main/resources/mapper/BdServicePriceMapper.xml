@@ -1,6 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdServicePriceMapper">
+<mapper
+	namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdServicePriceMapper">
 
-	<!-- 开启二级缓存 -->
+	<select id="queryServicePriceInfo"
+		resultType="com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice">
+		SELECT /*查询服务配置信息*/
+		<include refid="BD_SERVICE_PRICE_COLUMNS" />
+		from bd_service_price
+		<where>
+			<if test="id != null and id !=''">
+				 id = #{id}
+			</if>
+			and status = 'ACT'
+		</where>
+	</select>
+
+	<insert id="saveBdServicePrice"
+		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice">
+		INSERT /** 服务定价表 **/ INTO bd_service_price(
+		<include refid="BD_SERVICE_PRICE_COLUMNS" />
+		) VALUES
+		(
+		#{id},
+		#{serviceCategoryCode},
+		#{serviceCategoryName},
+		#{serviceCode},
+		#{serviceName},
+		#{platformUnifiedPrice},
+		#{activityPrice},
+		#{platformPriceMin},
+		#{platformPriceMax},
+		#{platformFloatNumber},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{createUserCode},
+		#{createUserName},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{updateUserCode},
+		#{updateUserName},
+		#{version},
+		#{status}
+		)
+	</insert>
+	 
+	<update id="updateBdServicePrice" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice">
+		update /** 修改服务定价信息 **/ dbo.bd_service_price 
+		<set>
+			<if test="platformUnifiedPrice != null and platformUnifiedPrice != ''">
+				platformUnifiedPrice = #{platformUnifiedPrice}, 
+			</if>
+			<if test="platformPriceMin != null and platformPriceMin != ''">
+				platformPriceMin = #{platformPriceMin}, 
+			</if>
+			<if test="platformPriceMax != null and platformPriceMax != ''">
+				platformPriceMax = #{platformPriceMax}, 
+			</if>
+			<if test="platformFloatNumber != null and platformFloatNumber.trim() != ''">
+				platformFloatNumber = #{platformFloatNumber}, 
+			</if> 
+			<!-- 修改操作公共字段 S-->
+			<if test="updateTime != null and updateTime != ''">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="updateUserCode != null and updateUserCode != ''">
+				updateUserCode = #{updateUserCode}, 
+			</if>
+			<if test="updateUserName != null and updateUserName != ''">
+				updateUserName = #{updateUserName}, 
+			</if> 
+			<if test="version != null and version != ''">
+				version = #{version}
+			</if> 
+			<!-- 修改操作公共字段 E-->
+		</set> 
+		where id = #{id}
+	</update>
+	
+	<sql id="BD_SERVICE_PRICE_COLUMNS">
+		id,
+		serviceCategoryCode,
+		serviceCategoryName,
+		serviceCode,
+		serviceName,
+		platformUnifiedPrice,
+		activityPrice,
+		platformPriceMin,
+		platformPriceMax,
+		platformFloatNumber,
+		createTime,
+		createUserCode,
+		createUserName,
+		updateTime,
+		updateUserCode,
+		updateUserName,
+		version,
+		status
+	</sql>
 </mapper>

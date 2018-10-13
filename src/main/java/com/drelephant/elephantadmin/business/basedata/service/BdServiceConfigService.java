@@ -1,7 +1,8 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
 
 /**
  * <p>
@@ -13,4 +14,9 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface BdServiceConfigService extends IService<BdServiceConfig> {
 	
+	void saveServiceConfig(BdServiceConfig entity);
+
+	void updateBdServiceConfig(BdServiceConfig entity);
+	
+	Page<BdServiceConfig> queryServiceConfigInfo(int offset, int limit,String id);
 }

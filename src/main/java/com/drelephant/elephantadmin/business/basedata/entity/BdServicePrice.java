@@ -3,6 +3,8 @@ package com.drelephant.elephantadmin.business.basedata.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,7 @@ import java.io.Serializable;
  * @author com.drelephant
  * @since 2018-10-09
  */
+@TableName("bd_service_price")
 public class BdServicePrice implements Serializable {
 
     private static final long serialVersionUID = 1L;

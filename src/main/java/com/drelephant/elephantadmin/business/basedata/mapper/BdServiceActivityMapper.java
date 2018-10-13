@@ -1,8 +1,13 @@
 package com.drelephant.elephantadmin.business.basedata.mapper;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdServiceActivity;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import com.drelephant.elephantadmin.business.basedata.entity.BdServiceActivity;
 
 /**
  * <p>
@@ -15,4 +20,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface BdServiceActivityMapper extends BaseMapper<BdServiceActivity> {
 
+	int saveBdServiceActivity(BdServiceActivity entity);
+
+	int updateBdServiceActivity(BdServiceActivity entity);
+	
+	int deleteActivityById(@Param("id") String id);
+	
+	List<BdServiceActivity> queryServiceActivityInfo(Pagination page, @Param("id") String id);
 }

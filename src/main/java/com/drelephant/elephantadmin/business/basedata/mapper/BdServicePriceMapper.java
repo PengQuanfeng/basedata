@@ -1,8 +1,13 @@
 package com.drelephant.elephantadmin.business.basedata.mapper;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice;
 
 /**
  * <p>
@@ -15,4 +20,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface BdServicePriceMapper extends BaseMapper<BdServicePrice> {
 
+	int saveBdServicePrice(BdServicePrice entity);
+
+	int updateBdServicePrice(BdServicePrice entity);
+	
+	List<BdServicePrice> queryServicePriceInfo(Pagination page, @Param("id") String id);
 }

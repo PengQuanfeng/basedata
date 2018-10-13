@@ -1,7 +1,8 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice;
 
 /**
  * <p>
@@ -12,5 +13,10 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-09
  */
 public interface BdServicePriceService extends IService<BdServicePrice> {
+
+	void saveBdServicePrice(BdServicePrice entity);
+
+	void updateBdServicePrice(BdServicePrice entity);
 	
+	Page<BdServicePrice> queryServicePriceInfo(int offset, int limit, String id);
 }

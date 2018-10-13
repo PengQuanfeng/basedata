@@ -1,9 +1,11 @@
 package com.drelephant.elephantadmin.business.basedata.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotations.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotations.TableName;
 
 /**
  * <p>
@@ -13,6 +15,7 @@ import java.io.Serializable;
  * @author com.drelephant
  * @since 2018-10-09
  */
+@TableName("bd_service_config")
 public class BdServiceConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
