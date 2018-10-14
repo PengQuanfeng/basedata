@@ -46,13 +46,6 @@ public interface BdBannerService extends IService<BdBanner> {
 	 */
 	R updateStatus(String id);
 	/**
-	 * 更新ordernumber字段
-	 * @param id
-	 * @return
-	 */
-	R updateOrderNum(String id);
-	
-	/**
 	 * 上移
 	 * @param id
 	 * @return

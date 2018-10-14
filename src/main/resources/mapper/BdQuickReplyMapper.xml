@@ -12,13 +12,7 @@
 		#{version},#{status})
 	</insert>
 	<update id="deleteQuickReplyById" parameterType="java.lang.String">
-		update  bd_quick_reply 
-		<set>
-			<if test="status != null and status != ''">
-				status = #{status}
-			</if> 
-			<!-- 修改操作公共字段 E-->
-		</set> 
+		update  bd_quick_reply SET status='DEL'		
 		where id = #{id}
 	</update>
 	<update id="updateQuickReply" 
@@ -47,7 +41,7 @@
 		</set> 
 		where id = #{id}
 	</update>
-	<select id="queryQuickReply" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig">
+	<select id="queryQuickReply" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply">
 		SELECT 
 		<include refid="Bd_Quick_Reply" />
 		from bd_quick_reply
@@ -58,6 +52,13 @@
 			and status = 'ACT'
 		</where>
 	</select>
+	<select id="getAll" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply">
+		select * from bd_quick_reply order by orderNumber
+	</select>
+	
+	<update id="updateOrderNumber">
+		update bd_quick_reply set orderNumber = #{orderNumber} where id=#{id}
+	</update>
 	<sql id="Bd_Quick_Reply">
 		id,
 		typeCode,

@@ -24,4 +24,11 @@ public interface BdQuickReplyMapper extends BaseMapper<BdQuickReply> {
 	int updateQuickReply(BdQuickReply entity);
 	List<BdQuickReply> queryQuickReply(Pagination page, @Param("id") String id);
 	int deleteQuickReplyById(@Param("id") String id);
+	List<BdQuickReply> getAll();
+	/**
+	 * 更新 排序号
+	 * @param id
+	 * @param orderNumber
+	 */
+	void updateOrderNumber(@Param("id")String id, @Param("orderNumber")int orderNumber);
 }

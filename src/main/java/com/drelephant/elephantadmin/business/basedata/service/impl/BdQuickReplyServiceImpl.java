@@ -12,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.drelephant.elephantadmin.business.basedata.entity.BdBanner;
 import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdQuickReplyMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdQuickReplyService;
+import com.drelephant.framework.base.common.R;
 /**
  * <p>
  *  快捷回复设置
@@ -68,6 +70,52 @@ public class BdQuickReplyServiceImpl extends ServiceImpl<BdQuickReplyMapper,BdQu
 	public void deleteQuickReplyById(String id) {
 		// TODO Auto-generated method stub
 		bdQuickReplyMapper.deleteQuickReplyById(id);
+	}
+
+	@Override
+	public R moveUp(String id) {
+		List<BdQuickReply> list = bdQuickReplyMapper.getAll();
+		int orderNumber = 0;
+		BdQuickReply bdQuickReply = null;
+		for (int i = 0; i < list.size(); i++) {
+			bdQuickReply = list.get(i);
+			if (bdQuickReply.getId().equals(id)) {
+				orderNumber = bdQuickReply.getOrderNumber();
+				if (i == 0) { // 当前记录是排在最前面的记录
+					break;
+				} else {
+					bdQuickReplyMapper.updateOrderNumber(id, orderNumber - 1); // 前移1个号码
+					
+					// 前一个BdBanner后移1个号码
+					BdQuickReply prQuickReply = list.get(i - 1);
+					bdQuickReplyMapper.updateOrderNumber(prQuickReply.getId(), prQuickReply.getOrderNumber() + 1);
+				}
+			}
+		}
+		return R.ok();
+	}
+
+	@Override
+	public R moveDown(String id) {
+		List<BdQuickReply> list = bdQuickReplyMapper.getAll();
+		int orderNumber = 0;
+		BdQuickReply bdQuickReply = null;
+		for (int i = 0; i < list.size(); i++) {
+			bdQuickReply = list.get(i);
+			if (bdQuickReply.getId().equals(id)) {
+				orderNumber = bdQuickReply.getOrderNumber();
+				if (i == (list.size() - 1)) { // 当前记录是排在最后面的记录
+					break;
+				} else {
+					bdQuickReplyMapper.updateOrderNumber(id, orderNumber + 1); // 后移1个号码
+					
+					// 下一个BdBanner前移1个号码
+					BdQuickReply nextQuickReply = list.get(i + 1);
+					bdQuickReplyMapper.updateOrderNumber(nextQuickReply.getId(), nextQuickReply.getOrderNumber() - 1);
+				}
+			}
+		}
+		return R.ok();
 	}
 
 }

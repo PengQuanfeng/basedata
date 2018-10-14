@@ -5,22 +5,12 @@
 	<!-- 开启二级缓存 -->
 	<select id="maxOrderNumber" resultType="java.lang.Integer">
 		select IFNULL(0,MAX(orderNumber) )from bd_banner
-	</select>
-	<select id="orderNum" resultType="java.lang.Integer">
-		select orderNumber from bd_banner where id=#{id}
-	</select>
-	<select id="getId" resultType="java.lang.Integer">
-		select id from bd_banner where orderNumber=#{orderNumber}
-	</select>
-	<select id="getMinOrder" resultType="java.lang.Integer">
-		select MIN(orderNumber) from bd_banner where orderNumber=#{orderNumber}
-	</select>
-	
+	</select>		
 	<select id="getAll" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdBanner">
 		select * from bd_banner order by orderNumber
 	</select>
 	
-	<select id="updateOrderNumber">
+	<update id="updateOrderNumber">
 		update bd_banner set orderNumber = #{orderNumber} where id=#{id}
-	</select>
+	</update>
 </mapper>

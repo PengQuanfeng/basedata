@@ -95,6 +95,16 @@ public class BdQuickReplyController extends BaseController{
 		bdQuickReplyService.deleteQuickReplyById(id);
 		return R.ok().put("msg", "删除活动记录成功！");
 	}
-	/******待开发接口******************/
 	//TODO 根据排序字段进行上移和下移
+	@ApiOperation("上移")
+    @PostMapping("/moveUp")
+    public R moveUp(@ApiParam("id列")String id){
+    	return bdQuickReplyService.moveUp(id);
+    }
+    
+    @ApiOperation("下移")
+    @PostMapping("/moveDown")
+    public R moveDown(@ApiParam("id列")String id){
+    	return bdQuickReplyService.moveDown(id);
+    }
 }

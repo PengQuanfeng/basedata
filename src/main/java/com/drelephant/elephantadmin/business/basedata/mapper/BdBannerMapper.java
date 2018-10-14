@@ -3,6 +3,7 @@ package com.drelephant.elephantadmin.business.basedata.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.drelephant.elephantadmin.business.basedata.entity.BdBanner;
@@ -22,14 +23,6 @@ public interface BdBannerMapper extends BaseMapper<BdBanner> {
 	 * @return
 	 */
 	Integer maxOrderNumber();
-	/**
-	 * 根据id得到当前的排序字段
-	 * @param id
-	 * @return
-	 */
-	int orderNum(String id);
-	int getId(int orderNumber);
-	int getMinOrder();
 	
 	/**
 	 * 获取所有的BdBanner
@@ -42,5 +35,5 @@ public interface BdBannerMapper extends BaseMapper<BdBanner> {
 	 * @param id
 	 * @param orderNumber
 	 */
-	void updateOrderNumber(String id, int orderNumber);
+	void updateOrderNumber(@Param("id")String id, @Param("orderNumber")int orderNumber);
 }
