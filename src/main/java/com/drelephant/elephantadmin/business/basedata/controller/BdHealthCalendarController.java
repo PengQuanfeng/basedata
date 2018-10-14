@@ -1,20 +1,14 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
-import com.drelephant.framework.base.common.R;
-import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
+import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
 import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
 import com.drelephant.elephantadmin.business.basedata.service.BdHealthCalendarService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-import java.util.Date;
-
+import com.drelephant.framework.base.common.R;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,37 +32,56 @@ public class BdHealthCalendarController extends BaseController {
      * 图片上传时保存信息
      */
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "coverPicId", value = "封面图片ID", required = true),       
-        @ApiImplicitParam(name = "contentPicId", value = "内容图片ID", required = true),
-        @ApiImplicitParam(name = "publishTime", value = "发布时间", required = true)       
+            @ApiImplicitParam(name = "coverPicId", value = "封面图片ID", required = true),
+            @ApiImplicitParam(name = "contentPicId", value = "内容图片ID", required = true),
+            @ApiImplicitParam(name = "publishTime", value = "发布时间", required = true)
     })
     @ApiOperation("上传接口")
-	@PostMapping("/upload")
-	public R fileUpload(BdHealthCalendar entity){
-    	if(entity != null){
-			return R.error("上传失败，参数无效!");
-		}
-    	bdHealthCalendarService.saveBdHealthCalendar(entity);
-    	return R.ok().put("msg", "上传成功");
-	}
-	/**
-	 * 删除选中的图片信息
-	 */
+    @PostMapping("/upload")
+    public R fileUpload(BdHealthCalendar entity) {
+        if (entity != null) {
+            return R.error("上传失败，参数无效!");
+        }
+        bdHealthCalendarService.saveBdHealthCalendar(entity);
+        return R.ok().put("msg", "上传成功");
+    }
+
+    /**
+     * 删除选中的图片信息
+     */
     @ApiOperation("删除")
-	@PostMapping("/deletePic")
-	public R deletePic(@ApiParam("id") String id){
-		if(StringUtils.isBlank(id)){
-			return R.error("删除失败，参数无效!");
-		}
-		bdHealthCalendarService.deleteBdHealthCalendar(id);
-    	return R.ok().put("msg", "删除成功");
-	}
+    @PostMapping("/deletePic")
+    public R deletePic(@ApiParam("id") String id) {
+        if (StringUtils.isBlank(id)) {
+            return R.error("删除失败，参数无效!");
+        }
+        bdHealthCalendarService.deleteBdHealthCalendar(id);
+        return R.ok().put("msg", "删除成功");
+    }
     /*****待写接口***********/
     /**
-     * 左侧查询出当月中上传图片的天数信息列表
+     * 查询月列表数据。
+     * dateStr like : 2018-10-01
+     * 返回数据为已经上传过的日期集合。
+     *
      * @return
      */
-    public void getListDate(@ApiParam("传入的时间")String date){
-    	
+    @GetMapping("/listMonth")
+    public R listMonth(@ApiParam("传入的时间") String dateStr) {
+        return R.ok().put("list", bdHealthCalendarService.selectListMonth(dateStr));
     }
+
+    /**
+     * 查询周列表数据。
+     * dateStr like : 2018-10-01
+     * 返回数据为一周数据集合.
+     *
+     * @param dateStr
+     * @return
+     */
+    @GetMapping("/listWeek")
+    public R listWeek(String dateStr) {
+        return R.ok().put("list", bdHealthCalendarService.selectListWeek(dateStr));
+    }
+
 }

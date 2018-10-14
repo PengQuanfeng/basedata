@@ -1,23 +1,24 @@
 package com.drelephant.elephantadmin.business.basedata.util;
 
+import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
+import org.apache.commons.lang.StringUtils;
+
+import javax.annotation.Nullable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.*;
 
 public class DateUtils {
-	public static void main(String[] args) {
-		// 定义输出日期格式
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd EE");
+	public static void main(String[] args) throws ParseException {
+            //1，截取,异常则返回空数组。
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = s.parse("2018-10-14");
+        List<Date> dates = dateToWeek(date);
+        dates.forEach(v-> System.out.println(v.getDate()));
 
-        Date currentDate = new Date();       
-        // 比如今天是2012-12-25
-        List<Date> days = dateToWeek(currentDate);
-        System.out.println("今天的日期: " + sdf.format("2018-10-12"));
-        for (Date date : days) {
-            System.out.println(sdf.format(date));
-        }
-	}
+    }
 	/**
      * 根据日期获得所在周的日期 
      * @param mdate
@@ -26,7 +27,7 @@ public class DateUtils {
     public static List<Date> dateToWeek(Date mdate) {
         int b = mdate.getDay();
         Date fdate;
-        List<Date> list = new ArrayList<Date>();
+        List<Date> list = new ArrayList<>();
         Long fTime = mdate.getTime() - b * 24 * 3600000;
         for (int a = 1; a <= 7; a++) {
             fdate = new Date();
@@ -35,5 +36,4 @@ public class DateUtils {
         }
         return list;
     }
-    
 }
