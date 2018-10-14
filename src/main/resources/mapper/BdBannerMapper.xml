@@ -15,4 +15,12 @@
 	<select id="getMinOrder" resultType="java.lang.Integer">
 		select MIN(orderNumber) from bd_banner where orderNumber=#{orderNumber}
 	</select>
+	
+	<select id="getAll" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdBanner">
+		select * from bd_banner order by orderNumber
+	</select>
+	
+	<select id="updateOrderNumber">
+		update bd_banner set orderNumber = #{orderNumber} where id=#{id}
+	</select>
 </mapper>

@@ -84,6 +84,54 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 		boolean flag=update(bd,Condition.create().eq("id", id));
 		return flag?R.ok():R.error("删除失败");
 	}
+	
+	@Override
+	public R moveUp(String id) {
+		List<BdBanner> list = bdBannerMapper.getAll();
+		int orderNumber = 0;
+		BdBanner banner = null;
+		for (int i = 0; i < list.size(); i++) {
+			banner = list.get(i);
+			if (banner.getId().equals(id)) {
+				orderNumber = banner.getOrderNumber();
+				if (i == 0) { // 当前记录是排在最前面的记录
+					break;
+				} else {
+					bdBannerMapper.updateOrderNumber(id, orderNumber - 1); // 前移1个号码
+					
+					// 前一个BdBanner后移1个号码
+					BdBanner prBanner = list.get(i - 1);
+					bdBannerMapper.updateOrderNumber(prBanner.getId(), prBanner.getOrderNumber() + 1);
+				}
+			}
+		}
+		//
+		return R.ok();
+	}
+	
+	@Override
+	public R moveDown(String id) {
+		List<BdBanner> list = bdBannerMapper.getAll();
+		int orderNumber = 0;
+		BdBanner banner = null;
+		for (int i = 0; i < list.size(); i++) {
+			banner = list.get(i);
+			if (banner.getId().equals(id)) {
+				orderNumber = banner.getOrderNumber();
+				if (i == (list.size() - 1)) { // 当前记录是排在最后面的记录
+					break;
+				} else {
+					bdBannerMapper.updateOrderNumber(id, orderNumber + 1); // 后移1个号码
+					
+					// 下一个BdBanner前移1个号码
+					BdBanner nextBanner = list.get(i + 1);
+					bdBannerMapper.updateOrderNumber(nextBanner.getId(), nextBanner.getOrderNumber() - 1);
+				}
+			}
+		}
+		//
+		return R.ok();
+	}
 
 	@Override
 	public R updateOrderNum(String id) {

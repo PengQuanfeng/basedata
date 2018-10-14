@@ -1,8 +1,11 @@
 package com.drelephant.elephantadmin.business.basedata.mapper;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdBanner;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.drelephant.elephantadmin.business.basedata.entity.BdBanner;
 
 /**
  * <p>
@@ -28,4 +31,16 @@ public interface BdBannerMapper extends BaseMapper<BdBanner> {
 	int getId(int orderNumber);
 	int getMinOrder();
 	
+	/**
+	 * 获取所有的BdBanner
+	 * @return
+	 */
+	List<BdBanner> getAll();
+	
+	/**
+	 * 更新 排序号
+	 * @param id
+	 * @param orderNumber
+	 */
+	void updateOrderNumber(String id, int orderNumber);
 }

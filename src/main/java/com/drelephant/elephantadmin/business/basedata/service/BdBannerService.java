@@ -51,4 +51,18 @@ public interface BdBannerService extends IService<BdBanner> {
 	 * @return
 	 */
 	R updateOrderNum(String id);
+	
+	/**
+	 * 上移
+	 * @param id
+	 * @return
+	 */
+	R moveUp(String id);
+	
+	/**
+	 * 下移
+	 * @param id
+	 * @return
+	 */
+	R moveDown(String id);
 }

@@ -92,5 +92,17 @@ public class BdBannerController extends BaseController {
     	
         return R.ok();
     }
+    
+    @ApiOperation("上移")
+    @PostMapping("/moveUp")
+    public R moveUp(@ApiParam("id列")String id){
+    	return bdBannerService.moveUp(id);
+    }
+    
+    @ApiOperation("下移")
+    @PostMapping("/moveDown")
+    public R moveDown(@ApiParam("id列")String id){
+    	return bdBannerService.moveDown(id);
+    }
  
 }
