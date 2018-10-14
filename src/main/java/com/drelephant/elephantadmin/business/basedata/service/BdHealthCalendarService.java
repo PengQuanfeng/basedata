@@ -1,6 +1,9 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
 import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.baomidou.mybatisplus.service.IService;
 
 /**
@@ -12,5 +15,6 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-09
  */
 public interface BdHealthCalendarService extends IService<BdHealthCalendar> {
-	
+	void saveBdHealthCalendar(BdHealthCalendar entity);
+	void deleteBdHealthCalendar(@Param("id") String id);
 }

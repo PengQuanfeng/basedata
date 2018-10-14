@@ -3,4 +3,43 @@
 <mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdHealthCalendarMapper">
 
 	<!-- 开启二级缓存 -->
+	<insert id="saveBdHealthCalendar"
+		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar">
+		INSERT  INTO bd_health_calendar(
+		<include refid="BD_HEALTH_CALENDAR_COLUMNS" />
+		) VALUES
+		(
+			#{id},
+			#{coverPicId},
+			#{contentPicId},
+			#{publishTime},
+			#{createTime},
+			#{createUserCode},
+			#{createUserName},
+			#{updateTime},
+			#{updateUserCode},
+			#{updateUserName},
+			#{version},
+			#{status}
+		)
+	</insert>
+	
+	<update id="deleteHealthCalendarById" parameterType="java.lang.String">
+		update  bd_health_calendar set status='DEL'		
+		where id = #{id}
+	</update>
+	<sql id="BD_HEALTH_CALENDAR_COLUMNS">
+		id,
+		coverPicId,
+		contentPicId,
+		publishTime,
+		createTime,
+		createUserCode,
+		createUserName,
+		updateTime,
+		updateUserCode,
+		updateUserName,
+		version,
+		status
+	</sql>
 </mapper>
