@@ -10,6 +10,8 @@ import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -21,6 +23,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,50 +35,63 @@ import org.springframework.web.bind.annotation.RestController;
  * @author com.drelephant
  * @since 2018-10-09
  */
-@Api(tags = "")
+@Api(tags = "组织机构")
 @RestController
 @RequestMapping("bdOrg")
 public class BdOrgController extends BaseController {
     @Autowired
     private BdOrgService bdOrgService;
-    @ApiOperation("获取list")
-    @PostMapping("/list")
-    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-        Page<BdOrg> page=new Page<>(current,pageSize);
-        bdOrgService.selectPage(page);
-        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
-    }
-    @ApiOperation("新增")
-    @PostMapping("/add")
-    public R save(@ApiParam("数据对象")BdOrg data){
-        return bdOrgService.insert(data)?R.ok():R.error("保存错误");
-    }
-    @ApiOperation("删除")
-    @PostMapping("/delete")
-    public R delete(@ApiParam("数据对象id")String id){
-        return bdOrgService.deleteById(id)?R.ok():R.error("删除错误");
-    }
-    @ApiOperation("更新")
-    @PostMapping("/update")
-    public R update(@ApiParam("数据对象")BdOrg data){
-        return bdOrgService.updateById(data)?R.ok():R.error("更新错误");
-    }
-    @ApiOperation("通过ID获取一条数据")
-    @PostMapping("/info")
-    public R update(@ApiParam("数据对象id")String id){
-        return R.ok().put("info",bdOrgService.selectById(id));
-    }
+//    @ApiOperation("获取list")
+//    @PostMapping("/list")
+//    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
+//        Page<BdOrg> page=new Page<>(current,pageSize);
+//        bdOrgService.selectPage(page);
+//        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
+//    }
+//    @ApiOperation("新增")
+//    @PostMapping("/add")
+//    public R save(@ApiParam("数据对象")BdOrg data){
+//        return bdOrgService.insert(data)?R.ok():R.error("保存错误");
+//    }
+//    @ApiOperation("删除")
+//    @PostMapping("/delete")
+//    public R delete(@ApiParam("数据对象id")String id){
+//        return bdOrgService.deleteById(id)?R.ok():R.error("删除错误");
+//    }
+//    @ApiOperation("更新")
+//    @PostMapping("/update")
+//    public R update(@ApiParam("数据对象")BdOrg data){
+//        return bdOrgService.updateById(data)?R.ok():R.error("更新错误");
+//    }
+//    @ApiOperation("通过ID获取一条数据")
+//    @PostMapping("/info")
+//    public R update(@ApiParam("数据对象id")String id){
+//        return R.ok().put("info",bdOrgService.selectById(id));
+//    }
 /****新增接口****/
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "name", value = "公司名称", required = true)		
+	})
     @ApiOperation("增加公司")
     @PostMapping("/saveCompay")
-    public R saveCompay(@ApiParam("数据对象")String company){
-        return bdOrgService.addCompany(company)?R.ok():R.error("保存错误");
+    public R saveCompay(@RequestBody @ApiParam("数据对象")BdOrg entity ){   	
+    	if(entity != null){
+    		return R.error("增加公司失败，参数无效!");
+		}
+        bdOrgService.addCompany(entity);
+        return R.ok().put("msg", "新增公司成功！");
     }
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "name", value = "公司名称", required = true)		
+	})
     @ApiOperation("更新公司名称")
     @PostMapping("/updateName")
     public R updateName(@ApiParam("数据对象")BdOrg data){
         return bdOrgService.updateCompany(data);
     }
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "id", value = "id", required = true)		
+	})
     @ApiOperation("删除公司状态")
     @PostMapping("/deleteCode")
     public R deleteCode(@ApiParam("数据对象id")String id){
@@ -93,10 +109,20 @@ public class BdOrgController extends BaseController {
     }
     @ApiOperation("获取医院信息的list")
     @PostMapping("/getListHospital")
-    public R getListHospital(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,@ApiParam("医院编码")String code,
+    public R getListHospital(@ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize,@ApiParam("医院编码")String code,
     		@ApiParam("省编码")String provinceCode,@ApiParam("市编码")String cityCode,
     		@ApiParam("医院名称")String name,@ApiParam("医院等级")String hospitalLevel,@ApiParam("状态")String status){
-    	Page<BdOrg> page=new Page<>(current,pageSize);
+    	int offset = 1;
+		int limit = 1000;
+		if (StringUtils.isNotBlank(current)) {
+			// 当前记录数
+			offset = Integer.parseInt(current);
+		}
+		if (StringUtils.isNotBlank(pageSize)) {
+			// 每页限制数
+			limit = Integer.parseInt(pageSize);
+		}
+    	Page<BdOrg> page=new Page<>(offset,limit);
     	bdOrgService.getListBdOrg(page,code,provinceCode,cityCode,name,hospitalLevel,status);
         return R.ok().put("list", page.getRecords()).put("total",page.getTotal());
     }

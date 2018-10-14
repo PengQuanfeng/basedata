@@ -7,5 +7,41 @@
 	<select id="selectCompanyCode" parameterType="String" resultType="java.lang.Integer">
 		select count(*) from bd_org where code = #{code}  
 	</select>
+	<select id="selectCompanyName" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from bd_org where name = #{name} and orgNature='company' and status  not in( 'del')   
+	</select>
 	
+
+	
+	<insert id="insertBdOrg" 
+		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdOrg">
+		insert into bd_org (
+			<include refid="Bd_ORG_COLUMN" />)
+		values(#{id},#{name},#{typeName},#{code},#{orgNature},#{orgCategory},#{deptCount},
+		#{provinceCode},#{provinceName},#{cityCode},#{cityName},#{hospitalLevel},#{detailedAddress},
+		#{createTime},#{createUserCode},#{createUserName},#{updateTime},#{updateUserCode},#{updateUserName},
+		#{version},#{status})
+	</insert>
+	<sql id="Bd_ORG_COLUMN">
+		id,
+		name,
+		code,
+		orgNature,
+		orgCategory,
+		deptCount,
+		provinceCode,
+		provinceName,
+		cityCode,
+		cityName,
+		hospitalLevel,
+		detailedAddress,
+		createTime,
+		createUserCode,
+		createUserName,
+		updateTime,
+		updateUserCode,
+		updateUserName,
+		version,
+		status		
+	</sql>
 </mapper>

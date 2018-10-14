@@ -21,7 +21,16 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface BdOrgMapper extends BaseMapper<BdOrg> {
 	int selectCompanyCode(String code);//查询公司编码是否存在
+	/**
+	 *查询公司名称是否存在 
+	 * @param name
+	 * @return
+	 */
+	int selectCompanyName(@Param("name")String name);
 	int updateName(BdOrg bdOrg);//根据code更新公司名称
-//	List<BdOrg> getProvinceList();
-//	List<BdOrg> getCityList(@Nonnull @Param("provinceCode") String provinceCode);
+	/**
+	 * 新增公司
+	 * @param entity
+	 */
+	void insertBdOrg(BdOrg entity);
 }

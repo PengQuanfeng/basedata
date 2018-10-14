@@ -28,36 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class BdCompanyDeptController extends BaseController {
     @Autowired
     private BdCompanyDeptService bdCompanyDeptService;
-    @ApiOperation("获取list")
-    @PostMapping("/list")
-    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-        Page<BdCompanyDept> page=new Page<>(current,pageSize);
-        bdCompanyDeptService.selectPage(page);
-        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
-    }
-    @ApiOperation("新增")
-    @PostMapping("/add")
-    public R save(@ApiParam("数据对象")BdCompanyDept data){
-        return bdCompanyDeptService.insert(data)?R.ok():R.error("保存错误");
-    }
-    @ApiOperation("删除")
-    @PostMapping("/delete")
-    public R delete(@ApiParam("数据对象id")String id){
-        return bdCompanyDeptService.deleteById(id)?R.ok():R.error("删除错误");
-    }
-    @ApiOperation("更新")
-    @PostMapping("/update")
-    public R update(@ApiParam("数据对象")BdCompanyDept data){
-        return bdCompanyDeptService.updateById(data)?R.ok():R.error("更新错误");
-    }
-    @ApiOperation("通过ID获取一条数据")
-    @PostMapping("/info")
-    public R update(@ApiParam("数据对象id")String id){
-        return R.ok().put("info",bdCompanyDeptService.selectById(id));
-    }
+    
     @ApiOperation("添加部门")
     @PostMapping("/addCompany")
-    public R addCompany(@ApiParam("数据对象")BdCompanyDept data){
+    public R addCompany(@ApiParam("数据对象")BdCompanyDept data,@ApiParam("公司编码")String companyCode){
     	return bdCompanyDeptService.addCompany(data);
     }
     @ApiOperation("编辑部门")

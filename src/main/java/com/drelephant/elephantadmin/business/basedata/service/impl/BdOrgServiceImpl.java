@@ -40,25 +40,19 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	@Autowired
 	BdAreaRegionMapper mBdAreaRegionMapper;
 	@Override
-	public boolean addCompany(String name) {
+	public void addCompany(BdOrg entity) {
 		BdOrg mBdOrg=new BdOrg();
-		mBdOrg.setName(name);
+		mBdOrg.setName(entity.getName());
 		mBdOrg.setCode("1001");//替换
-		mBdOrg.setOrgNature(Constans.AUTIT_ORGNATURE);	
-		mBdOrg.setUpdateTime(new Date());
-		mBdOrg.setCreateTime(new Date());
-		mBdOrg.setCreateUserCode("admin");
-		mBdOrg.setCreateUserName("admin");
-		mBdOrg.setUpdateUserCode("admin");
-		mBdOrg.setUpdateUserName("admin");
+		mBdOrg.setOrgNature(Constans.AUTIT_ORGNATURE);//机构性质
+		mBdOrg.setStatus(Constans.ACTIVE);//初始状态
 		String code="123";
 		//已经存在的公司编码不允许插入
-		int i=bdOrgMapper.selectCompanyCode(code);
-		if(code=="123"){
-			bdOrgMapper.insert(mBdOrg);
-			return true;
+		int i=bdOrgMapper.selectCompanyCode(code);	
+		int nameCount=bdOrgMapper.selectCompanyName(entity.getName());
+		if(nameCount==0){
+			bdOrgMapper.insertBdOrg(mBdOrg);
 		}		
-		return false;
 	}
 	
 	@Override

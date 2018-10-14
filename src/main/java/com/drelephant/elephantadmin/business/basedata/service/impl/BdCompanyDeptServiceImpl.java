@@ -4,6 +4,7 @@ import com.drelephant.elephantadmin.business.basedata.entity.BdCompanyDept;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdCompanyDeptMapper;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdOrgMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdCompanyDeptService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -34,11 +35,6 @@ public class BdCompanyDeptServiceImpl extends ServiceImpl<BdCompanyDeptMapper, B
 	BdCompanyDeptMapper bdCompanyDeptMapper;
 	@Autowired
 	BdOrgMapper bdOrgMapper;
-	@Override
-	public List<BdCompanyDept> getCompanyList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public R addCompany(BdCompanyDept data) {
@@ -49,9 +45,10 @@ public class BdCompanyDeptServiceImpl extends ServiceImpl<BdCompanyDeptMapper, B
 			mBdCompanyDept.setName(data.getName());
 			//需替换，部门编码生成规则
 			mBdCompanyDept.setCode(getRandom());
-			mBdCompanyDept.setCompanyCode(data.getCompanyCode());
+			mBdCompanyDept.setCompanyCode(data.getCompanyCode());//公司编码需要从公司表中查询
 			mBdCompanyDept.setCompanyName(data.getCompanyName());
 			mBdCompanyDept.setDeptEmail(data.getDeptEmail());
+			mBdCompanyDept.setStatus(Constans.ACTIVE);
 			//bdCompanyDeptMapper.insert(entity)
 			flag=insert(mBdCompanyDept);
 		}		
@@ -70,6 +67,7 @@ public class BdCompanyDeptServiceImpl extends ServiceImpl<BdCompanyDeptMapper, B
 	public R delectCompany(String code) {
 		// TODO Auto-generated method stub
 		boolean flag=delete(Condition.create().eq("code", code));
+		//update(Condition.create().eq("status", Constans.DELETED));
 		return flag?R.ok():R.error("删除失败");
 	}
 	public static  String getRandom(){
@@ -80,7 +78,7 @@ public class BdCompanyDeptServiceImpl extends ServiceImpl<BdCompanyDeptMapper, B
 	@Override
 	public R getListDept(int current, int pageSize) {
 		Page<BdCompanyDept> page=new Page<>(current,pageSize);
-		selectPage(page, Condition.create());
+		selectPage(page, Condition.create().eq("status", Constans.ACTIVE));
 		//List<BdCompanyDept> list=selectList(Condition.create());
 		return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
 	}

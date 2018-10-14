@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-09
  */
 public interface BdOrgService extends IService<BdOrg> {
-	boolean addCompany(String name);//公司信息插入
+	void addCompany(BdOrg entity);//公司信息插入
 	R updateCompany(BdOrg data);//更新公司名称
 	R deleteCode(String code);
 	R selectCompay();
