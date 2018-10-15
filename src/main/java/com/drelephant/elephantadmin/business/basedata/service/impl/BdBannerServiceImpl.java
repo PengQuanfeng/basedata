@@ -27,30 +27,11 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 	@Autowired
 	BdBannerMapper bdBannerMapper;
 	@Override
-	public R insertBdBander(BdBanner bdBanner) {
-		BdBanner bd=new BdBanner();
-		boolean flag=false;
-		bd.setBannerType(bdBanner.getBannerType());
-		bd.setFileId(bdBanner.getFileId());
-		bd.setFileType(bdBanner.getFileType());
-		int count=bdBannerMapper.maxOrderNumber();		
-		if(count==0){
-			bd.setOrderNumber(++count);//排序字段
-		}		
-		String remark=bdBanner.getRemark();		
-		if(remark.length()>40){
-			return R.error("备注内容不能多于20字");
-		}
-		bd.setLinkAddress(bdBanner.getLinkAddress());
-		bd.setRemark(bdBanner.getRemark());
-		String link=bdBanner.getIsOpenLink();
-		if(link.equals(Constans.OPENLINK)&&bd.getLinkAddress()==null){			
-			return R.error("开启状态，链接地址不能为空");					
-		}
-		bd.setIsOpenLink(bdBanner.getIsOpenLink());
-		bd.setStatus(Constans.ACTIVE);
-		flag=insert(bd);
-		return flag?R.ok():R.error("新增失败");
+	public void insertBdBander(BdBanner entity) {
+		int count=bdBannerMapper.maxOrderNumber();	
+		entity.setOrderNumber(count+1);//排序字段		
+		entity.setStatus(Constans.ACTIVE);
+		bdBannerMapper.saveBanner(entity);
 	}
 
 	@Override

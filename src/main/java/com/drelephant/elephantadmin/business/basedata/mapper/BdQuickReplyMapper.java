@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
 
@@ -22,7 +23,7 @@ import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
 public interface BdQuickReplyMapper extends BaseMapper<BdQuickReply> {
 	int saveQuickReply(BdQuickReply entity);
 	int updateQuickReply(BdQuickReply entity);
-	List<BdQuickReply> queryQuickReply(Pagination page, @Param("id") String id);
+	List<BdQuickReply> queryQuickReply(Pagination page);//
 	int deleteQuickReplyById(@Param("id") String id);
 	List<BdQuickReply> getAll();
 	/**
@@ -31,4 +32,5 @@ public interface BdQuickReplyMapper extends BaseMapper<BdQuickReply> {
 	 * @param orderNumber
 	 */
 	void updateOrderNumber(@Param("id")String id, @Param("orderNumber")int orderNumber);
+	int getMaxOrderNumber();
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.drelephant.elephantadmin.business.basedata.entity.BdBanner;
 
@@ -36,4 +37,5 @@ public interface BdBannerMapper extends BaseMapper<BdBanner> {
 	 * @param orderNumber
 	 */
 	void updateOrderNumber(@Param("id")String id, @Param("orderNumber")int orderNumber);
+	void saveBanner(BdBanner entity);
 }

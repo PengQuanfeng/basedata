@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -31,30 +33,49 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 	@Autowired
 	BdAreaRegionMapper mBdAreaRegionMapper;
 	@Override
+	@Transactional
 	public R insertBdAreaRegion(BdAreaRegion data) {
 		// TODO Auto-generated method stub
 		BdAreaRegion mBdAreaRegion=new BdAreaRegion();
-		int count=selectCount(Condition.create().eq("code", data.getCode()));
+		Condition con=Condition.create();
+		con.eq("code", data.getCode());
+		con.where("status !={0}", Constans.DELETED);
+		int count=selectCount(con);
 		boolean flag=false;
-		if(count==0){
-			mBdAreaRegion.setCode(data.getCode());
-			mBdAreaRegion.setProvinceCode(data.getProvinceCode());
-			mBdAreaRegion.setProvinceName(data.getProvinceName());
-			mBdAreaRegion.setCityCode(data.getCityCode());
-			mBdAreaRegion.setCityName(data.getCityName());
-			mBdAreaRegion.setCountyCode(data.getCountyCode());
+		String provinceCode=data.getProvinceCode();
+		String cityCode=data.getCityCode();
+		List<String> list=mBdAreaRegionMapper.getProvinceName(provinceCode);
+		List<String> listCity=mBdAreaRegionMapper.getCityName(cityCode);
+		int level=data.getLevel();
+		mBdAreaRegion.setCode(data.getCode());
+		mBdAreaRegion.setLevel(level);		
+		if(level==1){
+			mBdAreaRegion.setProvinceName(list.get(0));
+			mBdAreaRegion.setProvinceCode(provinceCode);
+		}else if(level==2){
+			mBdAreaRegion.setProvinceCode(provinceCode);
+			mBdAreaRegion.setProvinceName(list.get(0));
+			mBdAreaRegion.setCityCode(cityCode);
+			mBdAreaRegion.setCityName(listCity.get(0));
+		}else if(level==3){
+			mBdAreaRegion.setProvinceCode(provinceCode);
+			mBdAreaRegion.setProvinceName(list.get(0));
+			mBdAreaRegion.setCityCode(cityCode);
+			mBdAreaRegion.setCityName(listCity.get(0));
+			mBdAreaRegion.setCountyCode(getRandom());
 			mBdAreaRegion.setCountyName(data.getCountyName());
-			mBdAreaRegion.setLevel(data.getLevel());//层级
-			//mBdAreaRegion.setLayerInfo(data.getLayerInfo());//层级信息
-			String status=data.getStatus();
-			if(StringUtils.isNotBlank(status)){
-				mBdAreaRegion.setStatus(status);//状态
-			}else{
-				mBdAreaRegion.setStatus(Constans.ACTIVE);//初始有效
-			}						
+		}
+		String status=data.getStatus();
+		if(StringUtils.isNotBlank(status)){
+			mBdAreaRegion.setStatus(status);//状态
+		}else{
+			mBdAreaRegion.setStatus(Constans.ACTIVE);//初始有效
+		}
+		if(count==0){											
 			flag=insert(mBdAreaRegion);
+			return R.ok().put("msg", "保存行政地区成功！");
 		}	
-		return flag?R.ok():R.error("保存失败") ;
+		return flag?R.ok():R.error("保存失败");
 	}
 
 	@Override
@@ -87,10 +108,10 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 	}
 
 	@Override
-	public R deleteBdAreaRegion(BdAreaRegion data) {
+	public R deleteBdAreaRegion(String id) {
 		BdAreaRegion mBdAreaRegion=new BdAreaRegion();
 		mBdAreaRegion.setStatus(Constans.DELETED);
-		boolean flag=update(mBdAreaRegion,Condition.create().eq("code", data.getCode()));
+		boolean flag=update(mBdAreaRegion,Condition.create().eq("id", id));
 		return flag?R.ok():R.error("删除失败");
 	}
 
@@ -118,7 +139,7 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 			con.eq("status", status);
 		}else{
 			con.where("status !={0}", Constans.DELETED);//.last(" limit 1")
-		}				
+		}
 		selectPage(page,con);			
 		return page;
 	}
@@ -294,5 +315,13 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 		}
 		//
 		return R.ok().put("list", counties);
+	}
+	/**
+	 * 区县编码
+	 * @return
+	 */
+	public static String getRandom(){
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+		return uuid;
 	}
 }

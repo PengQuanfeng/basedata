@@ -11,7 +11,10 @@
 		select count(*) from bd_org where name = #{name} and orgNature='company' and status  not in( 'del')   
 	</select>
 	
-
+	<update id="deleteBdOrg" parameterType="java.lang.String">
+		update  bd_org SET status='DEL'		
+		where id = #{id}
+	</update>
 	
 	<insert id="insertBdOrg" 
 		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdOrg">

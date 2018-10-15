@@ -33,4 +33,8 @@ public interface BdOrgMapper extends BaseMapper<BdOrg> {
 	 * @param entity
 	 */
 	void insertBdOrg(BdOrg entity);
+	/**
+	 * 删除公司
+	 */
+	void deleteBdOrg(@Param("id")String id);
 }

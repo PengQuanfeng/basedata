@@ -22,4 +22,10 @@
 	<select id="getCountyList" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
 		select DISTINCT countyCode,countyName from bd_area_region where cityCode = #{cityCode} and countyCode is not null and countyCode != '' order by countyCode
 	</select>
+	<select id="getProvinceName" resultType="java.lang.String">		
+		select provinceName from bd_area_region where provinceCode=#{provinceCode}
+	</select>
+	<select id="getCityName" resultType="java.lang.String">		
+		select cityName from bd_area_region where cityCode=#{cityCode}
+	</select>
 </mapper>

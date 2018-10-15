@@ -8,6 +8,8 @@ import com.drelephant.elephantadmin.business.basedata.service.TemplateCasesServi
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -16,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,34 +39,45 @@ import org.springframework.web.bind.annotation.RestController;
 public class TemplateCasesController extends BaseController {
     @Autowired
     private TemplateCasesService templateCasesService;
-    @ApiOperation("获取list")
-    @PostMapping("/list")
-    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-        Page<TemplateCases> page=new Page<>(current,pageSize);
-        templateCasesService.selectPage(page);
-        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
-    }
-    @ApiOperation("新增")
-    @PostMapping("/add")
-    public R save(@ApiParam("数据对象")TemplateCases data){
-        return templateCasesService.insert(data)?R.ok():R.error("保存错误");
-    }
-    @ApiOperation("删除")
-    @PostMapping("/delete")
-    public R delete(@ApiParam("数据对象id")String id){
-        return templateCasesService.deleteById(id)?R.ok():R.error("删除错误");
-    }
-    @ApiOperation("更新")
-    @PostMapping("/update")
-    public R update(@ApiParam("数据对象")TemplateCases data){
-        return templateCasesService.updateById(data)?R.ok():R.error("更新错误");
-    }
-    @ApiOperation("通过ID获取一条数据")
-    @PostMapping("/info")
-    public R update(@ApiParam("数据对象id")String id){
-        return R.ok().put("info",templateCasesService.selectById(id));
-    }
+//    @ApiOperation("获取list")
+//    @PostMapping("/list")
+//    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
+//        Page<TemplateCases> page=new Page<>(current,pageSize);
+//        templateCasesService.selectPage(page);
+//        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
+//    }
+//    @ApiOperation("新增")
+//    @PostMapping("/add")
+//    public R save(@ApiParam("数据对象")TemplateCases data){
+//        return templateCasesService.insert(data)?R.ok():R.error("保存错误");
+//    }
+//    @ApiOperation("删除")
+//    @PostMapping("/delete")
+//    public R delete(@ApiParam("数据对象id")String id){
+//        return templateCasesService.deleteById(id)?R.ok():R.error("删除错误");
+//    }
+//    @ApiOperation("更新")
+//    @PostMapping("/update")
+//    public R update(@ApiParam("数据对象")TemplateCases data){
+//        return templateCasesService.updateById(data)?R.ok():R.error("更新错误");
+//    }
+//    @ApiOperation("通过ID获取一条数据")
+//    @PostMapping("/info")
+//    public R update(@ApiParam("数据对象id")String id){
+//        return R.ok().put("info",templateCasesService.selectById(id));
+//    }
 /*****************新增**************/
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "tmpName", value = "模板名称", required = true),
+		@ApiImplicitParam(name = "templateType", value = "模板类型", required = true),
+		@ApiImplicitParam(name = "lv1DeptCode", value = "一级科室编码", required = true),
+		@ApiImplicitParam(name = "lv1DeptName", value = "一级科室名称", required = true),
+		@ApiImplicitParam(name = "lv2DeptCode", value = "二级科室编码", required = true),
+		@ApiImplicitParam(name = "lv2DeptName", value = "二级科室名称", required = true),
+		@ApiImplicitParam(name = "chiefComplaint", value = "主诉"),
+		@ApiImplicitParam(name = "anamnesis", value = "既往史"),
+		@ApiImplicitParam(name = "illnessHistory", value = "现病史")
+	})
     @ApiOperation("模板新增")
     @PostMapping("/saveTemp")
     public R saveTemp(@ApiParam("数据对象")TemplateCases data){
@@ -135,12 +149,22 @@ public class TemplateCasesController extends BaseController {
     }
     @ApiOperation("批量查询模板数据")
     @PostMapping("/getListTemp")
-    public R getListTemp(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,
+    public R getListTemp(@ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize,
     		@ApiParam("一级编码")String lv1DeptCode,@ApiParam("二级编码")String lv2DeptCode,
     		@ApiParam("模板名称")String tmpName,@ApiParam("模板类型")String templateType,@ApiParam("状态")String status){
+    	int offset = 1;
+		int limit = 1000;
+		if (StringUtils.isNotBlank(current)) {
+			// 当前记录数
+			offset = Integer.parseInt(current);
+		}
+		if (StringUtils.isNotBlank(pageSize)) {
+			// 每页限制数
+			limit = Integer.parseInt(pageSize);
+		}
     	//查询结果根据更新时间进行倒叙排列 DESC
-    	Page<TemplateCases> page=new Page<>(current,pageSize);
-    	templateCasesService.getListTemp(page, current, pageSize, lv1DeptCode, lv2DeptCode, tmpName, templateType, status);
+    	Page<TemplateCases> page=new Page<>(offset,limit);
+    	templateCasesService.getListTemp(page, offset, limit, lv1DeptCode, lv2DeptCode, tmpName, templateType, status);
     	return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
 }

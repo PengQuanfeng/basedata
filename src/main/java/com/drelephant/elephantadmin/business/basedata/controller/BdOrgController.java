@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,33 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class BdOrgController extends BaseController {
     @Autowired
     private BdOrgService bdOrgService;
-//    @ApiOperation("获取list")
-//    @PostMapping("/list")
-//    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-//        Page<BdOrg> page=new Page<>(current,pageSize);
-//        bdOrgService.selectPage(page);
-//        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
-//    }
-//    @ApiOperation("新增")
-//    @PostMapping("/add")
-//    public R save(@ApiParam("数据对象")BdOrg data){
-//        return bdOrgService.insert(data)?R.ok():R.error("保存错误");
-//    }
-//    @ApiOperation("删除")
-//    @PostMapping("/delete")
-//    public R delete(@ApiParam("数据对象id")String id){
-//        return bdOrgService.deleteById(id)?R.ok():R.error("删除错误");
-//    }
-//    @ApiOperation("更新")
-//    @PostMapping("/update")
-//    public R update(@ApiParam("数据对象")BdOrg data){
-//        return bdOrgService.updateById(data)?R.ok():R.error("更新错误");
-//    }
-//    @ApiOperation("通过ID获取一条数据")
-//    @PostMapping("/info")
-//    public R update(@ApiParam("数据对象id")String id){
-//        return R.ok().put("info",bdOrgService.selectById(id));
-//    }
 /****新增接口****/
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "name", value = "公司名称", required = true)		
@@ -82,11 +56,12 @@ public class BdOrgController extends BaseController {
         return R.ok().put("msg", "新增公司成功！");
     }
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "name", value = "公司名称", required = true)		
+		@ApiImplicitParam(name = "name", value = "公司名称", required = true),
+		@ApiImplicitParam(name = "code", value = "公司编号", required = true)
 	})
     @ApiOperation("更新公司名称")
     @PostMapping("/updateName")
-    public R updateName(@ApiParam("数据对象")BdOrg data){
+    public R updateName(@RequestBody @ApiParam("数据对象")BdOrg data){
         return bdOrgService.updateCompany(data);
     }
 	@ApiImplicitParams({
@@ -98,7 +73,7 @@ public class BdOrgController extends BaseController {
         return bdOrgService.deleteCode(id);
     }
     @ApiOperation("获取公司信息的list")
-    @PostMapping("/admim/list")
+    @GetMapping("/admim/list")
     public R getListName(){
         return bdOrgService.selectCompay();
     }
@@ -108,12 +83,12 @@ public class BdOrgController extends BaseController {
 		return bdOrgService.addHospital(data);   	
     }
     @ApiOperation("获取医院信息的list")
-    @PostMapping("/getListHospital")
+    @GetMapping("/getListHospital")
     public R getListHospital(@ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize,@ApiParam("医院编码")String code,
     		@ApiParam("省编码")String provinceCode,@ApiParam("市编码")String cityCode,
     		@ApiParam("医院名称")String name,@ApiParam("医院等级")String hospitalLevel,@ApiParam("状态")String status){
     	int offset = 1;
-		int limit = 1000;
+		int limit = 1000; 
 		if (StringUtils.isNotBlank(current)) {
 			// 当前记录数
 			offset = Integer.parseInt(current);
@@ -149,18 +124,19 @@ public class BdOrgController extends BaseController {
         return bdOrgService.deleteBatchHosStatus(status,codes);
     }
     @ApiOperation("获取省的列表")
-    @PostMapping("/getListProvince")
+    @GetMapping("/getListProvince")
     public R getListProvince(){
     	
         return bdOrgService.getProvinceList();
     }
     @ApiOperation("获取城市列表")
-    @PostMapping("/getListCity")
+    @ApiImplicitParam(name = "provinceCode", value = "省编码", required = true)
+    @GetMapping("/getListCity")
     public R getListCity(@ApiParam("省编码") String provinceCode){
         return bdOrgService.getCityList(provinceCode);
     }
     @ApiOperation("获取等级列表")
-    @PostMapping("/getListLevel")
+    @GetMapping("/getListLevel")
     public R getListLevel(){
     	List<Map<String, Object>> hospitalLevels = new ArrayList<Map<String, Object>>();
 		Map<String, Object> hospitalLevel = null;
@@ -177,7 +153,7 @@ public class BdOrgController extends BaseController {
         return R.ok().put("list", hospitalLevels);
     }
     @ApiOperation("获取状态列表")
-    @PostMapping("/getListStatus")
+    @GetMapping("/getListStatus")
     public R getListStatus(){
     	List<Map<String, Object>> statuss = new ArrayList<Map<String, Object>>();
 		Map<String, Object> status = null;

@@ -21,7 +21,7 @@ public interface BdBannerService extends IService<BdBanner> {
 	 * @param bdBanner
 	 * @return
 	 */
-	R insertBdBander(BdBanner bdBanner);
+	void insertBdBander(BdBanner bdBanner);
 	/**
 	 * 修改数据
 	 * @param bdBanner

@@ -1,5 +1,6 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.plugins.Page;
@@ -15,10 +16,12 @@ import com.drelephant.framework.base.common.R;
  * @since 2018-10-09
  */
 public interface BdQuickReplyService extends IService<BdQuickReply>{
-	Map<String,String> getServiceType(String type);
+	
+	List<Map<String, String>> getServiceTypes();
+	
 	void saveQuickReply(BdQuickReply entity);
 	void updateQuickReply(BdQuickReply entity);
-	Page<BdQuickReply> queryQuickReplyInfo(int offset, int limit, String id);
+	Page<BdQuickReply> queryQuickReplyInfo(int offset, int limit);
 	void deleteQuickReplyById(String id);
 	/**
 	 * 上移

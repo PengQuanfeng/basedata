@@ -5,6 +5,8 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+
+import io.swagger.annotations.ApiImplicitParam;
 /**
  * 快捷回复设置
  * @author HASEE

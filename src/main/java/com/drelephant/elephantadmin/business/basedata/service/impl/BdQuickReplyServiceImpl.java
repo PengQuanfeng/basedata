@@ -1,21 +1,25 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.drelephant.elephantadmin.business.basedata.entity.BdBanner;
+import com.drelephant.elephantadmin.business.basedata.entity.BdDictValue;
 import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
+import com.drelephant.elephantadmin.business.basedata.mapper.BdDictValueMapper;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdQuickReplyMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdQuickReplyService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
 /**
  * <p>
@@ -27,23 +31,42 @@ import com.drelephant.framework.base.common.R;
  */
 @Service
 public class BdQuickReplyServiceImpl extends ServiceImpl<BdQuickReplyMapper,BdQuickReply> implements BdQuickReplyService{
+	public static void main(String[] args) {
+		System.out.println(UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
+	}
 	@Autowired
 	BdQuickReplyMapper bdQuickReplyMapper;
+	
+	@Autowired
+	BdDictValueMapper bdDictValueMapper;
+	
 	@Override
-	public Map<String, String> getServiceType(String type) {
-		Map<String,String> map = new HashMap<String,String>();
-		//TODO:后续改用读数据字典方式
-		if(StringUtils.equals("FWLX", type)){
-			map.put("ZXZX", "在线咨询");
-			map.put("KYMZ", "开药门诊");
-			map.put("JCMZ", "检查门诊");
+	public List<Map<String, String>> getServiceTypes() {
+		List<Map<String, String>> serviceTypes = new ArrayList<Map<String, String>>();
+		Map<String,String> item = null;
+		List<BdDictValue> list=bdDictValueMapper.selectList(Condition.create().eq("typeCode", "FWLX"));
+		for (BdDictValue bdDictValue : list) {
+			item = new HashMap<String,String>();
+			//
+			item.put("code", bdDictValue.getCode());
+			item.put("name", bdDictValue.getName());
+			//
+			serviceTypes.add(item);
 		}
-		return map;
+		return serviceTypes;
 	}
 
 	@Override
 	@Transactional
 	public void saveQuickReply(BdQuickReply entity) {
+		int count=bdQuickReplyMapper.getMaxOrderNumber();
+		String typeCode=entity.getTypeCode();
+		BdDictValue bdDictV=new BdDictValue();
+		bdDictV.setCode(typeCode);
+		BdDictValue getName=bdDictValueMapper.selectOne(bdDictV);
+		entity.setTypeName(getName.getName());
+		entity.setOrderNumber(count+1);
+		entity.setStatus(Constans.ACTIVE);
 		bdQuickReplyMapper.saveQuickReply(entity);	
 	}
 
@@ -55,14 +78,18 @@ public class BdQuickReplyServiceImpl extends ServiceImpl<BdQuickReplyMapper,BdQu
 	}
 
 	@Override
-	public Page<BdQuickReply> queryQuickReplyInfo(int offset, int limit, String id) {
+	public Page<BdQuickReply> queryQuickReplyInfo(int offset, int limit) {
 		// 构造分页实体
+//		Condition con=Condition.create();
 		Page<BdQuickReply> page = new Page<BdQuickReply>(offset, limit);
-		List<BdQuickReply> bdQuickReplyList = bdQuickReplyMapper.queryQuickReply(page, id);
+//		con.orderBy("orderNumber", false);
+		
+		List<BdQuickReply> bdQuickReplyList = bdQuickReplyMapper.queryQuickReply(page);
 		if (CollectionUtils.isNotEmpty(bdQuickReplyList)) {
 			page.setRecords(bdQuickReplyList);
 			return page;
 		}
+		
 		return page;
 	}
 

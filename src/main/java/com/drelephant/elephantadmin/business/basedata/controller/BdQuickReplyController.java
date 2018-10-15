@@ -1,5 +1,7 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import com.drelephant.elephantadmin.business.basedata.controller.base.BaseContro
 import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
 import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
 import com.drelephant.elephantadmin.business.basedata.service.BdQuickReplyService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
 
 import io.swagger.annotations.Api;
@@ -35,35 +38,34 @@ public class BdQuickReplyController extends BaseController{
 	@Autowired
 	private BdQuickReplyService bdQuickReplyService;
 	@ApiOperation("服务类型")
-	@GetMapping("/serviceType")
-	public R serviceType(@ApiParam("数据字典类型") String dataType ) { 
-		return R.ok().put("serviceType",bdQuickReplyService.getServiceType(dataType));
+	@GetMapping("/serviceTypes")
+	public R serviceType() { 
+		return R.ok().put("list",bdQuickReplyService.getServiceTypes());
 	}
+	@ApiOperation("新增快捷回复")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "typeCode", value = "服务类型编码", required = true),
-		@ApiImplicitParam(name = "typeName", value = "服务类型名称", required = true),
+		@ApiImplicitParam(name = "typeName", value = "服务类型名称"),
 		@ApiImplicitParam(name = "content", value = "回复内容", required = true),
 		@ApiImplicitParam(name = "remark", value = "备注")
-	})
-	@ApiOperation("新增服务配置")
+	})	
 	@PostMapping("/add")
-	public R save(@RequestBody @ApiParam("快捷回复设置参数")BdQuickReply entity){
-		if(entity != null){
+	public R save(@RequestBody @ApiParam("快捷回复设置参数") BdQuickReply entity){
+		if(entity == null){
 			return R.error("保存快捷回复设置信息失败，参数无效!");
 		}
-		//对排序字段实现赋初值
-		//entity.setOrderNumber(1);
 		bdQuickReplyService.saveQuickReply(entity);
 		return R.ok().put("msg", "新增服务配置成功！");
 	}
 	@ApiImplicitParams({
+		@ApiImplicitParam(name = "id", value = "对应id", required = true),
 		@ApiImplicitParam(name = "content", value = "回复内容", required = true),
 		@ApiImplicitParam(name = "remark", value = "备注")
 	})
-	@ApiOperation("编辑服务配置")
+	@ApiOperation("编辑快捷回复")
 	@PostMapping("/update")
 	public R update(@RequestBody @ApiParam("快捷回复设置参数")BdQuickReply entity){
-		if(entity != null){
+		if(entity == null){
 			return R.error("编辑快捷回复设置信息失败，参数无效!");
 		}
 		bdQuickReplyService.updateQuickReply(entity);
@@ -71,8 +73,8 @@ public class BdQuickReplyController extends BaseController{
 	}
 	@ApiOperation("查询快捷回复")
 	@GetMapping("/list")
-	public R list(@ApiParam("当前页") String current, @ApiParam("每页显示记录数") String pageSize, 
-			@ApiParam("id") String id) {
+	public R list(@ApiParam("当前页") String current, @ApiParam("每页显示记录数") String pageSize
+			) {
 		int offset = 1;
 		int limit = 1000;
 		if (StringUtils.isNotBlank(current)) {
@@ -83,12 +85,12 @@ public class BdQuickReplyController extends BaseController{
 			// 每页限制数
 			limit = Integer.parseInt(pageSize);
 		}
-		Page<BdQuickReply> page = bdQuickReplyService.queryQuickReplyInfo(offset, limit, id);
+		Page<BdQuickReply> page = bdQuickReplyService.queryQuickReplyInfo(offset, limit);
 		return R.ok().put("list", page.getRecords()).put("total", page.getTotal());
 	}
 	@ApiOperation("删除快捷回复")
 	@PostMapping("/delete")
-	public R edit( @ApiParam("id") String id) {
+	public R edit( @ApiParam(value="id",required=true) String id) {
 		if(StringUtils.isBlank(id)){
 			return R.error("删除快捷回复失败，参数无效!");
 		}
@@ -98,12 +100,14 @@ public class BdQuickReplyController extends BaseController{
 	//TODO 根据排序字段进行上移和下移
 	@ApiOperation("上移")
     @PostMapping("/moveUp")
+	@ApiImplicitParam(name = "id", value = "id", required = true)		
     public R moveUp(@ApiParam("id列")String id){
     	return bdQuickReplyService.moveUp(id);
     }
     
     @ApiOperation("下移")
     @PostMapping("/moveDown")
+    @ApiImplicitParam(name = "id", value = "id", required = true)
     public R moveDown(@ApiParam("id列")String id){
     	return bdQuickReplyService.moveDown(id);
     }

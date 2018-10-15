@@ -51,11 +51,14 @@
 			</if>
 			and status = 'ACT'
 		</where>
+		order by orderNumber DESC
 	</select>
 	<select id="getAll" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply">
 		select * from bd_quick_reply order by orderNumber
 	</select>
-	
+	<select id="getMaxOrderNumber" resultType="java.lang.Integer">
+		select max(orderNumber) from bd_quick_reply 
+	</select>
 	<update id="updateOrderNumber">
 		update bd_quick_reply set orderNumber = #{orderNumber} where id=#{id}
 	</update>

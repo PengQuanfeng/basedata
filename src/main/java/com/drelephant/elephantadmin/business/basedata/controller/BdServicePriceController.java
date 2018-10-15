@@ -54,7 +54,7 @@ public class BdServicePriceController extends BaseController {
 	@ApiOperation("新增服务定价")
 	@PostMapping("/add")
 	public R save(@RequestBody @ApiParam("服务定价信息") BdServicePrice entity) {
-		if(entity != null){
+		if(entity == null){
 			return R.error("保存服务定价信息失败，参数无效!");
 		}
 		bdServicePriceService.saveBdServicePrice(entity);

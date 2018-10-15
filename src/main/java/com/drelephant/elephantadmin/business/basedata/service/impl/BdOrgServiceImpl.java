@@ -43,18 +43,17 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	public void addCompany(BdOrg entity) {
 		BdOrg mBdOrg=new BdOrg();
 		mBdOrg.setName(entity.getName());
-		mBdOrg.setCode("1001");//替换
+		String code=getRandom();
+		mBdOrg.setCode(code);//替换
 		mBdOrg.setOrgNature(Constans.AUTIT_ORGNATURE);//机构性质
 		mBdOrg.setStatus(Constans.ACTIVE);//初始状态
-		String code="123";
 		//已经存在的公司编码不允许插入
 		int i=bdOrgMapper.selectCompanyCode(code);	
 		int nameCount=bdOrgMapper.selectCompanyName(entity.getName());
-		if(nameCount==0){
+		if(nameCount==0&&i==0){
 			bdOrgMapper.insertBdOrg(mBdOrg);
 		}		
 	}
-	
 	@Override
 	public R updateCompany(BdOrg data) {
 		// TODO Auto-generated method stub
@@ -74,7 +73,8 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			Condition con=Condition.create();
 			con.eq("code", code);
 			update(bdOrg,con);
-		}		
+		}
+		
 		return flag?R.ok():R.error("部门信息不为空，禁止删除公司信息");
 	}
 	@Override
@@ -97,8 +97,9 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	 * 公司编码生成的通用方法
 	 * @return
 	 */
-	public static String getRandom(){	
-		return UUID.randomUUID().toString();
+	public static String getRandom(){
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+		return uuid;
 	}
 
 	@Override

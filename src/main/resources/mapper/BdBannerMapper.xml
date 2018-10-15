@@ -4,7 +4,7 @@
 
 	<!-- 开启二级缓存 -->
 	<select id="maxOrderNumber" resultType="java.lang.Integer">
-		select IFNULL(0,MAX(orderNumber) )from bd_banner
+		select MAX(orderNumber) from bd_banner
 	</select>		
 	<select id="getAll" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdBanner">
 		select * from bd_banner order by orderNumber
@@ -13,4 +13,33 @@
 	<update id="updateOrderNumber">
 		update bd_banner set orderNumber = #{orderNumber} where id=#{id}
 	</update>
+	<insert id="saveBanner" 
+		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdBanner">
+		insert into bd_banner (
+			<include refid="BD_BANNER_COLUMN" />)
+		values(
+			#{id},#{bannerType},#{fileId},#{orderNumber},#{fileType},#{remark},
+			#{linkAddress},#{picAddress},#{isOpenLink},#{createTime},#{createUserCode}
+			,#{updateTime},#{updateUserName},#{version},#{status}
+		)
+	</insert>
+	<sql id="BD_BANNER_COLUMN">
+		id,
+		bannerType,
+		fileId,
+		orderNumber,
+		fileType,
+		remark,
+		linkAddress,
+		picAddress,
+		isOpenLink,
+		createTime,
+		createUserCode,
+		createUserName,
+		updateTime,
+		updateUserCode,
+		updateUserName,
+		version,
+		status		
+	</sql>
 </mapper>

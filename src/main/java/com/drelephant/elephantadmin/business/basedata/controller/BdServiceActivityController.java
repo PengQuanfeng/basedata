@@ -63,7 +63,7 @@ public class BdServiceActivityController extends BaseController {
 	@ApiOperation("新增活动记录")
 	@PostMapping("/add")
 	public R save(@RequestBody @ApiParam("活动记录") BdServiceActivity entity) {
-		if(entity != null){
+		if(entity == null){
 			return R.error("保存活动记录信息失败，参数无效!");
 		}
 		bdServiceActivityService.saveBdServiceActivity(entity);

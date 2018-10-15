@@ -7,6 +7,8 @@ import com.drelephant.elephantadmin.business.basedata.controller.base.BaseContro
 import com.drelephant.elephantadmin.business.basedata.entity.BdBusinessRegion;
 import com.drelephant.elephantadmin.business.basedata.service.BdBusinessRegionService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -18,6 +20,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,39 +38,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class BdBusinessRegionController extends BaseController {
     @Autowired
     private BdBusinessRegionService bdBusinessRegionService;
-    @ApiOperation("获取list")
-    @PostMapping("/list")
-    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-        Page<BdBusinessRegion> page=new Page<>(current,pageSize);
-        bdBusinessRegionService.selectPage(page);
-        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
-    }
-    @ApiOperation("新增")
-    @PostMapping("/add")
-    public R save(@ApiParam("数据对象")BdBusinessRegion data){
-        return bdBusinessRegionService.insert(data)?R.ok():R.error("保存错误");
-    }
-    @ApiOperation("删除")
-    @PostMapping("/delete")
-    public R delete(@ApiParam("数据对象id")String id){
-        return bdBusinessRegionService.deleteById(id)?R.ok():R.error("删除错误");
-    }
-    @ApiOperation("更新")
-    @PostMapping("/update")
-    public R update(@ApiParam("数据对象")BdBusinessRegion data){
-        return bdBusinessRegionService.updateById(data)?R.ok():R.error("更新错误");
-    }
-    @ApiOperation("通过ID获取一条数据")
-    @PostMapping("/info")
-    public R update(@ApiParam("数据对象id")String id){
-        return R.ok().put("info",bdBusinessRegionService.selectById(id));
-    }
 /***********************业务区域信息设置新增***********************/
+    
     @ApiOperation("业务区域信息新增")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "serviceCategoryName", value = "层级编码", required = true),
+        @ApiImplicitParam(name = "lv1Code", value = "区域编码", required = true),
+        @ApiImplicitParam(name = "lv1Name", value = "一级区域名称", required = true)       
+    })
     @PostMapping("/saveRegion")
-    public R saveRegion(@ApiParam("数据对象")BdBusinessRegion data){
+    public R saveRegion(@RequestBody @ApiParam("数据对象")BdBusinessRegion entity){
     	//确认同层级下的区域名称保持唯一
-        return bdBusinessRegionService.inserRegion(data);
+    	if(entity == null){
+			return R.error("保存业务区域信息失败，参数无效!");
+		}
+        bdBusinessRegionService.inserRegion(entity);
+        return R.ok().put("msg", "新增业务区域信息成功！");
     }
     @ApiOperation("更新区域信息")
     @PostMapping("/updateRegion")

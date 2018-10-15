@@ -79,7 +79,7 @@ public class BdServiceConfigController extends BaseController {
 	@ApiOperation("新增服务配置")
 	@PostMapping("/add")
 	public R save(@RequestBody @ApiParam("服务配置信息") BdServiceConfig entity) {
-		if(entity != null){
+		if(entity == null){
 			return R.error("保存服务配置信息失败，参数无效!");
 		}
 		bdServiceConfigService.saveServiceConfig(entity);

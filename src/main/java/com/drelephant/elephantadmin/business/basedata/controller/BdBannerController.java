@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,11 +41,15 @@ public class BdBannerController extends BaseController {
 	})
     @ApiOperation("新增首页图片信息")
     @PostMapping("/saveBaner")
-    public R saveBaner(@ApiParam("数据对象")BdBanner data){
-        return bdBannerService.insertBdBander(data);
+    public R saveBaner(@RequestBody @ApiParam("数据对象")BdBanner entity){
+    	if(entity == null){
+			return R.error("新增首页图片信息失败，参数无效!");
+		}
+    	bdBannerService.insertBdBander(entity);
+        return R.ok().put("msg", "新增服务配置成功！");
     }
     @ApiOperation("查询单条首页图片信息")
-    @PostMapping("/getOneBaner")
+    @GetMapping("/getOneBaner")
     public R getOneBaner(@ApiParam("id列")String id){
     	BdBanner bd=bdBannerService.selectOneBd(id);
         return R.ok().put("list", bd);
