@@ -1,6 +1,5 @@
 server:
   port: 8302
-  context-path: /basedata
 swagger:
   base-package: com.drelephant.elephantadmin.business.basedata.controller
 spring:
