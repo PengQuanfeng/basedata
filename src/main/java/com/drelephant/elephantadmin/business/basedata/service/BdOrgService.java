@@ -17,9 +17,11 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-09
  */
 public interface BdOrgService extends IService<BdOrg> {
-	void addCompany(BdOrg entity);//公司信息插入
+	
+	R addCompany(BdOrg entity);//公司信息插入
+	
 	R updateCompany(BdOrg data);//更新公司名称
-	R deleteCode(String code);
+	R deleteCompany(String code);
 	R selectCompay();
 	//新增医院字典
 	R addHospital(BdOrg data);

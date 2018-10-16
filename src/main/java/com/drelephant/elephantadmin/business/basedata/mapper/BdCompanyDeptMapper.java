@@ -1,12 +1,12 @@
 package com.drelephant.elephantadmin.business.basedata.mapper;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdCompanyDept;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
-
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.drelephant.elephantadmin.business.basedata.entity.BdCompanyDept;
 
 /**
  * <p>
@@ -18,4 +18,9 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface BdCompanyDeptMapper extends BaseMapper<BdCompanyDept> {
+	int selectDeptName(@Param("name")String name);
+
+	int selectDeptNameForOtherCode(@Param("name") String name, @Param("code") String code);
+	
+	List<String> selectDeptCodes();
 }

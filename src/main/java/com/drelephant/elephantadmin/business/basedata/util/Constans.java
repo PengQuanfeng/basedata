@@ -3,8 +3,22 @@ package com.drelephant.elephantadmin.business.basedata.util;
 public final class Constans {
 	private Constans() {
     }
-	public static final String AUTIT_ORGNATURE="company";//机构性质 --公司
-	public static final String AUTIT_HOSPITAL="HOSPITAL";//机构性质 --医院
+
+	/**
+	 * 机构性质: 医院
+	 */
+	public static final String ORG_NATURE_HOSPITAL="1";
+
+	/**
+	 * 机构性质: 公司
+	 */
+	public static final String ORG_NATURE_COMPANY ="2";
+
+	/**
+	 * 机构性质: 机构
+	 */
+	public static final String ORG_NATURE_ORG = "3";
+	
 	/**
 	 * 三级甲等
 	 */

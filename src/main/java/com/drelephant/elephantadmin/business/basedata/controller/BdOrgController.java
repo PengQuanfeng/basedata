@@ -1,20 +1,6 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
-import com.baomidou.mybatisplus.mapper.Condition;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.drelephant.framework.base.common.R;
-import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
-import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
-import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
-import com.drelephant.elephantadmin.business.basedata.util.Constans;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +13,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
+import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
+import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+import com.drelephant.framework.base.common.R;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * <p>
@@ -42,41 +41,45 @@ import org.springframework.web.bind.annotation.RestController;
 public class BdOrgController extends BaseController {
     @Autowired
     private BdOrgService bdOrgService;
-/****新增接口****/
+
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "name", value = "公司名称", required = true)		
 	})
     @ApiOperation("增加公司")
-    @PostMapping("/saveCompay")
-    public R saveCompay(@RequestBody @ApiParam("数据对象")BdOrg entity ){   	
-    	if(entity != null){
+    @PostMapping("/addCompay")
+    public R addCompay(@RequestBody @ApiParam("数据对象") BdOrg entity ){   	
+    	if(entity == null){
     		return R.error("增加公司失败，参数无效!");
 		}
-        bdOrgService.addCompany(entity);
-        return R.ok().put("msg", "新增公司成功！");
+    	//
+    	return bdOrgService.addCompany(entity);
     }
+	
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "name", value = "公司名称", required = true),
 		@ApiImplicitParam(name = "code", value = "公司编号", required = true)
 	})
-    @ApiOperation("更新公司名称")
-    @PostMapping("/updateName")
-    public R updateName(@RequestBody @ApiParam("数据对象")BdOrg data){
+    @ApiOperation("编辑公司")
+    @PostMapping("/editCompany")
+    public R editCompany(@RequestBody @ApiParam("数据对象")BdOrg data){
         return bdOrgService.updateCompany(data);
     }
+	
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "id", value = "id", required = true)		
+		@ApiImplicitParam(name = "code", value = "公司编号", required = true)
 	})
-    @ApiOperation("删除公司状态")
-    @PostMapping("/deleteCode")
-    public R deleteCode(@ApiParam("数据对象id")String id){
-        return bdOrgService.deleteCode(id);
+    @ApiOperation("删除公司")
+    @PostMapping("/deleteCompany")
+    public R deleteCompany(@RequestBody @ApiParam("数据对象")BdOrg data){
+        return bdOrgService.deleteCompany(data.getCode());
     }
+	
     @ApiOperation("获取公司信息的list")
-    @GetMapping("/admim/list")
-    public R getListName(){
+    @GetMapping("/getCompanyList")
+    public R getCompanyList(){
         return bdOrgService.selectCompay();
     }
+    
     @ApiOperation("新增医院信息")
     @PostMapping("/saveHospital")
     public R saveHospital(@ApiParam("数据对象")BdOrg data){

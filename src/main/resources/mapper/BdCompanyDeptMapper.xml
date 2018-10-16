@@ -16,4 +16,16 @@
 	<select id="selectCodeOrName"  resultType="java.lang.Integer">
 		select companyName,companyCode from bd_company_dept where code is null 
 	</select>
+	
+		<select id="selectDeptName" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from bd_company_dept where name = #{name} and status  not in( 'del')   
+	</select>
+	
+	<select id="selectDeptNameForOtherCode" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from bd_company_dept where name = #{name} and code != #{code} and status  not in( 'del')   
+	</select>
+	
+	<select id="selectDeptCodes" parameterType="String" resultType="java.lang.String">
+		select code from bd_company_dept
+	</select>
 </mapper>

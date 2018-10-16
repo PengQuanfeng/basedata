@@ -1,19 +1,7 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
-import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
-import com.drelephant.elephantadmin.business.basedata.mapper.BdAreaRegionMapper;
-import com.drelephant.elephantadmin.business.basedata.mapper.BdCompanyDeptMapper;
-import com.drelephant.elephantadmin.business.basedata.mapper.BdOrgMapper;
-import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
-import com.drelephant.elephantadmin.business.basedata.util.Constans;
-import com.drelephant.framework.base.common.R;
-import com.baomidou.mybatisplus.mapper.Condition;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +10,18 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.mapper.Condition;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
+import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
+import com.drelephant.elephantadmin.business.basedata.mapper.BdAreaRegionMapper;
+import com.drelephant.elephantadmin.business.basedata.mapper.BdCompanyDeptMapper;
+import com.drelephant.elephantadmin.business.basedata.mapper.BdOrgMapper;
+import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+import com.drelephant.framework.base.common.R;
 
 /**
  * <p>
@@ -35,28 +35,77 @@ import org.springframework.stereotype.Service;
 public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements BdOrgService {
 	@Autowired
 	BdOrgMapper bdOrgMapper;
+	
 	@Autowired
 	BdCompanyDeptMapper mBdCompanyDeptMapper;
+	
 	@Autowired
 	BdAreaRegionMapper mBdAreaRegionMapper;
+	
 	@Override
-	public void addCompany(BdOrg entity) {
+	public R addCompany(BdOrg entity) {
+		String name = entity.getName();
+		if (StringUtils.isBlank(name)) {
+			return R.error("公司名称为空");
+		}
+		name = name.trim();
+		if (name.length() > 20) {
+			return R.error("公司名称长度超过20");
+		}
+		//
+		int nameCount = bdOrgMapper.selectCompanyName(name);
+		if (nameCount > 0) {
+			return R.error("公司名称已被使用过");
+		}
+		
 		BdOrg mBdOrg=new BdOrg();
-		mBdOrg.setName(entity.getName());
-		String code=getRandom();
-		mBdOrg.setCode(code);//替换
-		mBdOrg.setOrgNature(Constans.AUTIT_ORGNATURE);//机构性质
+		mBdOrg.setName(name);
+		//
+		List<String> codes = bdOrgMapper.selectCompanyCodes();
+		int order = 0;
+		for (String code : codes) {
+			if (StringUtils.isNotBlank(code)) {
+				code = code.trim();
+				if (code.startsWith("GS") && code.length() > 2) {
+					try {
+						int tempOrder = Integer.parseInt(code.substring(2));
+						if (tempOrder > order) {
+							order = tempOrder;
+						}
+					} catch (Exception e) {}
+				}
+			}
+		}
+		String code = "GS" + StringUtils.leftPad(Integer.toString(order + 1), 4, "0"); // 公司编号：GS+0000，从0001自增长
+		mBdOrg.setCode(code);
+		//
+		mBdOrg.setOrgNature(Constans.ORG_NATURE_COMPANY);//机构性质
 		mBdOrg.setStatus(Constans.ACTIVE);//初始状态
-		//已经存在的公司编码不允许插入
-		int i=bdOrgMapper.selectCompanyCode(code);	
-		int nameCount=bdOrgMapper.selectCompanyName(entity.getName());
-		if(nameCount==0&&i==0){
-			bdOrgMapper.insertBdOrg(mBdOrg);
-		}		
+
+		bdOrgMapper.insertBdOrg(mBdOrg);
+		return R.ok().put("msg", "新增公司成功！");
 	}
+	
 	@Override
 	public R updateCompany(BdOrg data) {
-		// TODO Auto-generated method stub
+		if (StringUtils.isBlank(data.getCode())) {
+			return R.error("公司编号为空");
+		}
+		
+		String name = data.getName();
+		if (StringUtils.isBlank(name)) {
+			return R.error("公司名称为空");
+		}
+		name = name.trim();
+		if (name.length() > 20) {
+			return R.error("公司名称长度超过20");
+		}
+		//
+		int nameCount = bdOrgMapper.selectCompanyNameForOtherCode(name, data.getCode());
+		if (nameCount > 0) {
+			return R.error("公司名称已被使用过");
+		}
+		
 		BdOrg bdOrg=new BdOrg();
 		bdOrg.setName(data.getName());
 		boolean flag=update(bdOrg,Condition.create().eq("code", data.getCode()));
@@ -64,7 +113,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		return flag?R.ok():R.error("更新失败");
 	}
 	@Override
-	public R deleteCode(String code) {
+	public R deleteCompany(String code) {
 		int deptCount=mBdCompanyDeptMapper.selectCount(Condition.create().eq("companyCode", code));
 		boolean flag=false;
 		if(deptCount==0){
@@ -72,17 +121,26 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			bdOrg.setStatus(Constans.DELETED);
 			Condition con=Condition.create();
 			con.eq("code", code);
-			update(bdOrg,con);
+			flag=update(bdOrg,con);
 		}
 		
 		return flag?R.ok():R.error("部门信息不为空，禁止删除公司信息");
 	}
 	@Override
-	public R selectCompay() {	
-		Condition con=Condition.create();
-		con.eq("orgNature", Constans.AUTIT_ORGNATURE);
+	public R selectCompay() {
+		Condition con = Condition.create();
+		con.eq("orgNature", Constans.ORG_NATURE_COMPANY);
 		con.where("status !={0}", Constans.DELETED);//未删除状态下的公司
-		List<BdOrg> list=selectList(con);
+		List<BdOrg> list = selectList(con);
+		
+		// 按 编码降序排序
+		java.util.Collections.sort(list, new Comparator<BdOrg>() {
+			@Override
+			public int compare(BdOrg o1, BdOrg o2) {
+				return o1.getCode().compareTo(o2.getCode());
+			}
+		});
+		
 		for (BdOrg bdOrg : list) {
 			String code=bdOrg.getCode();
 			Condition ccon=Condition.create();
@@ -134,7 +192,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	public Page<BdOrg> getListBdOrg(Page<BdOrg> page,String code,String provinceCode,String cityCode,String name
 			,String hospitalLevel,String status) {
 		Condition con=Condition.create();
-		con.eq("orgNature", Constans.AUTIT_HOSPITAL);//类型为医院
+		con.eq("orgNature", Constans.ORG_NATURE_HOSPITAL);//类型为医院
 		if(StringUtils.isNotBlank(code)){
 			con.eq("code", code);
 		}
