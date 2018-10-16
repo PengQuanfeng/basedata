@@ -33,7 +33,7 @@ public class BdHealthCalendarController extends BaseController {
      * 图片上传时保存信息
      */
     @ApiImplicitParams({
-//            @ApiImplicitParam(name = "coverPicId", value = "封面图片ID", required = true),
+            @ApiImplicitParam(name = "title", value = "标题", required = false),
             @ApiImplicitParam(name = "contentPicId", value = "图片ID", required = true),
             @ApiImplicitParam(name = "publishTime", value = "发布时间", required = true)
     })

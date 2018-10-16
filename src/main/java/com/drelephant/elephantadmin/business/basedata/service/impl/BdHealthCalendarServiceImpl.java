@@ -47,6 +47,7 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
 			//
     		oldBdHealthCalendar.setStatus(Constans.ACTIVE);
     		oldBdHealthCalendar.setContentPicId(entity.getContentPicId());
+    		oldBdHealthCalendar.setTitle(entity.getTitle());
     		update(oldBdHealthCalendar, con0); // 更新
     	}
     }

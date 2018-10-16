@@ -20,7 +20,8 @@
 			#{updateUserCode},
 			#{updateUserName},
 			#{version},
-			#{status}
+			#{status},
+			#{title}
 		)
 	</insert>
 	
@@ -40,6 +41,7 @@
 		updateUserCode,
 		updateUserName,
 		version,
-		status
+		status,
+		title
 	</sql>
 </mapper>

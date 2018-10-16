@@ -60,9 +60,23 @@ public class BdHealthCalendar implements Serializable {
     private String updateUserName;
     private String version;
     private String status;
+    
+    /**
+     * 标题
+     */
+    @TableField("title")
+    private String title;
 
 
-    public String getId() {
+    public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getId() {
         return id;
     }
 
@@ -158,21 +172,14 @@ public class BdHealthCalendar implements Serializable {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "BdHealthCalendar{" +
-                "id=" + id +
-                ", coverPicId=" + coverPicId +
-                ", contentPicId=" + contentPicId +
-                ", publishTime=" + publishTime +
-                ", createTime=" + createTime +
-                ", createUserCode=" + createUserCode +
-                ", createUserName=" + createUserName +
-                ", updateTime=" + updateTime +
-                ", updateUserCode=" + updateUserCode +
-                ", updateUserName=" + updateUserName +
-                ", version=" + version +
-                ", status=" + status +
-                "}";
-    }
+	@Override
+	public String toString() {
+		return "BdHealthCalendar [id=" + id + ", coverPicId=" + coverPicId + ", contentPicId=" + contentPicId
+				+ ", publishTime=" + publishTime + ", createTime=" + createTime + ", createUserCode=" + createUserCode
+				+ ", createUserName=" + createUserName + ", updateTime=" + updateTime + ", updateUserCode="
+				+ updateUserCode + ", updateUserName=" + updateUserName + ", version=" + version + ", status=" + status
+				+ ", title=" + title + "]";
+	}
+
+    
 }
