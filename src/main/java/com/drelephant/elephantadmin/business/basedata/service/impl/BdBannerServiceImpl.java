@@ -1,19 +1,18 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.mapper.Condition;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.drelephant.elephantadmin.business.basedata.entity.BdBanner;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdBannerMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdBannerService;
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
-import com.baomidou.mybatisplus.mapper.Condition;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * <p>

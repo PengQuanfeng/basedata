@@ -147,6 +147,6 @@ public class BdCompanyDeptServiceImpl extends ServiceImpl<BdCompanyDeptMapper, B
 		
 		BdCompanyDept dept = this.selectOne(Condition.create().eq("code", code));
 
-		return R.ok().put("dept", dept);
+		return R.ok().put("data", dept);
 	}
 }
