@@ -43,6 +43,7 @@ public interface BdAreaRegionMapper extends BaseMapper<BdAreaRegion> {
 	List<BdAreaRegion> getCountyList(@Nonnull @Param("cityCode") String cityCode);
 	List<String> getProvinceName(String provinceCode);
 	List<String> getCityName(String cityName);
+	void updateBdAreaRegion(BdAreaRegion entity);
 	
 	
 }

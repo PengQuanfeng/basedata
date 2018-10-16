@@ -78,13 +78,13 @@ public class BdQuickReplyServiceImpl extends ServiceImpl<BdQuickReplyMapper,BdQu
 	}
 
 	@Override
-	public Page<BdQuickReply> queryQuickReplyInfo(int offset, int limit) {
+	public Page<BdQuickReply> queryQuickReplyInfo(int offset, int limit,String typeCode) {//
 		// 构造分页实体
 //		Condition con=Condition.create();
 		Page<BdQuickReply> page = new Page<BdQuickReply>(offset, limit);
 //		con.orderBy("orderNumber", false);
 		
-		List<BdQuickReply> bdQuickReplyList = bdQuickReplyMapper.queryQuickReply(page);
+		List<BdQuickReply> bdQuickReplyList = bdQuickReplyMapper.queryQuickReply(page,typeCode);//
 		if (CollectionUtils.isNotEmpty(bdQuickReplyList)) {
 			page.setRecords(bdQuickReplyList);
 			return page;

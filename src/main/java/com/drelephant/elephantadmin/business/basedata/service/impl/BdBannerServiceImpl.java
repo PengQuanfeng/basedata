@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,11 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 		int count=bdBannerMapper.maxOrderNumber();	
 		entity.setOrderNumber(count+1);//排序字段		
 		entity.setStatus(Constans.ACTIVE);
+		String isOpen=entity.getIsOpenLink();
+		if(StringUtils.isBlank(isOpen)){
+			entity.setIsOpenLink("1");
+		}
+		
 		bdBannerMapper.saveBanner(entity);
 	}
 

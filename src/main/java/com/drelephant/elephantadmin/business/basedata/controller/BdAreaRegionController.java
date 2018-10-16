@@ -9,9 +9,12 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.plugins.Page;
@@ -62,19 +65,24 @@ public class BdAreaRegionController extends BaseController {
     }
     @ApiOperation("更新状态")
     @PostMapping("/updateStatus")
-    public R updateStatus(@RequestBody @ApiParam("数据对象")BdAreaRegion entity){
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "provinceCode", value = "省编码") ,
+        @ApiImplicitParam(name = "cityCode", value = "市编码") ,
+        @ApiImplicitParam(name = "countyCode", value = "区县编码") ,
+        @ApiImplicitParam(name = "status", value = "状态") 
+    })
+    public R updateStatus(@ApiParam("数据对象") @RequestBody BdAreaRegion entity){
     	if(entity == null){
-			return R.error("保存行政地区失败，参数无效!");
+			return R.error("修改行政地区失败，参数无效!");
 		}
     	bdAreaRegionService.updateStatus(entity);
         return R.ok().put("msg", "更新状态成功！");
     }
     @ApiOperation("单条删除")
     @PostMapping("/deleteCode")
-    @ApiImplicitParam(name = "id", value = "id", required = true)
-    public R deleteCode(@ApiParam("数据对象id")String id){
+    public R deleteCode(@ApiParam(value = "id", required = true) String id){  	
         return bdAreaRegionService.deleteBdAreaRegion(id);
-    }
+    } 
     @ApiOperation("批量更新地区状态")
     @PostMapping("/updateBatchCode")
     public R updateBatchCode(@ApiParam(value="是否启用")String status,@ApiParam("地区编码")String codes ){
@@ -88,37 +96,37 @@ public class BdAreaRegionController extends BaseController {
         return bdAreaRegionService.updateBatchBdAreaRegion(status,codes);
     }
     
-    @ApiOperation("获取行政地区tree")
-    @PostMapping("/getAreaRegionTree")
+//    @ApiOperation("获取行政地区tree")
+//    @PostMapping("/getAreaRegionTree")
     public R getAreaRegionTree(){  
     	return bdAreaRegionService.getAreaRegionTree();
     }
     
     @ApiOperation("获取省份列表")
-    @PostMapping("/getProvinceList")
+    @GetMapping("/getProvinceList")
     public R getProvinceList(){
     	return bdAreaRegionService.getProvinceList();
     }
     
     @ApiOperation("获取城市列表")
-    @PostMapping("/getCityList")
+    @GetMapping("/getCityList")
     public R getCityList(@ApiParam("省份编码")String provinceCode){
     	return bdAreaRegionService.getCityList(provinceCode);
     }
     
     @ApiOperation("获取区县列表")
-    @PostMapping("/getCountyList")
+    @GetMapping("/getCountyList")
     public R getCountyList(@ApiParam("城市编码")String cityCode){
     	return bdAreaRegionService.getCountyList(cityCode);
     }
     
-    @ApiOperation("列表数据")
-    
-    @PostMapping("/getListAdmin")
-    public R getListAdmin(@ApiParam(value="当前页")String current,@ApiParam("分页大小")String pageSize,
+    @ApiOperation("列表数据")   
+    @GetMapping("/getListAdmin")
+    public R getListAdmin(@ApiParam(value="当前页")@RequestParam(value="current" ,defaultValue="1" ,required=false)String current,
+    		@RequestParam(value="pageSize" ,defaultValue="1000" ,required=false)@ApiParam("分页大小") String pageSize,
     		@ApiParam("地区编码")String code,@ApiParam("省份code")String provinceCode,
     		@ApiParam("城市code")String cityCode,@ApiParam("区县code")String countyCode,
-    		@ApiParam("层级")Integer lever,@ApiParam("状态")String status ){ 
+    		@ApiParam("层级")  Integer level,@ApiParam("状态")String status ){ 
     	int offset = 1;
 		int limit = 1000;
 		if (StringUtils.isNotBlank(current)) {
@@ -129,12 +137,13 @@ public class BdAreaRegionController extends BaseController {
 			// 每页限制数
 			limit = Integer.parseInt(pageSize);
 		}
+		
     	Page<BdAreaRegion> page=new Page<>(offset,limit);
-    	bdAreaRegionService.getListBdAreaRegion(page, code, provinceCode, cityCode, countyCode, lever, status);
+    	bdAreaRegionService.getListBdAreaRegion(page, code, provinceCode, cityCode, countyCode, level, status);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
     @ApiOperation("层级下拉数据")
-    @PostMapping("/getListLevel")
+    @GetMapping("/getListLevel")
     public R getListLevel(){  
     	List<Map<String, Object>> levels = new ArrayList<Map<String, Object>>();
 		Map<String, Object> level = null;
@@ -150,7 +159,7 @@ public class BdAreaRegionController extends BaseController {
     	return R.ok().put("list", levels);
     }
     @ApiOperation("状态下拉数据")
-    @PostMapping("/getListStatus")
+    @GetMapping("/getListStatus")
     public R getListStatus(){  
     	List<Map<String, Object>> statuss = new ArrayList<Map<String, Object>>();
 		Map<String, Object> status = null;

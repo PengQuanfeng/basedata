@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +58,7 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 			mBdAreaRegion.setProvinceName(list.get(0));
 			mBdAreaRegion.setCityCode(cityCode);
 			mBdAreaRegion.setCityName(listCity.get(0));
-		}else if(level==3){
+		}else {
 			mBdAreaRegion.setProvinceCode(provinceCode);
 			mBdAreaRegion.setProvinceName(list.get(0));
 			mBdAreaRegion.setCityCode(cityCode);
@@ -79,45 +80,39 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 	}
 
 	@Override
-	public R updateStatus(BdAreaRegion data) {
-		// TODO Auto-generated method stub
-		BdAreaRegion mBdAreaRegion=new BdAreaRegion();
-		BdAreaRegion mBdAreaRegion1=selectOne(Condition.create().eq("code", data.getCode()));
-		Integer lever=mBdAreaRegion1.getLevel();
-		if(lever==1){
-			mBdAreaRegion.setProvinceName(data.getProvinceName());
-			mBdAreaRegion.setProvinceCode(data.getProvinceCode());
-			mBdAreaRegion.setStatus(data.getStatus());
-		}else if(lever==2){
-			mBdAreaRegion.setProvinceName(data.getProvinceName());
-			mBdAreaRegion.setProvinceCode(data.getProvinceCode());
-			mBdAreaRegion.setCityCode(data.getCityCode());
-			mBdAreaRegion.setCityName(data.getCityName());
-			mBdAreaRegion.setStatus(data.getStatus());
-		}else{
-			mBdAreaRegion.setProvinceName(data.getProvinceName());
-			mBdAreaRegion.setProvinceCode(data.getProvinceCode());
-			mBdAreaRegion.setCityCode(data.getCityCode());
-			mBdAreaRegion.setCityName(data.getCityName());
-			mBdAreaRegion.setCountyCode(data.getCountyCode());
-			mBdAreaRegion.setCountyName(data.getCountyName());
-			mBdAreaRegion.setStatus(data.getStatus());
+	@Transactional
+	public R updateStatus(BdAreaRegion entity) {				
+		if (StringUtils.isBlank(entity.getCode())) {
+			return R.error("编码为空");
 		}
-		boolean flag=update(mBdAreaRegion,Condition.create().eq("code", data.getCode()));
-		return flag?R.ok():R.error("更新失败");
+		if (entity.getLevel()==null) {
+			entity.setLevel(1);			
+		}
+		Condition con=Condition.create();
+		con.eq("code", entity.getCode());
+		boolean flag=update(entity,con);
+		//mBdAreaRegionMapper.updateBdAreaRegion(entity);
+		return flag?R.ok():R.error();
+		
 	}
 
 	@Override
-	public R deleteBdAreaRegion(String id) {
+	@Transactional
+	public R deleteBdAreaRegion( String id) {
+		if(StringUtils.isBlank(id)){
+			return R.error("参数为空");
+		}
 		BdAreaRegion mBdAreaRegion=new BdAreaRegion();
 		mBdAreaRegion.setStatus(Constans.DELETED);
-		boolean flag=update(mBdAreaRegion,Condition.create().eq("id", id));
-		return flag?R.ok():R.error("删除失败");
+		Condition con=Condition.create();
+		con.eq("id", id);
+		boolean flag=update(mBdAreaRegion,con);	
+		return flag?R.ok().put("msg", "删除成功"):R.error().put("msg", "删除失败");
 	}
 
 	@Override
 	public Page<BdAreaRegion> getListBdAreaRegion(Page<BdAreaRegion> page,String code,String provinceCode,
-    		String cityCode,String countyCode,Integer lever,String status) {
+    		String cityCode,String countyCode,Integer level,String status) {
 				
 		Condition con=Condition.create();
 		if(StringUtils.isNotBlank(code)){
@@ -132,8 +127,8 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 		if(StringUtils.isNotBlank(countyCode)){
 			con.eq("countyCode", countyCode);
 		}
-		if(lever !=null){
-			con.eq("lever", lever);
+		if(level !=null){
+			con.eq("level", level);
 		}
 		if(StringUtils.isNotBlank(status)){			
 			con.eq("status", status);
@@ -163,7 +158,7 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 				flag=update(mBdAreaRegion,Condition.create().eq("code", list.get(j)));
 			}
 		}
-		return flag?R.ok():R.error("更新失败");
+		return flag?R.ok().put("msg", "成功"):R.error().put("msg", "失败");
 	}
 
 	@Override

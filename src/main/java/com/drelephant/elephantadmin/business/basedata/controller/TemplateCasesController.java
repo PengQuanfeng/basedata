@@ -89,12 +89,12 @@ public class TemplateCasesController extends BaseController {
         return templateCasesService.deleteOneTemp(tmpCode);
     }
     @ApiOperation("获取1级科室列表")
-    @PostMapping("/getLv1DeptList")
+    @GetMapping("/getLv1DeptList")
     public R getLv1DeptList(){
     	return templateCasesService.getLv1List();
     }
     @ApiOperation("获取2级科室列表")
-    @PostMapping("/getLv2DeptList")
+    @GetMapping("/getLv2DeptList")
     public R getLv2DeptList(String lv1DeptCode){
     	return templateCasesService.getLv2List(lv1DeptCode);
     }
@@ -142,13 +142,13 @@ public class TemplateCasesController extends BaseController {
     	return templateCasesService.updateOneTemp(data);
     }
     @ApiOperation("单条查询模板数据")
-    @PostMapping("/getOneTemp")
+    @GetMapping("/getOneTemp")
     public R getOneTemp(@ApiParam("数据对象")String tmpCode){
     	TemplateCases temp=templateCasesService.selectOneTemp(tmpCode);
     	return R.ok().put("list", temp);
     }
     @ApiOperation("批量查询模板数据")
-    @PostMapping("/getListTemp")
+    @GetMapping("/getListTemp")
     public R getListTemp(@ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize,
     		@ApiParam("一级编码")String lv1DeptCode,@ApiParam("二级编码")String lv2DeptCode,
     		@ApiParam("模板名称")String tmpName,@ApiParam("模板类型")String templateType,@ApiParam("状态")String status){

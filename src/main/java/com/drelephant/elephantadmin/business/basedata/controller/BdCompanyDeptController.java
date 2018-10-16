@@ -2,6 +2,7 @@ package com.drelephant.elephantadmin.business.basedata.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,7 +62,7 @@ public class BdCompanyDeptController extends BaseController {
     }
     
     @ApiOperation("获取部门信息列表的list")
-    @PostMapping("/getDeptList")
+    @GetMapping("/getDeptList")
     public R getDeptList(
     		@ApiParam(value="公司编码",required = true) String companyCode, 
     		@ApiParam(value="当前页",required = true) int current, 
@@ -70,7 +71,7 @@ public class BdCompanyDeptController extends BaseController {
     }
     
     @ApiOperation("获取部门信息")
-    @PostMapping("/getDept")
+    @GetMapping("/getDept")
     public R getDept(
     		@ApiParam(value="部门编码",required = true) String code){        
         return bdCompanyDeptService.getDept(code);

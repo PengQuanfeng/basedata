@@ -21,7 +21,7 @@ public interface BdQuickReplyService extends IService<BdQuickReply>{
 	
 	void saveQuickReply(BdQuickReply entity);
 	void updateQuickReply(BdQuickReply entity);
-	Page<BdQuickReply> queryQuickReplyInfo(int offset, int limit);
+	Page<BdQuickReply> queryQuickReplyInfo(int offset, int limit,String typeCode);//
 	void deleteQuickReplyById(String id);
 	/**
 	 * 上移

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.drelephant.elephantadmin.business.basedata.mapper.BdAreaRegionMapper">
 
-	<!-- 开启二级缓存 -->
+	<!-- 开启二级缓存  -->
 	<select id="listLevel" resultType="java.lang.Integer">
 		select DISTINCT level from bd_area_region 
 	</select>
@@ -28,4 +28,45 @@
 	<select id="getCityName" resultType="java.lang.String">		
 		select cityName from bd_area_region where cityCode=#{cityCode}
 	</select>
+	<update id="updateBdAreaRegion" 
+		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
+		update bd_area_region
+		<set>
+			<if test="provinceName != null and provinceName.trim() != ''">
+				provinceName = #{provinceName}, 
+			</if>
+			<if test="provinceCode != null and provinceCode.trim() != ''">
+				provinceCode = #{provinceCode}, 
+			</if>
+			<if test="cityCode != null and cityCode.trim() != ''">
+				cityCode = #{cityCode}, 
+			</if>
+			<if test="cityName != null and cityName.trim() != ''">
+				cityName = #{cityName}, 
+			</if>	
+			<if test="countyName != null and countyName.trim() != ''">
+				countyName = #{countyName}, 
+			</if>
+			<if test="countyCode != null and countyCode.trim() != ''">
+				countyCode = #{countyCode}, 
+			</if>	
+			<if test="status != null and status.trim() != ''">
+				status = #{status}, 
+			</if>				
+			<!-- 修改操作公共字段 S -->
+			<if test="updateTime != null and updateTime != ''">
+				updateTime = #{updateTime}, 
+			</if>
+			<if test="updateUserCode != null and updateUserCode != ''">
+				updateUserCode = #{updateUserCode}, 
+			</if>
+			<if test="updateUserName != null and updateUserName != ''">
+				updateUserName = #{updateUserName}, 
+			</if> 
+			<if test="version != null and version != ''">
+				version = #{version}
+			</if> 
+		</set> 
+		where id = #{id}
+	</update>
 </mapper>

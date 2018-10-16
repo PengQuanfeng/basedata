@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.plugins.Page;
@@ -73,8 +74,9 @@ public class BdQuickReplyController extends BaseController{
 	}
 	@ApiOperation("查询快捷回复")
 	@GetMapping("/list")
-	public R list(@ApiParam("当前页") String current, @ApiParam("每页显示记录数") String pageSize
-			) {
+	public R list(@ApiParam("当前页")@RequestParam(value="current" ,defaultValue="1" ,required=false) String current, 
+			@ApiParam("每页显示记录数")@RequestParam(value="pageSize" ,defaultValue="1000" ,required=false) String pageSize
+			,@ApiParam("服务类型编码")@RequestParam(value="typeCode" ,defaultValue="ZXZX"  ,required=false)String typeCode) {//
 		int offset = 1;
 		int limit = 1000;
 		if (StringUtils.isNotBlank(current)) {
@@ -85,7 +87,7 @@ public class BdQuickReplyController extends BaseController{
 			// 每页限制数
 			limit = Integer.parseInt(pageSize);
 		}
-		Page<BdQuickReply> page = bdQuickReplyService.queryQuickReplyInfo(offset, limit);
+		Page<BdQuickReply> page = bdQuickReplyService.queryQuickReplyInfo(offset, limit,typeCode);//
 		return R.ok().put("list", page.getRecords()).put("total", page.getTotal());
 	}
 	@ApiOperation("删除快捷回复")

@@ -38,33 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BdHospitalDeptController extends BaseController {
     @Autowired
     private BdHospitalDeptService bdHospitalDeptService;
-    @ApiOperation("获取list")
-    @PostMapping("/list")
-    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-        Page<BdHospitalDept> page=new Page<>(current,pageSize);
-        bdHospitalDeptService.selectPage(page);
-        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
-    }
-    @ApiOperation("新增")
-    @PostMapping("/add")
-    public R save(@ApiParam("数据对象")BdHospitalDept data){
-        return bdHospitalDeptService.insert(data)?R.ok():R.error("保存错误");
-    }
-    @ApiOperation("删除")
-    @PostMapping("/delete")
-    public R delete(@ApiParam("数据对象id")String id){
-        return bdHospitalDeptService.deleteById(id)?R.ok():R.error("删除错误");
-    }
-    @ApiOperation("更新")
-    @PostMapping("/update")
-    public R update(@ApiParam("数据对象")BdHospitalDept data){
-        return bdHospitalDeptService.updateById(data)?R.ok():R.error("更新错误");
-    }
-    @ApiOperation("通过ID获取一条数据")
-    @PostMapping("/info")
-    public R update(@ApiParam("数据对象id")String id){
-        return R.ok().put("info",bdHospitalDeptService.selectById(id));
-    }
+
     /**********************新增接口方法***********************/
     @ApiOperation("新增科室信息")
     @PostMapping("/saveDept")
@@ -88,7 +62,7 @@ public class BdHospitalDeptController extends BaseController {
         return bdHospitalDeptService.deleteOneHost(data);
     }
     @ApiOperation("获取科室信息列表")
-    @PostMapping("/getListDept")
+    @GetMapping("/getListDept")
     public R getListDept(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,@ApiParam("科室编码")String lv1Code,
     		@ApiParam("2级科室code")String lv2Code,@ApiParam("3级科室code")String lv3Code,
     		@ApiParam("层级")String level,@ApiParam("状态")String status){
@@ -133,17 +107,17 @@ public class BdHospitalDeptController extends BaseController {
     	return R.ok().put("list", statuss);
     }
     @ApiOperation("获取1级科室列表")
-    @PostMapping("/getLv1NameList")
+    @GetMapping("/getLv1NameList")
     public R getLv1NameList(){  	
     	return bdHospitalDeptService.getLv1List();
     }
     @ApiOperation("获取2级科室列表")
-    @PostMapping("/getLv2NameList")
+    @GetMapping("/getLv2NameList")
     public R getLv2NameList(String lv1Code){
     	return bdHospitalDeptService.getLv2List(lv1Code);
     }
     @ApiOperation("获取3级科室列表")
-    @PostMapping("/getLv3NameList")
+    @GetMapping("/getLv3NameList")
     public R getLv3NameList(String lv2Code){
     	return bdHospitalDeptService.getLv3List(lv2Code);
     }

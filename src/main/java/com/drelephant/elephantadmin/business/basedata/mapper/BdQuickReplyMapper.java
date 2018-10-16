@@ -23,7 +23,7 @@ import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
 public interface BdQuickReplyMapper extends BaseMapper<BdQuickReply> {
 	int saveQuickReply(BdQuickReply entity);
 	int updateQuickReply(BdQuickReply entity);
-	List<BdQuickReply> queryQuickReply(Pagination page);//
+	List<BdQuickReply> queryQuickReply(Pagination page,@Param(value="typeCode")String typeCode);//
 	int deleteQuickReplyById(@Param("id") String id);
 	List<BdQuickReply> getAll();
 	/**

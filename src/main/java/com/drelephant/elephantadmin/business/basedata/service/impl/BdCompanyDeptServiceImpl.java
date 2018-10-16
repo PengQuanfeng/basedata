@@ -68,7 +68,7 @@ public class BdCompanyDeptServiceImpl extends ServiceImpl<BdCompanyDeptMapper, B
 				}
 			}
 		}
-		String code = "BM" + StringUtils.leftPad(Integer.toString(order + 1), 4, "0"); // 公司编号：GS+0000，从0001自增长
+		String code = "BM" + StringUtils.leftPad(Integer.toString(order + 1), 4, "0"); // 公司编号：BM+0000，从0001自增长
 		BdCompanyDept mBdCompanyDept=new BdCompanyDept();		
 		mBdCompanyDept.setCode(code);
 		

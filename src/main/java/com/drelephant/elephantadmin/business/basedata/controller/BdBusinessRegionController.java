@@ -42,7 +42,7 @@ public class BdBusinessRegionController extends BaseController {
     
     @ApiOperation("业务区域信息新增")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "serviceCategoryName", value = "层级编码", required = true),
+        @ApiImplicitParam(name = "level", value = "层级编码", required = true),
         @ApiImplicitParam(name = "lv1Code", value = "区域编码", required = true),
         @ApiImplicitParam(name = "lv1Name", value = "一级区域名称", required = true)       
     })
@@ -103,12 +103,12 @@ public class BdBusinessRegionController extends BaseController {
     	return R.ok().put("list", levels);
     }
     @ApiOperation("1级区域列表")
-    @PostMapping("/getListLv1")
+    @GetMapping("/getListLv1")
     public R getListLv1(){    	
         return bdBusinessRegionService.bdLv1();
     }
     @ApiOperation("2级区域列表")
-    @PostMapping("/getListLv2")
+    @GetMapping("/getListLv2")
     public R getListLv2(String lv1Code){    	
         return bdBusinessRegionService.bdLv2(lv1Code);
     }

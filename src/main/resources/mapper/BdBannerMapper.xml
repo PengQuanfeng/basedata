@@ -19,7 +19,7 @@
 			<include refid="BD_BANNER_COLUMN" />)
 		values(
 			#{id},#{bannerType},#{fileId},#{orderNumber},#{fileType},#{remark},
-			#{linkAddress},#{picAddress},#{isOpenLink},#{createTime},#{createUserCode}
+			#{linkAddress},#{picAddress},#{isOpenLink},#{createTime},#{createUserCode},#{createUserName}
 			,#{updateTime},#{updateUserName},#{version},#{status}
 		)
 	</insert>
