@@ -46,6 +46,7 @@ public class BdCompanyDeptController extends BaseController {
     }
     
 	@ApiImplicitParams({
+		@ApiImplicitParam(name = "code", value = "部门编码", required = true),
 		@ApiImplicitParam(name = "name", value = "部门名称", required = true),
 		@ApiImplicitParam(name = "deptEmail", value = "负责人邮箱", required = true)
 	})
@@ -54,7 +55,10 @@ public class BdCompanyDeptController extends BaseController {
     public R updateDept(@RequestBody @ApiParam("数据对象") BdCompanyDept data){
         return bdCompanyDeptService.updateDept(data);
     }
-    
+	
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "code", value = "部门编码", required = true),
+	})
     @ApiOperation("删除部门")
     @PostMapping("/deleteDept")
     public R deleteDept(@ApiParam("部门编码") String code){

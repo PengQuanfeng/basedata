@@ -108,6 +108,7 @@ public class BdCompanyDeptServiceImpl extends ServiceImpl<BdCompanyDeptMapper, B
 		
 		BdCompanyDept mBdCompanyDept=new BdCompanyDept();
 		mBdCompanyDept.setName(data.getName());
+		mBdCompanyDept.setDeptEmail(data.getDeptEmail());
 		boolean flag=update(mBdCompanyDept,Condition.create().eq("code", data.getCode()));
 		return flag?R.ok():R.error("更新异常");
 	}
