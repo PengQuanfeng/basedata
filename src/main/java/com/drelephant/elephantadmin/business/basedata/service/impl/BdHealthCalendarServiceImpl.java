@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdHealthCalendarMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdHealthCalendarService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.elephantadmin.business.basedata.util.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,31 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
 
     @Override
     public void saveBdHealthCalendar(BdHealthCalendar entity) {
-        bdHealthCalendarMapper.saveBdHealthCalendar(entity);
+    	BdHealthCalendar con = new BdHealthCalendar();
+    	con.setPublishTime(entity.getPublishTime());
+    	BdHealthCalendar oldBdHealthCalendar = bdHealthCalendarMapper.selectOne(con);
+    	if (oldBdHealthCalendar == null) {
+    		entity.setStatus(Constans.ACTIVE);
+            bdHealthCalendarMapper.saveBdHealthCalendar(entity); // 新增
+    	} else {
+    		oldBdHealthCalendar.setPublishTime(entity.getPublishTime());
+    		//
+    		Condition con0 = Condition.create();
+    		con0.eq("id", oldBdHealthCalendar.getId());
+			//
+    		oldBdHealthCalendar.setStatus(Constans.ACTIVE);
+    		oldBdHealthCalendar.setContentPicId(entity.getContentPicId());
+    		update(oldBdHealthCalendar, con0); // 更新
+    	}
     }
 
     @Override
-    public void deleteBdHealthCalendar(String id) {
-        bdHealthCalendarMapper.deleteHealthCalendarById(id);
+    public boolean deleteBdHealthCalendar(String id) {    	
+        BdHealthCalendar item = new BdHealthCalendar();
+        item.setStatus(Constans.DELETED);
+		Condition con = Condition.create();
+		con.eq("id", id);
+		return update(item, con);
     }
 
     @Override
@@ -57,7 +77,7 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
         //2.select
         List<BdHealthCalendar> dbList = getListBetween(start, end);
         //3.数据封装
-        List<BdHealthCalendar> resultList = getListBetween(start, end);
+        List<BdHealthCalendar> resultList = new ArrayList<BdHealthCalendar>();
         BdHealthCalendar data;
         for (Date date1 : dateList) {
             //比较, date1的时间和 返回结果中的数据的时间相同
@@ -75,7 +95,7 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
     }
 
     @Override
-    public List<Date> selectListMonth(@Nullable String dateStr) {
+    public List<String> selectListMonth(@Nullable String dateStr) {
         //1，截取,异常则返回空数组。
         int year, month;
         try {
@@ -106,9 +126,10 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
         }
         //3.select
         List<BdHealthCalendar> listBetween = getListBetween(start, end);
-        List<Date> hasDateList = new ArrayList<>(30);
+        List<String> hasDateList = new ArrayList<String>();
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
         listBetween.forEach(v -> {
-            hasDateList.add(v.getPublishTime());
+            hasDateList.add(s.format(v.getPublishTime()));
         });
         return hasDateList;
     }

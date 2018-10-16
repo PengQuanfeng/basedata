@@ -19,7 +19,7 @@ import java.util.List;
 public interface BdHealthCalendarService extends IService<BdHealthCalendar> {
     void saveBdHealthCalendar(BdHealthCalendar entity);
 
-    void deleteBdHealthCalendar(@Param("id") String id);
+    boolean deleteBdHealthCalendar(@Param("id") String id);
 
 
     /**
@@ -36,5 +36,5 @@ public interface BdHealthCalendarService extends IService<BdHealthCalendar> {
      * @param dateStr dateStr
      * @return list
      */
-    List<Date> selectListMonth(@Nullable  String dateStr);
+    List<String> selectListMonth(@Nullable  String dateStr);
 }
