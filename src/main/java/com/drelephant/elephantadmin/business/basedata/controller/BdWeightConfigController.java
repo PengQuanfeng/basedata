@@ -29,7 +29,7 @@ public class BdWeightConfigController extends BaseController {
     /**
      * 增加权重
      *
-     * @param bdWeightConfig
+     * @param bdWeightConfig 数据对象
      * @return
      */
     @PostMapping("/save")
