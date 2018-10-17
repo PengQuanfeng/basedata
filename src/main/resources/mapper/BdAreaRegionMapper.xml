@@ -28,6 +28,10 @@
 	<select id="getCityName" resultType="java.lang.String">		
 		select cityName from bd_area_region where cityCode=#{cityCode}
 	</select>
+		<!-- 根据省编码和市编码得到市名称 -->
+	<select id="selectProviceNameFromCode"  resultType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
+		select * from bd_area_region where provinceCode =#{provinceCode} and cityCode =#{cityCode}  and level='2' 
+	</select>
 	<update id="updateBdAreaRegion" 
 		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
 		update bd_area_region

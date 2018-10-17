@@ -46,4 +46,10 @@ public interface BdOrgMapper extends BaseMapper<BdOrg> {
 	 * @return
 	 */
 	List<String> selectCompanyCodes();
+	/**
+	 * 更具name查询条数
+	 * @param name
+	 * @return
+	 */
+	int selectNameCount(@Param("name")String name,@Param("orgNature")String orgNature);
 }

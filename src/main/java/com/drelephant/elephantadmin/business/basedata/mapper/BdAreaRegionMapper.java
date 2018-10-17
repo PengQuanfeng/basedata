@@ -44,6 +44,13 @@ public interface BdAreaRegionMapper extends BaseMapper<BdAreaRegion> {
 	List<String> getProvinceName(String provinceCode);
 	List<String> getCityName(String cityName);
 	void updateBdAreaRegion(BdAreaRegion entity);
+	/**
+	 * 根据省编码和市编码查询市名称和省
+	 * @param provinceCode
+	 * @param cityCode
+	 * @return
+	 */
+	BdAreaRegion selectProviceNameFromCode(@Param("provinceCode")String provinceCode,@Param("cityCode")String cityCode);
 	
 	
 }

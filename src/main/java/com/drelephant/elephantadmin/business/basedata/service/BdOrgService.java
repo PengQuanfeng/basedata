@@ -29,9 +29,9 @@ public interface BdOrgService extends IService<BdOrg> {
 	//单条修改医院状态
 	R updateOneHosStatus(BdOrg data);
 	//单条删除医院状态
-	R deleteOneHosStatus(BdOrg data);
+	R deleteOneHosStatus(String id);
 	//批量更新医院状态
-	R deleteBatchHosStatus(String status,String code);
+	R editBatchHosStatus(String status,String code);
 	
 	/**
 	 * 获取省份列表
