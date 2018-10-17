@@ -80,7 +80,7 @@ public class BdServiceActivityController extends BaseController {
 	@ApiOperation("编辑活动记录")
 	@PostMapping("/edit")
 	public R edit(@RequestBody @ApiParam("编辑活动记录") BdServiceActivity entity) {
-		if(entity != null){
+		if(entity == null){
 			return R.error("编辑活动记录失败，参数无效!");
 		}
 		bdServiceActivityService.updateBdServiceActivity(entity);

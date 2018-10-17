@@ -262,19 +262,19 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	@Override
 	public R deleteOneHosStatus(String code) {
 		//TODO 判断医院下是否有所属医生信息 
-		Condition con=Condition.create();
-		con.eq("orgNature", Constans.ORG_NATURE_HOSPITAL);
-		con.where("status !={0}", Constans.DELETED);
-		con.eq("code", code);
-		BdOrg  data=selectOne(con);
+//		Condition con=Condition.create();
+//		con.eq("orgNature", Constans.ORG_NATURE_HOSPITAL);
+//		con.where("status !={0}", Constans.DELETED);
+//		con.eq("code", code);
+//		BdOrg  data=selectOne(con);
 //		String status=data.getStatus();
 //		String code=data.getCode();//医院对应的code
-		if(1==1){
-			return R.error().put("msg", "医院下有医生信息不能删除");
-		}
+//		if(1==1){
+//			return R.error().put("msg", "医院下有医生信息不能删除");
+////		}
 		BdOrg bdOrg=new BdOrg();
-		data.setStatus(Constans.DELETED);
-		boolean flag=update(data,Condition.create().eq("code", code));
+		bdOrg.setStatus(Constans.DELETED);
+		boolean flag=update(bdOrg,Condition.create().eq("code", code));
 		return flag?R.ok():R.error("删除失败");
 	}
 

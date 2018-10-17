@@ -130,7 +130,8 @@ public class BdOrgController extends BaseController {
     }
     @ApiOperation("单条删除医院信息")
     @PostMapping("/deleteOneHosStatus")
-    public R deleteOneHosStatus(@ApiParam(value="医院编码",required=true)String code){
+    public R deleteOneHosStatus(@RequestBody Map<String, String> map){
+    	String code = map.get("code");
     	if(StringUtils.isBlank(code)){
 			return R.error().put("msg", "医院code不能为空");
 		}

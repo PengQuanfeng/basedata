@@ -51,6 +51,11 @@ public interface BdAreaRegionMapper extends BaseMapper<BdAreaRegion> {
 	 * @return
 	 */
 	BdAreaRegion selectProviceNameFromCode(@Param("provinceCode")String provinceCode,@Param("cityCode")String cityCode);
-	
+	/**
+	 * 根据省编码查询省名称
+	 * @param provinceCode
+	 * @return
+	 */
+	BdAreaRegion selectPName(@Param("provinceCode")String provinceCode);
 	
 }

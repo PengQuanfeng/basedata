@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiParam;
  * @author com.drelephant
  * @since 2018-10-09
  */
-@Api(tags = "地区区域信息管理")
+@Api(tags = "行政地区区域信息管理")
 @RestController
 @RequestMapping("bdAreaRegion")
 public class BdAreaRegionController extends BaseController {
@@ -49,9 +49,11 @@ public class BdAreaRegionController extends BaseController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "level", value = "层级", required = true),
         @ApiImplicitParam(name = "code", value = "编码", required = true),
-        @ApiImplicitParam(name = "provinceCode", value = "省编码") ,
-        @ApiImplicitParam(name = "cityCode", value = "市编码") ,
-        @ApiImplicitParam(name = "countyCode", value = "区县编码") ,
+        @ApiImplicitParam(name = "provinceName", value = "省份") ,
+        @ApiImplicitParam(name = "provinceCode", value = "省份编码") ,
+        @ApiImplicitParam(name = "cityName", value = "城市") ,
+        @ApiImplicitParam(name = "cityCode", value = "城市") ,
+        @ApiImplicitParam(name = "countyName", value = "区县"),
         @ApiImplicitParam(name = "status", value = "状态") 
     })
     @ApiOperation("行政地区新增")
@@ -66,22 +68,30 @@ public class BdAreaRegionController extends BaseController {
     @ApiOperation("更新状态")
     @PostMapping("/updateStatus")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "provinceCode", value = "省编码") ,
-        @ApiImplicitParam(name = "cityCode", value = "市编码") ,
-        @ApiImplicitParam(name = "countyCode", value = "区县编码") ,
+        @ApiImplicitParam(name = "level", value = "层级", required = true),
+        @ApiImplicitParam(name = "code", value = "编码", required = true),
+        @ApiImplicitParam(name = "provinceName", value = "省份") ,
+        @ApiImplicitParam(name = "provinceCode", value = "省份编码") ,
+        @ApiImplicitParam(name = "cityName", value = "城市") ,
+        @ApiImplicitParam(name = "cityCode", value = "城市") ,
+        @ApiImplicitParam(name = "countyName", value = "区县"),
         @ApiImplicitParam(name = "status", value = "状态") 
     })
-    public R updateStatus(@ApiParam("数据对象") @RequestBody BdAreaRegion entity){
+    public R updateStatus(@RequestBody @ApiParam("数据对象") BdAreaRegion entity){
     	if(entity == null){
 			return R.error("修改行政地区失败，参数无效!");
 		}
-    	bdAreaRegionService.updateStatus(entity);
-        return R.ok().put("msg", "更新状态成功！");
+    	
+        return bdAreaRegionService.updateStatus(entity);
     }
     @ApiOperation("单条删除")
-    @PostMapping("/deleteCode")
-    public R deleteCode(@ApiParam(value = "id", required = true) String id){  	
-        return bdAreaRegionService.deleteBdAreaRegion(id);
+    @PostMapping("/deleteBdAreaRegion")
+    public R deleteBdAreaRegion(@RequestBody Map<String, String> map ){  
+    	String code = map.get("code");
+    	if(StringUtils.isBlank(code)){
+			return R.error().put("msg", "删除失败");
+		}
+        return bdAreaRegionService.deleteBdAreaRegion(code);
     } 
     @ApiOperation("批量更新地区状态")
     @PostMapping("/updateBatchCode")
@@ -110,13 +120,13 @@ public class BdAreaRegionController extends BaseController {
     
     @ApiOperation("获取城市列表")
     @GetMapping("/getCityList")
-    public R getCityList(@ApiParam("省份编码")String provinceCode){
+    public R getCityList(@ApiParam(value="省份编码")String provinceCode){
     	return bdAreaRegionService.getCityList(provinceCode);
     }
     
     @ApiOperation("获取区县列表")
     @GetMapping("/getCountyList")
-    public R getCountyList(@ApiParam("城市编码")String cityCode){
+    public R getCountyList(@ApiParam(value="城市编码")String cityCode){
     	return bdAreaRegionService.getCountyList(cityCode);
     }
     
@@ -134,7 +144,7 @@ public class BdAreaRegionController extends BaseController {
     @GetMapping("/getListAdmin")
     public R getListAdmin(@ApiParam(value="当前页")@RequestParam(value="current" ,defaultValue="1" ,required=false)String current,
     		@RequestParam(value="pageSize" ,defaultValue="1000" ,required=false)String pageSize,
-    		String code,@ApiParam("省份code")String provinceCode,String cityCode,@ApiParam("区县code")String countyCode,
+    		String code,String provinceCode,String cityCode,String countyCode,
     		Integer level,String status ){ 
     	int offset = 1;
 		int limit = 1000;

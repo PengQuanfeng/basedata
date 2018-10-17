@@ -56,23 +56,11 @@ public class TemplateCasesServiceImpl extends ServiceImpl<TemplateCasesMapper, T
 		bdHospitE2.setLevel(2);
 		BdHospitalDept bdHospit2=bdHospitalDeptMapper.selectOne(bdHospitE2);
 		if(count==0){
-//			TemplateCases mtemplateCases=new TemplateCases();
-//			mtemplateCases.setTmpName(tmpName);
 			templateCases.setTmpCode(getRandom());	//模板编码	
 			templateCases.setLv1DeptName(bdHospit.getLv1Name());
 			templateCases.setLv2DeptName(bdHospit2.getLv2Name());
 			templateCases.setTemplateType(Constans.TEMPTYPE);
 			templateCases.setDoctorName("-");
-//			//科室编码查询科室名称
-//			mtemplateCases.setLv1DeptCode(templateCases.getLv1DeptCode());
-//			mtemplateCases.setLv1DeptName(templateCases.getLv1DeptName());
-//			mtemplateCases.setLv2DeptCode(templateCases.getLv2DeptCode());
-//			mtemplateCases.setLv2DeptName(templateCases.getLv2DeptName());
-//			mtemplateCases.setChiefComplaint(templateCases.getChiefComplaint());
-//			mtemplateCases.setIllnessHistory(templateCases.getIllnessHistory());
-//			mtemplateCases.setAnamnesis(templateCases.getAnamnesis());
-//			templateCases.setTemplateType(Constans.TEMPTYPE);		
-//			templateCases.setDoctorName("-");
 			String status=templateCases.getStatus();
 			if(StringUtils.isNotBlank(status)){
 				templateCases.setStatus(status);//状态

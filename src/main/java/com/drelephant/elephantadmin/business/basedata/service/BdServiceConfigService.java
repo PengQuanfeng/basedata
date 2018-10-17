@@ -1,5 +1,6 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.plugins.Page;
@@ -23,4 +24,8 @@ public interface BdServiceConfigService extends IService<BdServiceConfig> {
 	Map<String,String> getServiceType(String type);
 	
 	Page<BdServiceConfig> queryServiceConfigInfo(int offset, int limit,String id);
+	/*
+	 *服务类型获取
+	 */
+	List<Map<String, String>> getServiceTypes();
 }

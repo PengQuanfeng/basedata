@@ -37,45 +37,83 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 	@Transactional
 	public R insertBdAreaRegion(BdAreaRegion data) {
 		// TODO Auto-generated method stub
-		BdAreaRegion mBdAreaRegion=new BdAreaRegion();
+		if(StringUtils.isBlank(data.getCode())){ 
+			return R.error().put("msg", "地区编码为空");
+		}
 		Condition con=Condition.create();
 		con.eq("code", data.getCode());
 		con.where("status !={0}", Constans.DELETED);
 		int count=selectCount(con);
-		boolean flag=false;
-		String provinceCode=data.getProvinceCode();
-		String cityCode=data.getCityCode();
-		List<String> list=mBdAreaRegionMapper.getProvinceName(provinceCode);
-		List<String> listCity=mBdAreaRegionMapper.getCityName(cityCode);
-		int level=data.getLevel();
-		mBdAreaRegion.setCode(data.getCode());
-		mBdAreaRegion.setLevel(level);		
+		if(count>0){
+			return R.error().put("msg", "地区编码已经存在");
+		}						
+		Integer level=data.getLevel();
+		if(level==null){
+			level=3;
+		}
 		if(level==1){
-			mBdAreaRegion.setProvinceName(list.get(0));
-			mBdAreaRegion.setProvinceCode(provinceCode);
+			String provinceName=data.getProvinceName();
+			if(StringUtils.isBlank(provinceName)){
+				return R.error().put("msg", "省名称不能为空");
+			}
+			Condition con1=Condition.create();
+			con1.eq("provinceName", provinceName);
+			con1.eq("level", 1);
+			con1.where("status !={0}", Constans.DELETED);
+			int countPro=selectCount(con1);
+			if(countPro>0){
+				return R.error().put("msg", "省名称已经存在");
+			}
+			data.setProvinceCode(getRandom());
+			data.setLevel(1);
 		}else if(level==2){
-			mBdAreaRegion.setProvinceCode(provinceCode);
-			mBdAreaRegion.setProvinceName(list.get(0));
-			mBdAreaRegion.setCityCode(cityCode);
-			mBdAreaRegion.setCityName(listCity.get(0));
+			String provinceCode=data.getProvinceCode();
+			String cityName=data.getCityName();
+			if(StringUtils.isBlank(provinceCode)||StringUtils.isBlank(cityName)){
+				return R.error().put("msg", "参数不能为空");
+			}
+			Condition con2=Condition.create();
+			con2.eq("level", 2);
+			con2.where("status !={0}", Constans.DELETED);
+			con2.eq("provinceCode", provinceCode);
+			con2.eq("cityName", cityName);			
+			int countC=selectCount(con2);
+			if(countC>0){
+				return R.error().put("msg", "城市名称已经存在");
+			}
+			BdAreaRegion  BdAreaRegion =mBdAreaRegionMapper.selectPName(provinceCode);
+			data.setProvinceName(BdAreaRegion.getProvinceName());			
+			data.setCityCode(getRandom());	
+			data.setLevel(2);
 		}else {
-			mBdAreaRegion.setProvinceCode(provinceCode);
-			mBdAreaRegion.setProvinceName(list.get(0));
-			mBdAreaRegion.setCityCode(cityCode);
-			mBdAreaRegion.setCityName(listCity.get(0));
-			mBdAreaRegion.setCountyCode(getRandom());
-			mBdAreaRegion.setCountyName(data.getCountyName());
+			String provinceCode=data.getProvinceCode();
+			String cityCode=data.getCityCode();
+			String countyName=data.getCountyName();
+			if(StringUtils.isBlank(countyName)){
+				return R.error().put("msg", "参数不能为空");
+			}
+			Condition con3=Condition.create();
+			con3.eq("provinceCode", provinceCode);
+			con3.eq("cityCode", cityCode);
+			con3.eq("level", 3);
+			con3.where("status !={0}", Constans.DELETED);
+			con3.eq("countyName", countyName);							
+			BdAreaRegion bdAreaRegion=mBdAreaRegionMapper.selectProviceNameFromCode(provinceCode,cityCode);
+			if(bdAreaRegion==null||StringUtils.isBlank(data.getCountyName())){
+				return R.error().put("msg", "区县参数错误");
+			}
+			data.setProvinceName(bdAreaRegion.getProvinceName());
+			data.setCityName(bdAreaRegion.getCityName());
+			data.setCountyCode(getRandom());
+			data.setLevel(3);
 		}
 		String status=data.getStatus();
 		if(StringUtils.isNotBlank(status)){
-			mBdAreaRegion.setStatus(status);//状态
+			data.setStatus(status);//状态
 		}else{
-			mBdAreaRegion.setStatus(Constans.ACTIVE);//初始有效
-		}
-		if(count==0){											
-			flag=insert(mBdAreaRegion);
-			return R.ok().put("msg", "保存行政地区成功！");
-		}	
+			data.setStatus(Constans.ACTIVE);//初始有效
+		}											
+		boolean flag=insert(data);
 		return flag?R.ok():R.error("保存失败");
 	}
 
@@ -83,29 +121,80 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 	@Transactional
 	public R updateStatus(BdAreaRegion entity) {				
 		if (StringUtils.isBlank(entity.getCode())) {
-			return R.error("编码为空");
-		}
-		if (entity.getLevel()==null) {
-			entity.setLevel(1);			
+			return R.error().put("msg", "编码为空");
 		}
 		Condition con=Condition.create();
 		con.eq("code", entity.getCode());
-		boolean flag=update(entity,con);
-		//mBdAreaRegionMapper.updateBdAreaRegion(entity);
+		con.where("status !={0}", Constans.DELETED);
+		BdAreaRegion bdAreaRegionOne =selectOne(con);
+		int level=bdAreaRegionOne.getLevel();
+		if(level==1){
+			String provinceName=entity.getProvinceName();
+			if(StringUtils.isBlank(provinceName)){
+				return R.error().put("msg", "省名称不能为空");
+			}
+			Condition con1=Condition.create();
+			con1.eq("provinceName", provinceName);
+			con1.eq("level", 1);
+			con1.where("status !={0}", Constans.DELETED);
+			int countPro=selectCount(con1);
+			if(countPro>0){
+				return R.error().put("msg", "省名称已经存在");
+			}
+		}else if(level==2){
+			String provinceCode=entity.getProvinceCode();
+			String cityName=entity.getCityName();
+			if(StringUtils.isBlank(provinceCode)||StringUtils.isBlank(cityName)){
+				return R.error().put("msg", "参数不能为空");
+			}
+			Condition con2=Condition.create();
+			con2.eq("level", 2);
+			con2.where("status !={0}", Constans.DELETED);
+			con2.eq("provinceCode", provinceCode);
+			con2.eq("cityName", cityName);			
+			int countC=selectCount(con2);
+			if(countC>0){
+				return R.error().put("msg", "城市名称已经存在");
+			}
+			BdAreaRegion  bdAreaRegion =mBdAreaRegionMapper.selectPName(provinceCode);
+			entity.setProvinceName(bdAreaRegion.getProvinceName());	
+		}else { 
+			String provinceCode=entity.getProvinceCode();
+			String cityCode=entity.getCityCode();
+			String countyName=entity.getCountyName();
+			if(StringUtils.isBlank(provinceCode)||StringUtils.isBlank(cityCode)||StringUtils.isBlank(countyName)){
+				return R.error().put("msg", "参数不能为空");
+			}
+			Condition con3=Condition.create();
+			con3.eq("provinceCode", provinceCode);
+			con3.eq("cityCode", cityCode);
+			con3.eq("level", 3);
+			con3.where("status !={0}", Constans.DELETED);
+			con3.eq("countyName", countyName);							
+			BdAreaRegion bdAreaRegion=mBdAreaRegionMapper.selectProviceNameFromCode(provinceCode,cityCode);
+			if(bdAreaRegion==null||StringUtils.isBlank(entity.getCountyName())){
+				return R.error().put("msg", "省编码和市编码为空");
+			}
+			entity.setProvinceName(bdAreaRegion.getProvinceName());
+			entity.setCityName(bdAreaRegion.getCityName());
+		}
+		Condition cons=Condition.create();
+		cons.eq("code", entity.getCode());
+		boolean flag=update(entity,cons);
 		return flag?R.ok():R.error();
 		
 	}
 
 	@Override
 	@Transactional
-	public R deleteBdAreaRegion( String id) {
-		if(StringUtils.isBlank(id)){
+	public R deleteBdAreaRegion( String code) {
+		if(StringUtils.isBlank(code)){
 			return R.error("参数为空");
 		}
 		BdAreaRegion mBdAreaRegion=new BdAreaRegion();
 		mBdAreaRegion.setStatus(Constans.DELETED);
 		Condition con=Condition.create();
-		con.eq("id", id);
+		con.eq("code", code);
 		boolean flag=update(mBdAreaRegion,con);	
 		return flag?R.ok().put("msg", "删除成功"):R.error().put("msg", "删除失败");
 	}

@@ -43,11 +43,8 @@ public class TemplateCasesController extends BaseController {
 /*****************新增**************/
     @ApiImplicitParams({
 		@ApiImplicitParam(name = "tmpName", value = "模板名称", required = true),
-//		@ApiImplicitParam(name = "templateType", value = "模板类型", required = true),
 		@ApiImplicitParam(name = "lv1DeptCode", value = "一级科室编码", required = true),
-//		@ApiImplicitParam(name = "lv1DeptName", value = "一级科室名称", required = true),
 		@ApiImplicitParam(name = "lv2DeptCode", value = "二级科室编码", required = true),
-//		@ApiImplicitParam(name = "lv2DeptName", value = "二级科室名称", required = true),
 		@ApiImplicitParam(name = "chiefComplaint", value = "主诉", required = true),
 		@ApiImplicitParam(name = "anamnesis", value = "既往史", required = true),
 		@ApiImplicitParam(name = "illnessHistory", value = "现病史", required = true),
@@ -60,7 +57,10 @@ public class TemplateCasesController extends BaseController {
     }
     @ApiOperation("单条删除模板数据")
     @PostMapping("/deleteTemp")
-    public R deleteTemp(@ApiParam("数据对象id")String tmpCode){
+    public R deleteTemp(@ApiParam(value="模板code",required=true)String tmpCode){
+    	if(StringUtils.isBlank(tmpCode)){
+    		return R.error().put("msg", "参数为空");
+    	}
         return templateCasesService.deleteOneTemp(tmpCode);
     }
     @ApiOperation("获取1级科室列表")

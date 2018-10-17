@@ -1,5 +1,6 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.drelephant.elephantadmin.business.basedata.entity.BdDictValue;
 import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
+import com.drelephant.elephantadmin.business.basedata.mapper.BdDictValueMapper;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdServiceConfigMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdServiceConfigService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
 
 /**
  * <p>
@@ -30,10 +35,13 @@ public class BdServiceConfigServiceImpl extends ServiceImpl<BdServiceConfigMappe
 
 	@Autowired
 	BdServiceConfigMapper bdServiceConfigMapper;
-
+	
+	@Autowired
+	BdDictValueMapper bdDictValueMapper;
 	@Override
     @Transactional
 	public void saveServiceConfig(BdServiceConfig entity) {
+		entity.setStatus(Constans.ACTIVE);
 		bdServiceConfigMapper.saveServiceConfig(entity);
 	}
 
@@ -72,5 +80,19 @@ public class BdServiceConfigServiceImpl extends ServiceImpl<BdServiceConfigMappe
 			map.put("TWZX", "检查门诊");
 		}
 		return map;
+	}
+	public List<Map<String, String>> getServiceTypes() {
+		List<Map<String, String>> serviceTypes = new ArrayList<Map<String, String>>();
+		Map<String,String> item = null;
+		List<BdDictValue> list=bdDictValueMapper.selectList(Condition.create().eq("typeCode", "FWLB"));
+		for (BdDictValue bdDictValue : list) {
+			item = new HashMap<String,String>();
+			//
+			item.put("code", bdDictValue.getCode());
+			item.put("name", bdDictValue.getName());
+			//
+			serviceTypes.add(item);
+		}
+		return serviceTypes;
 	}
 }

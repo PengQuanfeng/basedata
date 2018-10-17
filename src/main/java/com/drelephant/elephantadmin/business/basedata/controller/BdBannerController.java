@@ -48,27 +48,31 @@ public class BdBannerController extends BaseController {
     	bdBannerService.insertBdBander(entity);
         return R.ok().put("msg", "新增服务配置成功！");
     }
-    @ApiOperation("查询单条首页图片信息")
-    @GetMapping("/getOneBaner")
-    public R getOneBaner(@ApiParam("id列")String id){
-    	BdBanner bd=bdBannerService.selectOneBd(id);
-        return R.ok().put("list", bd);
-    }
+//    @ApiOperation("查询单条首页图片信息")
+//    @GetMapping("/getOneBaner")
+//    public R getOneBaner(@ApiParam("id列")String id){
+//    	BdBanner bd=bdBannerService.selectOneBd(id);
+//        return R.ok().put("list", bd);
+//    }
     @ApiImplicitParams({
 		@ApiImplicitParam(name = "picAddress", value = "本地路径", required = true),
 		@ApiImplicitParam(name = "isOpenLink", value = "是否开启链接" , required = true),
 		@ApiImplicitParam(name = "linkAddress", value = "链接地址" ),
-		@ApiImplicitParam(name = "remark", value = "备注" )
+		@ApiImplicitParam(name = "remark", value = "备注" ),
+		@ApiImplicitParam(name = "id", value = "id",required=true)
 	})
     @ApiOperation("更新单条首页图片信息")
     @PostMapping("/updateOneBaner")
-    public R updateOneBaner(@ApiParam("数据对象")BdBanner data){
+    public R updateOneBaner(@RequestBody @ApiParam("数据对象")BdBanner data){
+    	if(data==null){
+    		return R.error().put("msg", "参数为空,更新失败");
+    	}
         return bdBannerService.updateBdBander(data);
     }
     
     @ApiOperation("删除单条首页图片信息")
     @PostMapping("/deleteOneBaner")
-    public R deleteOneBaner(@ApiParam("id")String  id){
+    public R deleteOneBaner(@ApiParam(value="id",required=true)String  id){
     	if(StringUtils.isBlank(id)){
 			return R.error("删除活动记录失败，参数无效!");
 		}

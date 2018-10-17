@@ -25,7 +25,7 @@ public interface BdHospitalDeptService extends IService<BdHospitalDept> {
 	 */
 	BdHospitalDept selectOneDept(String lv1Code);
 	//单条删除科室信息
-	R deleteOneHost(BdHospitalDept data);
+	R deleteOneHost(String lv1Code);
 	//批量修改科室信息状态
 	R deleteBatchHostStatus(String lv1Code,String status);
 	//查询科室信息列表

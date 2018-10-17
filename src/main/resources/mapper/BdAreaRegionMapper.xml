@@ -32,6 +32,10 @@
 	<select id="selectProviceNameFromCode"  resultType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
 		select * from bd_area_region where provinceCode =#{provinceCode} and cityCode =#{cityCode}  and level='2' 
 	</select>
+		<!-- 根据省编码得到省名称 -->
+	<select id="selectPName"  resultType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
+		select provinceName from bd_area_region where provinceCode =#{provinceCode} and level='1' 
+	</select>
 	<update id="updateBdAreaRegion" 
 		parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
 		update bd_area_region

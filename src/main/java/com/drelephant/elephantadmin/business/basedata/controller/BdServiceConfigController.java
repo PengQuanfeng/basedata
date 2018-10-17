@@ -54,8 +54,10 @@ public class BdServiceConfigController extends BaseController {
 	
 	@ApiOperation("服务类型")
 	@GetMapping("/serviceType")
-	public R serviceType(@ApiParam("数据字典类型") String dataType ) { 
-		return R.ok().put("serviceType", bdServiceConfigService.getServiceType(dataType));
+	public R serviceType( ) { 
+		//getServiceTypes
+		//R.ok().put("serviceType", bdServiceConfigService.getServiceType(dataType));
+		return R.ok().put("serviceType", bdServiceConfigService.getServiceTypes());
 	}
 
     @ApiImplicitParams({
@@ -104,7 +106,7 @@ public class BdServiceConfigController extends BaseController {
 	@ApiOperation("编辑服务配置")
 	@PostMapping("/edit")
 	public R edit(@RequestBody @ApiParam("编辑服务配置信息") BdServiceConfig entity) {
-		if(entity != null){
+		if(entity == null){
 			return R.error("编辑服务配置信息失败，参数无效!");
 		}
 		bdServiceConfigService.updateBdServiceConfig(entity);

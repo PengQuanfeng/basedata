@@ -28,7 +28,9 @@ public class BdCompanyLogisticsServiceImpl extends ServiceImpl<BdCompanyLogistic
 			String name,String status) {
 		Condition con=Condition.create();
 		if(StringUtils.isNotBlank(name)){
-			con.eq("name", name);
+			//TODO 
+			con.like("name", name);
+//			con.eq("name", name);
 		}
 		if(StringUtils.isNotBlank(status)){
 			con.eq("status", status);
@@ -47,10 +49,8 @@ public class BdCompanyLogisticsServiceImpl extends ServiceImpl<BdCompanyLogistic
 		if(StringUtils.isBlank(status)){
 			return R.error().put("msg", "状态未选择，更新失败");
 		}
-		if(status!=null){
-			mBdCompanyLogistics.setStatus(data.getStatus());
-			flag=update(mBdCompanyLogistics,Condition.create().eq("code", data.getCode()));
-		}		
+		mBdCompanyLogistics.setStatus(data.getStatus());
+		flag=update(mBdCompanyLogistics,Condition.create().eq("code", data.getCode()));		
 		return flag?R.ok():R.error("状态更新失败");
 	}
 	

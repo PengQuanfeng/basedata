@@ -1,5 +1,6 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -58,7 +59,7 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 		bd.setIsOpenLink(bdBanner.getIsOpenLink());
 		bd.setRemark(bdBanner.getRemark());
 		bd.setLinkAddress(bdBanner.getLinkAddress());		
-		boolean flag=update(bd,Condition.create().eq("id", bdBanner.getId()));
+		boolean flag=update(bdBanner,Condition.create().eq("id", bdBanner.getId()));
 		return flag?R.ok():R.error("更新失败");
 	}
 
@@ -71,8 +72,9 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 	public List<BdBanner> getListBd() {		
 		Condition con=Condition.create();
 		con.where(" status !={0}", Constans.DELETED);
-//		con.notIn("status", Constans.DELETED);
 		con.orderBy("orderNumber", false);
+//		List<BdBanner> list=selectList(con);
+//		for
 		return selectList(con);
 	}
 

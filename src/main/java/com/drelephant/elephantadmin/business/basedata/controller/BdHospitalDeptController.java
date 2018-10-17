@@ -10,6 +10,8 @@ import com.drelephant.elephantadmin.business.basedata.service.BdHospitalDeptServ
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -18,9 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,13 +45,20 @@ public class BdHospitalDeptController extends BaseController {
 
     /**********************新增接口方法***********************/
     @ApiOperation("新增科室信息")
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "lv1Code", value = "一级科室编码", required = true)		
+	})
     @PostMapping("/saveDept")
-    public R saveDept(@ApiParam("数据对象")BdHospitalDept data){
+    public R saveDept(@RequestBody @ApiParam("数据对象")BdHospitalDept data){
         return bdHospitalDeptService.insertHost(data);
     }
     @ApiOperation("单条更新科室信息")
     @PostMapping("/updateOneDept")
-    public R updateOneDept(@ApiParam("数据对象")BdHospitalDept data){
+    @ApiImplicitParam(name = "lv1Code", value = "一级科室编码", required = true)
+    public R updateOneDept(@RequestBody @ApiParam("数据对象")BdHospitalDept data){
+    	if(data==null){
+    		return R.error().put("msg", "参数为空");
+    	}
         return bdHospitalDeptService.updateHost(data);
     }
     @ApiOperation("单条查看科室信息")
@@ -58,15 +69,25 @@ public class BdHospitalDeptController extends BaseController {
     }
     @ApiOperation("单条删除科室信息")
     @PostMapping("/deleteOneDept")
-    public R deleteOneDept(@ApiParam("数据对象")BdHospitalDept data){
-        return bdHospitalDeptService.deleteOneHost(data);
+    public R deleteOneDept(@ApiParam(value="科室编码",required=true)String lv1Code){
+        return bdHospitalDeptService.deleteOneHost(lv1Code);
     }
     @ApiOperation("获取科室信息列表")
     @GetMapping("/getListDept")
-    public R getListDept(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,@ApiParam("科室编码")String lv1Code,
+    public R getListDept(@ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize,@ApiParam("科室编码")String lv1Code,
     		@ApiParam("2级科室code")String lv2Code,@ApiParam("3级科室code")String lv3Code,
     		@ApiParam("层级")String level,@ApiParam("状态")String status){
-        Page<BdHospitalDept> page=new Page<>(current,pageSize);
+    	int offset = 1;
+		int limit = 1000; 
+		if (StringUtils.isNotBlank(current)) {
+			// 当前记录数
+			offset = Integer.parseInt(current);
+		}
+		if (StringUtils.isNotBlank(pageSize)) {
+			// 每页限制数
+			limit = Integer.parseInt(pageSize);
+		}
+        Page<BdHospitalDept> page=new Page<>(offset,limit);
         bdHospitalDeptService.getListHost(page, lv1Code, lv2Code, lv3Code, level, status);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }

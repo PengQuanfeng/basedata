@@ -68,6 +68,9 @@ public class BdCompanyLogisticsController extends BaseController {
 		@ApiImplicitParam(name = "code", value = "编码")
 	})
     public R updateLogistics(@RequestBody @ApiParam("数据对象")BdCompanyLogistics data){
+    	if(data==null){
+    		return R.error().put("msg", "参数为空");
+    	}
         return bdCompanyLogisticsService.updateLogisStatus(data);
     }
     @ApiOperation("获取物流字典状态下拉列表数据")

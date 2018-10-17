@@ -33,47 +33,44 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 	@Autowired
 	BdHospitalDeptMapper bdHospitalDeptMapper;
 	@Override
-	public R insertHost(BdHospitalDept data) {
-		BdHospitalDept mBdHospitalDept=new BdHospitalDept();
-		String lv1Code=data.getLv1Code();
-		Integer level=data.getLevel();
-		int count=selectCount(Condition.create().eq("lv1Code", lv1Code));
-		boolean flag=false;
-		String status=data.getStatus();
-		if(count==0&&level!=null){
-			if(level==1){
-				mBdHospitalDept.setLevel(level);
-				mBdHospitalDept.setLv1Code(lv1Code);
-				mBdHospitalDept.setLv1Name(data.getLv1Name());
-				mBdHospitalDept.setLv2Code("-");
-				mBdHospitalDept.setLv2Name("-");
-				mBdHospitalDept.setLv3Code("-");
-				mBdHospitalDept.setLv3Name("-");				
-			}else if(level==2){
-				mBdHospitalDept.setLevel(level);
-				mBdHospitalDept.setLv1Code(lv1Code);
-				mBdHospitalDept.setLv1Name(data.getLv1Name());
-				mBdHospitalDept.setLv2Code(getRandom());
-				mBdHospitalDept.setLv2Name(data.getLv2Name());
-				mBdHospitalDept.setLv3Code("-");
-				mBdHospitalDept.setLv3Name("-");	
-			}else{
-				mBdHospitalDept.setLevel(level);
-				mBdHospitalDept.setLv1Code(lv1Code);
-				mBdHospitalDept.setLv1Name(data.getLv1Name());
-				mBdHospitalDept.setLv2Code(getRandom());
-				mBdHospitalDept.setLv2Name(data.getLv2Name());
-				mBdHospitalDept.setLv3Code(getRandom());
-				mBdHospitalDept.setLv3Name(data.getLv3Name());								
+	public R insertHost(BdHospitalDept entity) {
+		//TODO 三级关联
+		//默认层级三级
+		Integer level=entity.getLevel();
+		if(level==null){
+			level=3;
+			entity.setLevel(level);
+		}
+		if(StringUtils.isBlank(entity.getLv1Code())){
+			return R.error().put("msg", "科室编码为空");
+		}
+		if(StringUtils.isNotBlank(entity.getStatus())){
+			entity.setStatus(entity.getStatus());//状态
+		}else{
+			entity.setStatus(Constans.ACTIVE);//初始有效
+		}
+		Condition con=Condition.create();
+		con.eq("lv1Code", entity.getLv1Code());
+		con.eq("status", Constans.ACTIVE);
+		int countLv1Code=selectCount(con);
+		if(countLv1Code>0){
+			return R.error().put("msg", "科室编码已经存在");
+		}
+		if(level==1){
+			if(StringUtils.isBlank(entity.getLv1Name())||StringUtils.isBlank(entity.getRegulatoryCode())){
+				return R.error().put("msg", "参数为空");
 			}
-			if(StringUtils.isNotBlank(status)){
-				mBdHospitalDept.setStatus(status);//状态
-			}else{
-				mBdHospitalDept.setStatus(Constans.ACTIVE);//初始有效
-			}
-			mBdHospitalDept.setRegulatoryCode("JG"+getRandom());//监管编码
-			flag=insert(mBdHospitalDept);
-		}		
+			entity.setLv2Code("-");
+			entity.setLv2Name("-");
+			entity.setLv3Code("-");
+			entity.setLv3Name("-");	
+		}else if(level==2){
+			
+		}else if(level==3){
+			
+		}
+//			entity.setRegulatoryCode("JG"+getRandom());//监管编码
+			boolean flag=insert(entity);		
 		return flag?R.ok():R.error("新增失败");
 	}
 	public static String getRandom(){
@@ -108,11 +105,13 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		return flag?R.ok():R.error("状态更新失败");
 	}
 	@Override
-	public R deleteOneHost(BdHospitalDept data) {
-		
+	public R deleteOneHost(String lv1Code) {
+		if(StringUtils.isBlank(lv1Code)){
+			return R.error().put("msg", "参数为空");
+		}
 		BdHospitalDept mBdHospitalDept=new BdHospitalDept();
 		mBdHospitalDept.setStatus(Constans.DELETED);
-		boolean flag=update(mBdHospitalDept,Condition.create().eq("lv1Code", data.getLv1Code()));
+		boolean flag=update(mBdHospitalDept,Condition.create().eq("lv1Code", lv1Code));
 		return flag?R.ok():R.error("删除失败");
 	}
 	@Override
