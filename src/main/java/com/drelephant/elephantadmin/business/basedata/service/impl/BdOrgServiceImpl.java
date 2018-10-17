@@ -310,6 +310,6 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		Page<BdOrg> page = new Page<>(org.getPageNo(),org.getPageSize());
 		Page<BdOrg> pageResult = selectPage(page, condition);
 		List<BdOrg> records = pageResult.getRecords();
-		return R.ok().put("list", records);
+		return R.ok().put("list", records).put("total",pageResult.getTotal());
 	}
 }
