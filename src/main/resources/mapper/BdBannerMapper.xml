@@ -20,7 +20,7 @@
 		values(
 			#{id},#{bannerType},#{fileId},#{orderNumber},#{fileType},#{remark},
 			#{linkAddress},#{picAddress},#{isOpenLink},#{createTime},#{createUserCode},#{createUserName}
-			,#{updateTime},#{updateUserName},#{version},#{status}
+			,#{updateTime},#{updateUserCode},#{updateUserName},#{version},#{status}
 		)
 	</insert>
 	<sql id="BD_BANNER_COLUMN">

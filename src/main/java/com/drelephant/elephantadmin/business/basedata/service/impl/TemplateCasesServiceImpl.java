@@ -36,32 +36,50 @@ import org.springframework.stereotype.Service;
 public class TemplateCasesServiceImpl extends ServiceImpl<TemplateCasesMapper, TemplateCases> implements TemplateCasesService {
 	@Autowired
 	BdHospitalDeptMapper bdHospitalDeptMapper;
+	
 	@Override
 	public R saveTemp(TemplateCases templateCases) {
 		String tmpName=templateCases.getTmpName();
+		if(StringUtils.isBlank(tmpName)){
+			return R.error("模板名不能为空");
+		}
 		int count=selectCount(Condition.create().eq("TmpName", tmpName).where("status !={0}", Constans.DELETED));
 		boolean flag=false;
+		String lv1DeptCode=templateCases.getLv1DeptCode();
+		String lv2DeptCode=templateCases.getLv2DeptCode();
+		BdHospitalDept bdHospitE=new BdHospitalDept();
+		bdHospitE.setLv1Code(lv1DeptCode);
+		bdHospitE.setLevel(1);
+		BdHospitalDept bdHospit=bdHospitalDeptMapper.selectOne(bdHospitE);
+		BdHospitalDept bdHospitE2=new BdHospitalDept();
+		bdHospitE2.setLv2Code(lv2DeptCode);
+		bdHospitE2.setLevel(2);
+		BdHospitalDept bdHospit2=bdHospitalDeptMapper.selectOne(bdHospitE2);
 		if(count==0){
-			TemplateCases mtemplateCases=new TemplateCases();
-			mtemplateCases.setTmpName(tmpName);
-			mtemplateCases.setTmpCode(getRandom());	//模板编码	
-			//科室编码查询科室名称
-			mtemplateCases.setLv1DeptCode(templateCases.getLv1DeptCode());
-			mtemplateCases.setLv1DeptName(templateCases.getLv1DeptName());
-			mtemplateCases.setLv2DeptCode(templateCases.getLv2DeptCode());
-			mtemplateCases.setLv2DeptName(templateCases.getLv2DeptName());
-			mtemplateCases.setChiefComplaint(templateCases.getChiefComplaint());
-			mtemplateCases.setIllnessHistory(templateCases.getIllnessHistory());
-			mtemplateCases.setAnamnesis(templateCases.getAnamnesis());
-			mtemplateCases.setTemplateType(Constans.TEMPTYPE);		
-			mtemplateCases.setDoctorName("-");
+//			TemplateCases mtemplateCases=new TemplateCases();
+//			mtemplateCases.setTmpName(tmpName);
+			templateCases.setTmpCode(getRandom());	//模板编码	
+			templateCases.setLv1DeptName(bdHospit.getLv1Name());
+			templateCases.setLv2DeptName(bdHospit2.getLv2Name());
+			templateCases.setTemplateType(Constans.TEMPTYPE);
+			templateCases.setDoctorName("-");
+//			//科室编码查询科室名称
+//			mtemplateCases.setLv1DeptCode(templateCases.getLv1DeptCode());
+//			mtemplateCases.setLv1DeptName(templateCases.getLv1DeptName());
+//			mtemplateCases.setLv2DeptCode(templateCases.getLv2DeptCode());
+//			mtemplateCases.setLv2DeptName(templateCases.getLv2DeptName());
+//			mtemplateCases.setChiefComplaint(templateCases.getChiefComplaint());
+//			mtemplateCases.setIllnessHistory(templateCases.getIllnessHistory());
+//			mtemplateCases.setAnamnesis(templateCases.getAnamnesis());
+//			templateCases.setTemplateType(Constans.TEMPTYPE);		
+//			templateCases.setDoctorName("-");
 			String status=templateCases.getStatus();
 			if(StringUtils.isNotBlank(status)){
-				mtemplateCases.setStatus(status);//状态
+				templateCases.setStatus(status);//状态
 			}else{
-				mtemplateCases.setStatus(Constans.ACTIVE);//初始有效
+				templateCases.setStatus(Constans.ACTIVE);//初始有效
 			}
-			flag=insert(mtemplateCases);
+			flag=insert(templateCases);
 		}
 		
 		return flag?R.ok():R.error("插入失败");
@@ -128,23 +146,40 @@ public class TemplateCasesServiceImpl extends ServiceImpl<TemplateCasesMapper, T
 	}
 	@Override
 	public R updateOneTemp(TemplateCases data) {
-		TemplateCases temp=new TemplateCases();
-		boolean flag=false;
-		String status=data.getStatus();
-		int count=selectCount(Condition.create().eq("tmpName", data.getTmpName()));
-		if(status!=null&&count==0){
-			temp.setStatus(status);
-			temp.setChiefComplaint(data.getChiefComplaint());
-			temp.setLv1DeptCode(data.getLv1DeptCode());
-			temp.setLv1DeptName(data.getLv1DeptName());
-			temp.setLv2DeptCode(data.getLv2DeptCode());
-			temp.setLv2DeptName(data.getLv2DeptName());
-			temp.setAnamnesis(data.getAnamnesis());
-			temp.setIllnessHistory(data.getIllnessHistory());			
-			temp.setTmpName(data.getTmpName());
-			flag=update(temp,Condition.create().eq("tmpCode", data.getTmpCode()));
-		}		
-		return flag?R.ok():R.error("更新错误");
+//		TemplateCases temp=new TemplateCases();
+//		boolean flag=false;
+//		String status=data.getStatus();
+//		int count=selectCount(Condition.create().eq("tmpName", data.getTmpName()));
+//		if(status!=null&&count==0){
+//			temp.setStatus(status);
+//			temp.setChiefComplaint(data.getChiefComplaint());
+//			temp.setLv1DeptCode(data.getLv1DeptCode());
+//			temp.setLv1DeptName(data.getLv1DeptName());
+//			temp.setLv2DeptCode(data.getLv2DeptCode());
+//			temp.setLv2DeptName(data.getLv2DeptName());
+//			temp.setAnamnesis(data.getAnamnesis());
+//			temp.setIllnessHistory(data.getIllnessHistory());			
+//			temp.setTmpName(data.getTmpName());
+//			flag=update(temp,Condition.create().eq("tmpCode", data.getTmpCode()));
+//		}	
+		String lv1DeptCode=data.getLv1DeptCode();
+		String lv2DeptCode=data.getLv2DeptCode();
+		if(lv1DeptCode!=null){
+			BdHospitalDept bdHospitE=new BdHospitalDept();
+			bdHospitE.setLv1Code(lv1DeptCode);
+			bdHospitE.setLevel(1);
+			BdHospitalDept bdHospit=bdHospitalDeptMapper.selectOne(bdHospitE);
+			data.setLv1DeptName(bdHospit.getLv1Name());
+		}
+		if(lv2DeptCode!=null){
+			BdHospitalDept bdHospitE2=new BdHospitalDept();
+			bdHospitE2.setLv2Code(lv2DeptCode);
+			bdHospitE2.setLevel(2);		
+			BdHospitalDept bdHospit2=bdHospitalDeptMapper.selectOne(bdHospitE2);
+			data.setLv2DeptName(bdHospit2.getLv2Name());
+		}						
+		boolean flag=update(data,Condition.create().eq("id", data.getId()));
+		return flag?R.ok().put("msg", "更新成功"):R.error().put("msg", "更新失败");
 	}
 	@Override
 	public Page<TemplateCases> getListTemp(Page<TemplateCases> page,int current, int pageSize, String lv1DeptCode, String lv2DeptCode,

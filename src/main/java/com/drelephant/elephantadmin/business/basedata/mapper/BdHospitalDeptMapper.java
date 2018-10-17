@@ -24,4 +24,6 @@ public interface BdHospitalDeptMapper extends BaseMapper<BdHospitalDept> {
 	List<BdHospitalDept> getLv1List();
 	List<BdHospitalDept> getLv2List(@Nonnull @Param("lv1Code") String lv1Code);
 	List<BdHospitalDept> getLv3List(@Nonnull @Param("lv2Code") String lv2Code);
+
+	
 }

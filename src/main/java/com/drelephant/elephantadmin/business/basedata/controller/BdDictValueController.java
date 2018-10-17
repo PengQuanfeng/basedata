@@ -9,7 +9,12 @@ import com.drelephant.elephantadmin.business.basedata.service.BdDictValueService
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,5 +60,13 @@ public class BdDictValueController extends BaseController {
     public R update(@ApiParam("数据对象id")String id){
         return R.ok().put("info",bdDictValueService.selectById(id));
     }
-
+    @ApiOperation("根据typeCode查询数据字典列表")
+    @GetMapping("/selectValue")
+    public R selectValue(@ApiParam("数据对象typeCode")String typeCode){
+    	if(StringUtils.isBlank(typeCode)){
+    		return R.error("参数为空");
+    	}
+    	List<BdDictValue> list=bdDictValueService.listValue(typeCode);
+        return R.ok().put("list",list);
+    }
 }

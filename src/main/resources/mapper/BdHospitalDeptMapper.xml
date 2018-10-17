@@ -14,4 +14,5 @@
 		select DISTINCT lv3Code,lv3Name from bd_hospital_dept where lv2Code = #{lv2Code} and lv2Code is not null and lv2Code != '' 
 		and lv3Code is not null and lv3Code !='' order by lv2Code
 	</select>
+
 </mapper>

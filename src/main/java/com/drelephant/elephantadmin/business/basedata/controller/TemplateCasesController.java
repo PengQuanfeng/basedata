@@ -39,44 +39,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class TemplateCasesController extends BaseController {
     @Autowired
     private TemplateCasesService templateCasesService;
-//    @ApiOperation("获取list")
-//    @PostMapping("/list")
-//    public R getList(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-//        Page<TemplateCases> page=new Page<>(current,pageSize);
-//        templateCasesService.selectPage(page);
-//        return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
-//    }
-//    @ApiOperation("新增")
-//    @PostMapping("/add")
-//    public R save(@ApiParam("数据对象")TemplateCases data){
-//        return templateCasesService.insert(data)?R.ok():R.error("保存错误");
-//    }
-//    @ApiOperation("删除")
-//    @PostMapping("/delete")
-//    public R delete(@ApiParam("数据对象id")String id){
-//        return templateCasesService.deleteById(id)?R.ok():R.error("删除错误");
-//    }
-//    @ApiOperation("更新")
-//    @PostMapping("/update")
-//    public R update(@ApiParam("数据对象")TemplateCases data){
-//        return templateCasesService.updateById(data)?R.ok():R.error("更新错误");
-//    }
-//    @ApiOperation("通过ID获取一条数据")
-//    @PostMapping("/info")
-//    public R update(@ApiParam("数据对象id")String id){
-//        return R.ok().put("info",templateCasesService.selectById(id));
-//    }
+
 /*****************新增**************/
     @ApiImplicitParams({
 		@ApiImplicitParam(name = "tmpName", value = "模板名称", required = true),
-		@ApiImplicitParam(name = "templateType", value = "模板类型", required = true),
+//		@ApiImplicitParam(name = "templateType", value = "模板类型", required = true),
 		@ApiImplicitParam(name = "lv1DeptCode", value = "一级科室编码", required = true),
-		@ApiImplicitParam(name = "lv1DeptName", value = "一级科室名称", required = true),
+//		@ApiImplicitParam(name = "lv1DeptName", value = "一级科室名称", required = true),
 		@ApiImplicitParam(name = "lv2DeptCode", value = "二级科室编码", required = true),
-		@ApiImplicitParam(name = "lv2DeptName", value = "二级科室名称", required = true),
-		@ApiImplicitParam(name = "chiefComplaint", value = "主诉"),
-		@ApiImplicitParam(name = "anamnesis", value = "既往史"),
-		@ApiImplicitParam(name = "illnessHistory", value = "现病史")
+//		@ApiImplicitParam(name = "lv2DeptName", value = "二级科室名称", required = true),
+		@ApiImplicitParam(name = "chiefComplaint", value = "主诉", required = true),
+		@ApiImplicitParam(name = "anamnesis", value = "既往史", required = true),
+		@ApiImplicitParam(name = "illnessHistory", value = "现病史", required = true),
+		@ApiImplicitParam(name = "status", value = "状态")
 	})
     @ApiOperation("模板新增")
     @PostMapping("/saveTemp")
@@ -137,6 +112,16 @@ public class TemplateCasesController extends BaseController {
     }
     @ApiOperation("单条更新模板数据")
     @PostMapping("/updateOneTemp")
+    @ApiImplicitParams({
+    	@ApiImplicitParam(name = "id", value = "id", required = true),
+		@ApiImplicitParam(name = "tmpName", value = "模板名称", required = true),
+		@ApiImplicitParam(name = "lv1DeptCode", value = "一级科室编码", required = true),
+		@ApiImplicitParam(name = "lv2DeptCode", value = "二级科室编码", required = true),
+		@ApiImplicitParam(name = "chiefComplaint", value = "主诉", required = true),
+		@ApiImplicitParam(name = "anamnesis", value = "既往史", required = true),
+		@ApiImplicitParam(name = "illnessHistory", value = "现病史", required = true),
+		@ApiImplicitParam(name = "status", value = "状态")
+	})
     public R updateOneTemp(@ApiParam("数据对象")TemplateCases data){
     	//如果模板类型是个人，则不用更新数据
     	return templateCasesService.updateOneTemp(data);

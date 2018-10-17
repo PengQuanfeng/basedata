@@ -35,7 +35,7 @@ public class BdBannerController extends BaseController {
     private BdBannerService bdBannerService;
     @ApiImplicitParams({
 		@ApiImplicitParam(name = "picAddress", value = "本地路径", required = true),
-		@ApiImplicitParam(name = "isOpenLink", value = "是否开启链接" , required = true),
+		@ApiImplicitParam(name = "isOpenLink", value = "是否开启链接0/1" ,required=true),
 		@ApiImplicitParam(name = "linkAddress", value = "链接地址" ),
 		@ApiImplicitParam(name = "remark", value = "备注" )
 	})

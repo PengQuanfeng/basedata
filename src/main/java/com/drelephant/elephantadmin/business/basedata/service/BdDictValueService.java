@@ -1,6 +1,9 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
 import com.drelephant.elephantadmin.business.basedata.entity.BdDictValue;
+
+import java.util.List;
+
 import com.baomidou.mybatisplus.service.IService;
 
 /**
@@ -12,5 +15,10 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-09
  */
 public interface BdDictValueService extends IService<BdDictValue> {
-	
+	/**
+	 * 根据对应的typeCode值
+	 * @param typeCode
+	 * @return
+	 */
+	List<BdDictValue> listValue(String typeCode);
 }

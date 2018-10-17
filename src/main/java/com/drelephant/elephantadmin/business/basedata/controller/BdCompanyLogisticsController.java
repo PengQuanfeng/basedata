@@ -9,6 +9,8 @@ import com.drelephant.elephantadmin.business.basedata.service.BdCompanyLogistics
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -17,9 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,20 +44,34 @@ public class BdCompanyLogisticsController extends BaseController {
  
 /**********************新增接口方法***************************/
     @ApiOperation("获取物流信息list")
-    @PostMapping("/getListLogistics")
-    public R getListLogistics(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize,
+    @GetMapping("/getListLogistics")
+    public R getListLogistics(@ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize,
     		@ApiParam("公司名称")String name,@ApiParam("状态")String status){
-        Page<BdCompanyLogistics> page=new Page<>(current,pageSize);
+    	int offset = 1;
+		int limit = 1000;
+		if (StringUtils.isNotBlank(current)) {
+			// 当前记录数
+			offset = Integer.parseInt(current);
+		}
+		if (StringUtils.isNotBlank(pageSize)) {
+			// 每页限制数
+			limit = Integer.parseInt(pageSize);
+		}
+        Page<BdCompanyLogistics> page=new Page<>(offset,limit);
         bdCompanyLogisticsService.getListLogis(page,name,status);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
     @ApiOperation("更新公司物流状态")
     @PostMapping("/updateLogistics")
-    public R updateLogistics(@ApiParam("数据对象")BdCompanyLogistics data){
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "status", value = "状态"),
+		@ApiImplicitParam(name = "code", value = "编码")
+	})
+    public R updateLogistics(@RequestBody @ApiParam("数据对象")BdCompanyLogistics data){
         return bdCompanyLogisticsService.updateLogisStatus(data);
     }
     @ApiOperation("获取物流字典状态下拉列表数据")
-    @GetMapping("/getStatusList")
+    @GetMapping("/getStatusList")   
     public R getStatusList(){
     	List<Map<String,Object>> statuss=new ArrayList<Map<String,Object>>();
     	Map<String,Object> map=null;

@@ -44,6 +44,9 @@ public class BdCompanyLogisticsServiceImpl extends ServiceImpl<BdCompanyLogistic
 		BdCompanyLogistics mBdCompanyLogistics=new BdCompanyLogistics();		
 		boolean flag=false;
 		String status=data.getStatus();
+		if(StringUtils.isBlank(status)){
+			return R.error().put("msg", "状态未选择，更新失败");
+		}
 		if(status!=null){
 			mBdCompanyLogistics.setStatus(data.getStatus());
 			flag=update(mBdCompanyLogistics,Condition.create().eq("code", data.getCode()));

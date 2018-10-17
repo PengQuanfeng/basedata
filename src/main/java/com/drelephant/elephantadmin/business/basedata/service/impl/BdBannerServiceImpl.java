@@ -27,16 +27,28 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 	@Autowired
 	BdBannerMapper bdBannerMapper;
 	@Override
-	public void insertBdBander(BdBanner entity) {
+	public R insertBdBander(BdBanner entity) {
 		int count=bdBannerMapper.maxOrderNumber();	
 		entity.setOrderNumber(count+1);//排序字段		
 		entity.setStatus(Constans.ACTIVE);
 		String isOpen=entity.getIsOpenLink();
 		if(StringUtils.isBlank(isOpen)){
-			entity.setIsOpenLink("1");
+			//entity.setIsOpenLink("1");
+			return R.error().put("msg", "开启链接字段为空");
 		}
-		
+		if(isOpen.equals("1")){
+			if(StringUtils.isBlank(entity.getLinkAddress())){
+				return R.error().put("msg", "链接地址为空");
+			}
+		}		
+		Condition con=Condition.create();
+		con.eq("status", Constans.ACTIVE);
+		int sCount=bdBannerMapper.selectCount(con);
+		if(sCount>10){
+			return R.error().put("msg", "图片最多上传10张");
+		}
 		bdBannerMapper.saveBanner(entity);
+		return R.ok().put("msg", "上传成功");
 	}
 
 	@Override
@@ -58,8 +70,8 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 	@Override
 	public List<BdBanner> getListBd() {		
 		Condition con=Condition.create();
-//		con.where(" status !={0}", Constans.DELETED);
-		con.notIn("status", Constans.DELETED);
+		con.where(" status !={0}", Constans.DELETED);
+//		con.notIn("status", Constans.DELETED);
 		con.orderBy("orderNumber", false);
 		return selectList(con);
 	}

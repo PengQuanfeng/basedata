@@ -121,12 +121,21 @@ public class BdAreaRegionController extends BaseController {
     }
     
     @ApiOperation("列表数据")   
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "current", value = "当前页"),
+		@ApiImplicitParam(name = "pageSize", value = "分页大小"),
+		@ApiImplicitParam(name = "code", value = "地区编码"),
+		@ApiImplicitParam(name = "provinceCode", value = "城市code"),
+		@ApiImplicitParam(name = "cityCode", value = "省份code"),
+		@ApiImplicitParam(name = "countyCode", value = "区县code"),
+		@ApiImplicitParam(name = "level", value = "层级"),
+		@ApiImplicitParam(name = "status", value = "状态")
+	})
     @GetMapping("/getListAdmin")
     public R getListAdmin(@ApiParam(value="当前页")@RequestParam(value="current" ,defaultValue="1" ,required=false)String current,
-    		@RequestParam(value="pageSize" ,defaultValue="1000" ,required=false)@ApiParam("分页大小") String pageSize,
-    		@ApiParam("地区编码")String code,@ApiParam("省份code")String provinceCode,
-    		@ApiParam("城市code")String cityCode,@ApiParam("区县code")String countyCode,
-    		@ApiParam("层级")  Integer level,@ApiParam("状态")String status ){ 
+    		@RequestParam(value="pageSize" ,defaultValue="1000" ,required=false)String pageSize,
+    		String code,@ApiParam("省份code")String provinceCode,String cityCode,@ApiParam("区县code")String countyCode,
+    		Integer level,String status ){ 
     	int offset = 1;
 		int limit = 1000;
 		if (StringUtils.isNotBlank(current)) {
