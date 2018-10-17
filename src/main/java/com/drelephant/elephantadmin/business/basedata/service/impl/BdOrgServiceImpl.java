@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.mapper.Condition;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.drelephant.elephantadmin.business.basedata.dto.reqeuest.DbOrgRequest;
 import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
 import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdAreaRegionMapper;
@@ -23,6 +25,15 @@ import com.drelephant.elephantadmin.business.basedata.mapper.BdOrgMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * <p>
@@ -50,8 +61,8 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			return R.error("公司名称为空");
 		}
 		name = name.trim();
-		if (name.length() > 20) {
-			return R.error("公司名称长度超过20");
+		if (name.length() > 30) {
+			return R.error("公司名称长度超过30字符");
 		}
 		//
 		int nameCount = bdOrgMapper.selectCompanyName(name);
@@ -98,8 +109,8 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			return R.error("公司名称为空");
 		}
 		name = name.trim();
-		if (name.length() > 20) {
-			return R.error("公司名称长度超过20");
+		if (name.length() > 30) {
+			return R.error("公司名称长度超过30");
 		}
 		//
 		int nameCount = bdOrgMapper.selectCompanyNameForOtherCode(name, data.getCode());
@@ -180,7 +191,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		Condition con=Condition.create();
 		con.eq("code", data.getCode());
 		con.eq("orgNature", Constans.ORG_NATURE_HOSPITAL);
-		int count=selectCount(con);//	
+		int count=selectCount(con);//
 		if(count>0){
 			return R.error().put("msg", "医院编码已经存在");
 		}
@@ -237,7 +248,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	 * 
 	 */
 	@Override
-	public R updateOneHosStatus(BdOrg entity) {	
+	public R updateOneHosStatus(BdOrg entity) {
 		if(StringUtils.isBlank(entity.getCode())){
 			return R.error().put("msg", "医院编码code不能为空");
 		}
@@ -261,7 +272,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 
 	@Override
 	public R deleteOneHosStatus(String code) {
-		//TODO 判断医院下是否有所属医生信息 
+		//TODO 判断医院下是否有所属医生信息
 //		Condition con=Condition.create();
 //		con.eq("orgNature", Constans.ORG_NATURE_HOSPITAL);
 //		con.where("status !={0}", Constans.DELETED);
@@ -326,5 +337,20 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		}
 		return R.ok().put("list", provinces);
 	}
-	
+
+	@Override
+	public R getOrgList(DbOrgRequest org) {
+		EntityWrapper<BdOrg> condition = new EntityWrapper<>();
+		if (StringUtils.isNotBlank(org.getName())) {
+			condition.like("name", org.getName());
+		}
+		if (StringUtils.isNotBlank(org.getOrgCategory())) {
+			condition.eq("orgCategory", org.getOrgCategory());
+		}
+		condition.orderBy("updateTime", false);
+		Page<BdOrg> page = new Page<>(org.getPageNo(),org.getPageSize());
+		Page<BdOrg> pageResult = selectPage(page, condition);
+		List<BdOrg> records = pageResult.getRecords();
+		return R.ok().put("list", records).put("total",pageResult.getTotal());
+	}
 }

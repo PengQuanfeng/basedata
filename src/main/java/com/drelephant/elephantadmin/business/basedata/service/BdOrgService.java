@@ -1,12 +1,10 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
-import com.drelephant.framework.base.common.R;
-
-import java.util.Map;
-
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.drelephant.elephantadmin.business.basedata.dto.reqeuest.DbOrgRequest;
+import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
+import com.drelephant.framework.base.common.R;
 
 /**
  * <p>
@@ -46,4 +44,11 @@ public interface BdOrgService extends IService<BdOrg> {
 	 * @return
 	 */
 	R getCityList(String provinceCode);
+
+	/**
+	 * 根据条件查询机构
+	 * @param org
+	 * @return
+	 */
+	R getOrgList(DbOrgRequest request);
 }

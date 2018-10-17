@@ -1,11 +1,18 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.baomidou.mybatisplus.plugins.Page;
+import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
+import com.drelephant.elephantadmin.business.basedata.dto.reqeuest.DbOrgRequest;
+import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
+import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+import com.drelephant.framework.base.common.R;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,19 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.baomidou.mybatisplus.plugins.Page;
-import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
-import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
-import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
-import com.drelephant.elephantadmin.business.basedata.util.Constans;
-import com.drelephant.framework.base.common.R;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -72,6 +70,12 @@ public class BdOrgController extends BaseController {
     @PostMapping("/deleteCompany")
     public R deleteCompany(@RequestBody @ApiParam("数据对象")BdOrg data){
         return bdOrgService.deleteCompany(data.getCode());
+    }
+
+    @ApiOperation("查询机构")
+    @GetMapping("/gerOrgList")
+    public R getOrgList(@ApiParam("机构查询对象") DbOrgRequest request){
+        return bdOrgService.getOrgList(request);
     }
 	
     @ApiOperation("获取公司信息的list")

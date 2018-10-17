@@ -1,9 +1,9 @@
 package com.drelephant.elephantadmin.business.basedata.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p>
