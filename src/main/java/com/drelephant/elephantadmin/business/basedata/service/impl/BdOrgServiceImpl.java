@@ -49,8 +49,8 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			return R.error("公司名称为空");
 		}
 		name = name.trim();
-		if (name.length() > 20) {
-			return R.error("公司名称长度超过20");
+		if (name.length() > 30) {
+			return R.error("公司名称长度超过30字符");
 		}
 		//
 		int nameCount = bdOrgMapper.selectCompanyName(name);
