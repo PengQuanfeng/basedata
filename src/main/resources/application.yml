@@ -4,7 +4,7 @@ swagger:
   base-package: com.drelephant.elephantadmin.business.basedata.controller
 spring:
   application:
-    name: basedata1
+    name: basedata
     auth_server_url: http://dev-auth.dr-elephant.net:8050
   datasource:
     url: jdbc:mysql://rm-uf6q4j0blzb8y2r4nbo.mysql.rds.aliyuncs.com:3306/dev_drelephant?useSSL=false
