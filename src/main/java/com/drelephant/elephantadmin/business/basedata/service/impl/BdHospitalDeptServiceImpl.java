@@ -84,6 +84,7 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 //		System.out.println(getRandom());
 	}
 	@Override
+	
 	public R updateHost(BdHospitalDept data) {
 		BdHospitalDept mBdHospitalDept=new BdHospitalDept();
 		boolean flag=false;
@@ -108,6 +109,7 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 	}
 	@Override
 	public R deleteOneHost(BdHospitalDept data) {
+		
 		BdHospitalDept mBdHospitalDept=new BdHospitalDept();
 		mBdHospitalDept.setStatus(Constans.DELETED);
 		boolean flag=update(mBdHospitalDept,Condition.create().eq("lv1Code", data.getLv1Code()));

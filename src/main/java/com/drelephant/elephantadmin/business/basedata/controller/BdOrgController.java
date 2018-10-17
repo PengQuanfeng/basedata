@@ -82,7 +82,15 @@ public class BdOrgController extends BaseController {
     
     @ApiOperation("新增医院信息")
     @PostMapping("/saveHospital")
-    public R saveHospital(@ApiParam("数据对象")BdOrg data){
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "code", value = "医院编码", required = true),
+		@ApiImplicitParam(name = "provinceCode", value = "省编码", required = true),
+		@ApiImplicitParam(name = "cityCode", value = "城市编码", required = true),
+		@ApiImplicitParam(name = "name", value = "医院名称", required = true),
+		@ApiImplicitParam(name = "hospitalLevel", value = "医院等级编码", required = true),
+		@ApiImplicitParam(name = "status", value = "状态", required = true)
+	})
+    public R saveHospital(@RequestBody @ApiParam("数据对象")BdOrg data){
 		return bdOrgService.addHospital(data);   	
     }
     @ApiOperation("获取医院信息的list")
@@ -106,17 +114,31 @@ public class BdOrgController extends BaseController {
     }
     @ApiOperation("更新医院状态")
     @PostMapping("/updateHosStatus")
-    public R updateHosStatus(@ApiParam("数据对象") BdOrg data){   	
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "code", value = "医院编码", required = true),
+		@ApiImplicitParam(name = "provinceCode", value = "省编码", required = true),
+		@ApiImplicitParam(name = "cityCode", value = "城市编码", required = true),
+		@ApiImplicitParam(name = "name", value = "医院名称", required = true),
+		@ApiImplicitParam(name = "hospitalLevel", value = "医院等级编码", required = true),
+		@ApiImplicitParam(name = "status", value = "状态", required = true)
+	})
+    public R updateHosStatus(@RequestBody @ApiParam("数据对象") BdOrg data){ 
+    	if(data==null){
+    		return R.error().put("msg", "参数为空");
+    	}
 		return bdOrgService.updateOneHosStatus(data);    	
     }
-    @ApiOperation("单条删除医院状态")
+    @ApiOperation("单条删除医院信息")
     @PostMapping("/deleteOneHosStatus")
-    public R deleteOneHosStatus(@ApiParam("数据对象")BdOrg data){
-        return bdOrgService.deleteOneHosStatus(data);
+    public R deleteOneHosStatus(@ApiParam(value="医院编码",required=true)String code){
+    	if(StringUtils.isBlank(code)){
+			return R.error().put("msg", "医院code不能为空");
+		}
+        return bdOrgService.deleteOneHosStatus(code);
     }
     @ApiOperation("批量更新医院状态")
-    @PostMapping("/deleteBatchHosStatus")
-    public R deleteBatchHosStatus(@ApiParam(value="是否启用")String status,@ApiParam("医院编码")String codes){
+    @PostMapping("/editBatchHosStatus")
+    public R editBatchHosStatus(@ApiParam(value="是否启用")String status,@ApiParam("医院编码")String codes){
     	if(StringUtils.isNotBlank(status)){
     		if(status.equals(Constans.ACTIVE)){
     			status=Constans.ACTIVE;
@@ -124,20 +146,20 @@ public class BdOrgController extends BaseController {
     			status=Constans.INVALID;
     		}
     	}
-        return bdOrgService.deleteBatchHosStatus(status,codes);
+        return bdOrgService.editBatchHosStatus(status,codes);
     }
-    @ApiOperation("获取省的列表")
-    @GetMapping("/getListProvince")
-    public R getListProvince(){
-    	
-        return bdOrgService.getProvinceList();
-    }
-    @ApiOperation("获取城市列表")
-    @ApiImplicitParam(name = "provinceCode", value = "省编码", required = true)
-    @GetMapping("/getListCity")
-    public R getListCity(@ApiParam("省编码") String provinceCode){
-        return bdOrgService.getCityList(provinceCode);
-    }
+//    @ApiOperation("获取省的列表")
+//    @GetMapping("/getListProvince")
+//    public R getListProvince(){
+//    	
+//        return bdOrgService.getProvinceList();
+//    }
+//    @ApiOperation("获取城市列表")
+//    @ApiImplicitParam(name = "provinceCode", value = "省编码", required = true)
+//    @GetMapping("/getListCity")
+//    public R getListCity(@ApiParam("省编码") String provinceCode){
+//        return bdOrgService.getCityList(provinceCode);
+//    }
     @ApiOperation("获取等级列表")
     @GetMapping("/getListLevel")
     public R getListLevel(){

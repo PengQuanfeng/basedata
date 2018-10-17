@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -161,29 +162,45 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	}
 
 	@Override
+	@Transactional
 	public R addHospital(BdOrg data) {
 		// TODO Auto-generated method stub
-		BdOrg bdOrg=new BdOrg();
+		if(StringUtils.isBlank(data.getCode())||StringUtils.isBlank(data.getName())){
+			return R.error().put("msg", "参数为空");
+		}
+		String name=data.getName();
+		if(name.trim().length()>20){
+			return R.error().put("msg", "医院名称大于20");
+		}
+		int countName=bdOrgMapper.selectNameCount(name,Constans.ORG_NATURE_HOSPITAL);
+		if(countName>0){
+			return R.error().put("msg", "医院名称已经存在");
+		}
 		boolean flag=false;
-		int count=selectCount(Condition.create().eq("code", data.getCode()));			
-		if(count==0){
-			bdOrg.setCode(data.getCode());//自定义医院编码
-			bdOrg.setName(data.getName());//医院名称
-			bdOrg.setOrgNature(data.getOrgNature());
-			bdOrg.setProvinceCode(data.getProvinceCode());//省份编码
-			bdOrg.setProvinceName(data.getProvinceName());
-			bdOrg.setCityCode(data.getCityCode());//城市编码
-			bdOrg.setCityName(data.getCityName());
-			bdOrg.setHospitalLevel(data.getHospitalLevel());
-			String status=data.getStatus();
-			if(status!=null){
-				bdOrg.setStatus(data.getStatus());
-			}else{
-				bdOrg.setStatus(Constans.ACTIVE);
-			}
+		Condition con=Condition.create();
+		con.eq("code", data.getCode());
+		con.eq("orgNature", Constans.ORG_NATURE_HOSPITAL);
+		int count=selectCount(con);//	
+		if(count>0){
+			return R.error().put("msg", "医院编码已经存在");
+		}
+		String proviceCode=data.getProvinceCode();
+		String cityCode=data.getCityCode();
+		data.setOrgNature(Constans.ORG_NATURE_HOSPITAL);
+		BdAreaRegion  bdAreaRegion =mBdAreaRegionMapper.selectProviceNameFromCode(proviceCode,cityCode);
+		if(bdAreaRegion==null){
+			return R.error().put("msg", "省市数据不存在");
+		}
+		data.setProvinceName(bdAreaRegion.getProvinceName());
+		data.setCityName(bdAreaRegion.getCityName());
+		String status=data.getStatus();
+		if(status!=null){
+			data.setStatus(data.getStatus());
+		}else{
+			data.setStatus(Constans.ACTIVE);
 		}						
-		flag=insert(bdOrg);
-		return flag?R.ok():R.error("插入失败");
+		flag=insert(data);
+		return flag?R.ok().put("msg", "数据新增成功"):R.error("新增失败");
 	}
 	/**
 	 * 查询列表需要修改--增加搜索条件
@@ -220,36 +237,49 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 	 * 
 	 */
 	@Override
-	public R updateOneHosStatus(BdOrg data) {
-		BdOrg bdOrg=new BdOrg();
-		boolean flag=false;
-		String status=data.getStatus();
-		String cityName=data.getCityName();
-		String provinceName=data.getProvinceName();
-		String name=data.getName();
-		String hospitalLevel=data.getHospitalLevel();
-		if(status!=null&&cityName!=null&&provinceName!=null&&name!=null&&hospitalLevel!=null){
-			bdOrg.setStatus(status);
-			bdOrg.setCityName(cityName);
-			bdOrg.setProvinceName(data.getProvinceName());
-			bdOrg.setName(name);
-			bdOrg.setHospitalLevel(hospitalLevel);
-			flag=update(bdOrg,Condition.create().eq("code", data.getCode()));
+	public R updateOneHosStatus(BdOrg entity) {	
+		if(StringUtils.isBlank(entity.getCode())){
+			return R.error().put("msg", "医院编码code不能为空");
 		}
-		
-		return flag?R.ok():R.error("参数为空，状态更新失败");
+		String proviceCode=entity.getProvinceCode();
+		String cityCode=entity.getCityCode();
+		BdAreaRegion  bdAreaRegion =mBdAreaRegionMapper.selectProviceNameFromCode(proviceCode,cityCode);
+		if(bdAreaRegion==null){
+			return R.error().put("msg", "省市编码不能为空");
+		}
+		entity.setProvinceName(bdAreaRegion.getProvinceName());
+		entity.setCityName(bdAreaRegion.getCityName());
+		String name=entity.getName();
+		int countName=bdOrgMapper.selectNameCount(name,Constans.ORG_NATURE_HOSPITAL);
+		if(countName>0){
+			return R.error().put("msg", "医院名称已经存在");
+		}
+		//entity.getHospitalLevel();//医院等级
+		boolean flag=update(entity,Condition.create().eq("code", entity.getCode()));
+		return flag?R.ok():R.error("状态更新失败");
 	}
 
 	@Override
-	public R deleteOneHosStatus(BdOrg data) {
+	public R deleteOneHosStatus(String code) {
+		//TODO 判断医院下是否有所属医生信息 
+		Condition con=Condition.create();
+		con.eq("orgNature", Constans.ORG_NATURE_HOSPITAL);
+		con.where("status !={0}", Constans.DELETED);
+		con.eq("code", code);
+		BdOrg  data=selectOne(con);
+//		String status=data.getStatus();
+//		String code=data.getCode();//医院对应的code
+		if(1==1){
+			return R.error().put("msg", "医院下有医生信息不能删除");
+		}
 		BdOrg bdOrg=new BdOrg();
-		bdOrg.setStatus(Constans.DELETED);
-		boolean flag=update(bdOrg,Condition.create().eq("code", data.getCode()));
+		data.setStatus(Constans.DELETED);
+		boolean flag=update(data,Condition.create().eq("code", code));
 		return flag?R.ok():R.error("删除失败");
 	}
 
 	@Override
-	public R deleteBatchHosStatus(String status, String code) {
+	public R editBatchHosStatus(String status, String code) {
 		List<String> list=new ArrayList<String>();
 		String[] str=null;
 		if(StringUtils.isNotBlank(code)){

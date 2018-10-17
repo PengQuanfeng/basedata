@@ -37,6 +37,10 @@
 		#{createTime},#{createUserCode},#{createUserName},#{updateTime},#{updateUserCode},#{updateUserName},
 		#{version},#{status})
 	</insert>
+	<!--查询name名称是否重复 -->
+	<select id="selectNameCount" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from bd_org where name=#{name} and status !='del' and orgNature=#{orgNature}  
+	</select>
 	<sql id="Bd_ORG_COLUMN">
 		id,
 		name,
