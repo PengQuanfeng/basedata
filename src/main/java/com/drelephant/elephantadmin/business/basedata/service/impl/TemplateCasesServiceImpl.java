@@ -128,6 +128,18 @@ public class TemplateCasesServiceImpl extends ServiceImpl<TemplateCasesMapper, T
 		}
 		return R.ok().put("list", lv2s);
 	}
+	public R getLv3List(String lv3DeptCode) {
+		List<BdHospitalDept> list=bdHospitalDeptMapper.getLv3List(lv3DeptCode);
+		List<Map<String, Object>> lv3s = new ArrayList<Map<String, Object>>();
+		Map<String, Object> lv3 = null;
+		for (BdHospitalDept bdHospitalDept : list) {
+			lv3= new HashMap<String, Object>();
+			lv3.put("lv3DeptCode", bdHospitalDept.getLv3Code());
+			lv3.put("lv3DeptName", bdHospitalDept.getLv3Name());
+			lv3s.add(lv3);
+		}
+		return R.ok().put("list", lv3s);
+	}
 	@Override
 	public TemplateCases selectOneTemp(String tempCode) {		
 		return selectOne(Condition.create().eq("tmpCode", tempCode));

@@ -51,6 +51,12 @@ public interface TemplateCasesService extends IService<TemplateCases> {
 	 */
 	R getLv2List(String lv1DeptCode);
 	/**
+	 * 三级科室编码列表
+	 * @param lv2DeptCode
+	 * @return
+	 */
+	R getLv3List(String lv2DeptCode);
+	/**
 	 * 根据模板code
 	 * @param tempCode
 	 * @return

@@ -73,6 +73,11 @@ public class TemplateCasesController extends BaseController {
     public R getLv2DeptList(String lv1DeptCode){
     	return templateCasesService.getLv2List(lv1DeptCode);
     }
+    @ApiOperation("获取3级科室列表")
+    @GetMapping("/getLv3DeptList")
+    public R getLv3DeptList(String lv2DeptCode){
+    	return templateCasesService.getLv3List(lv2DeptCode);
+    }
     @ApiOperation("获取模板类型下拉列表数据")
     @GetMapping("/getTempList")
     public R getTempList(){
