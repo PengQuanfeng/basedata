@@ -2,6 +2,7 @@ package com.drelephant.elephantadmin.business.basedata.controller;
 
 
 import com.drelephant.framework.base.common.R;
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
 import com.drelephant.elephantadmin.business.basedata.entity.BdBanner;
 import com.drelephant.elephantadmin.business.basedata.service.BdBannerService;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,11 +71,10 @@ public class BdBannerController extends BaseController {
     		return R.error().put("msg", "参数为空,更新失败");
     	}
         return bdBannerService.updateBdBander(data);
-    }
-    
+    }   
     @ApiOperation("删除单条首页图片信息")
     @PostMapping("/deleteOneBaner")
-    public R deleteOneBaner(@ApiParam(value="id",required=true)String  id){
+    public R deleteOneBaner(@ApiParam(name="id",value="数据列id",required=true)String  id){
     	if(StringUtils.isBlank(id)){
 			return R.error("删除活动记录失败，参数无效!");
 		}
@@ -87,14 +89,27 @@ public class BdBannerController extends BaseController {
     }    
     @ApiOperation("上移")
     @PostMapping("/moveUp")
-    public R moveUp(@ApiParam("id列")String id){
+    public R moveUp(@ApiParam(name="id",value="字段id列")String id){
     	return bdBannerService.moveUp(id);
     }
     
     @ApiOperation("下移")
     @PostMapping("/moveDown")
-    public R moveDown(@ApiParam("id列")String id){
+    public R moveDown(@ApiParam(name="id",value="字段id列")String id){
     	return bdBannerService.moveDown(id);
     }
- 
+ //TODO 增加单条查询的接口
+    @ApiOperation("单条查询接口")
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "id", value = "本条数据对应的id")
+	})
+    @GetMapping("/getOnetBanner")
+    //@RequestBody Map<String, String> map
+    public R getOnetBanner(String id){  	
+    	//String id=map.get("id");
+    	if(StringUtils.isBlank(id)){
+    		return R.error().put("msg", "参数为空");
+    	}   	
+        return R.ok().put("data", bdBannerService.selectOne(Condition.create().eq("id", id)));
+    } 
 }

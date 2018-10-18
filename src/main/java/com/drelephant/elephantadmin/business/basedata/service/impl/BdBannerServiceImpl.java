@@ -43,7 +43,7 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 			}
 		}		
 		Condition con=Condition.create();
-		con.eq("status", Constans.ACTIVE);
+		con.where("status !={0}",Constans.DELETED);
 		int sCount=bdBannerMapper.selectCount(con);
 		if(sCount>10){
 			return R.error().put("msg", "图片最多上传10张");

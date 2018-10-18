@@ -142,8 +142,14 @@ public class BdOrgController extends BaseController {
         return bdOrgService.deleteOneHosStatus(code);
     }
     @ApiOperation("批量更新医院状态")
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "codes", value = "医院编码使用,号拼接", required = true),
+		@ApiImplicitParam(name = "status", value = "状态", required = true)
+	})
     @PostMapping("/editBatchHosStatus")
-    public R editBatchHosStatus(@ApiParam(value="是否启用")String status,@ApiParam("医院编码")String codes){
+    public R editBatchHosStatus(@RequestBody Map<String,String> codes ){
+    	String code=codes.get("codes");
+    	String status=codes.get("status");
     	if(StringUtils.isNotBlank(status)){
     		if(status.equals(Constans.ACTIVE)){
     			status=Constans.ACTIVE;
@@ -151,7 +157,7 @@ public class BdOrgController extends BaseController {
     			status=Constans.INVALID;
     		}
     	}
-        return bdOrgService.editBatchHosStatus(status,codes);
+        return bdOrgService.editBatchHosStatus(status,code);
     }
 //    @ApiOperation("获取省的列表")
 //    @GetMapping("/getListProvince")
