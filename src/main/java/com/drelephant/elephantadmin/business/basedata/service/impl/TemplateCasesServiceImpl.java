@@ -44,9 +44,19 @@ public class TemplateCasesServiceImpl extends ServiceImpl<TemplateCasesMapper, T
 			return R.error("模板名不能为空");
 		}
 		int count=selectCount(Condition.create().eq("TmpName", tmpName).where("status !={0}", Constans.DELETED));
+		if(count>0){
+			return R.error().put("msg", "模板名称已存在");
+		}
+		if(tmpName.length()>20){
+			return R.error().put("msg", "模板名称长度超过20");
+		}
 		boolean flag=false;
 		String lv1DeptCode=templateCases.getLv1DeptCode();
 		String lv2DeptCode=templateCases.getLv2DeptCode();
+		String lv3DeptCode=templateCases.getLv3DeptCode();
+		if(StringUtils.isBlank(lv1DeptCode)||StringUtils.isBlank(lv2DeptCode)||StringUtils.isBlank(lv3DeptCode)){
+			return R.error().put("msg", "科室编码不能为空");
+		}
 		BdHospitalDept bdHospitE=new BdHospitalDept();
 		bdHospitE.setLv1Code(lv1DeptCode);
 		bdHospitE.setLevel(1);
@@ -55,21 +65,23 @@ public class TemplateCasesServiceImpl extends ServiceImpl<TemplateCasesMapper, T
 		bdHospitE2.setLv2Code(lv2DeptCode);
 		bdHospitE2.setLevel(2);
 		BdHospitalDept bdHospit2=bdHospitalDeptMapper.selectOne(bdHospitE2);
-		if(count==0){
-			templateCases.setTmpCode(getRandom());	//模板编码	
-			templateCases.setLv1DeptName(bdHospit.getLv1Name());
-			templateCases.setLv2DeptName(bdHospit2.getLv2Name());
-			templateCases.setTemplateType(Constans.TEMPTYPE);
-			templateCases.setDoctorName("-");
-			String status=templateCases.getStatus();
-			if(StringUtils.isNotBlank(status)){
-				templateCases.setStatus(status);//状态
-			}else{
-				templateCases.setStatus(Constans.ACTIVE);//初始有效
-			}
-			flag=insert(templateCases);
+		templateCases.setTmpCode(getRandom());	//模板编码	
+		templateCases.setLv1DeptName(bdHospit.getLv1Name());
+		templateCases.setLv2DeptName(bdHospit2.getLv2Name());
+		BdHospitalDept bdHospitE3=new BdHospitalDept();
+		bdHospitE3.setLevel(3);
+		bdHospitE3.setLv3Code(lv3DeptCode);
+		BdHospitalDept bdHospit3=bdHospitalDeptMapper.selectOne(bdHospitE3);
+		templateCases.setLv3DeptName(bdHospit3.getLv3Name());
+		templateCases.setTemplateType(Constans.TEMPTYPE);
+		templateCases.setDoctorName("-");
+		String status=templateCases.getStatus();
+		if(StringUtils.isNotBlank(status)){
+			templateCases.setStatus(status);//状态
+		}else{
+			templateCases.setStatus(Constans.ACTIVE);//初始有效
 		}
-		
+		flag=insert(templateCases);		
 		return flag?R.ok():R.error("插入失败");
 	}
 	public static String getRandom(){

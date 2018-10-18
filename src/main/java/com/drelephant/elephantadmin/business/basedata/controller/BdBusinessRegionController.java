@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,9 +43,10 @@ public class BdBusinessRegionController extends BaseController {
     
     @ApiOperation("业务区域信息新增")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "level", value = "层级编码", required = true),
+        @ApiImplicitParam(name = "level", value = "层级", required = true),
         @ApiImplicitParam(name = "lv1Code", value = "区域编码", required = true),
-        @ApiImplicitParam(name = "lv1Name", value = "一级区域名称", required = true)       
+        @ApiImplicitParam(name = "lv1Name", value = "一级区域名称"),
+        @ApiImplicitParam(name = "lv2Name", value = "二级区域名称")       
     })
     @PostMapping("/saveRegion")
     public R saveRegion(@RequestBody @ApiParam("数据对象")BdBusinessRegion entity){
@@ -52,31 +54,49 @@ public class BdBusinessRegionController extends BaseController {
     	if(entity == null){
 			return R.error("保存业务区域信息失败，参数无效!");
 		}
-        bdBusinessRegionService.inserRegion(entity);
-        return R.ok().put("msg", "新增业务区域信息成功！");
+        
+        return bdBusinessRegionService.inserRegion(entity);
     }
     @ApiOperation("更新区域信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "level", value = "层级", required = true),
+        @ApiImplicitParam(name = "lv1Code", value = "区域编码", required = true),
+        @ApiImplicitParam(name = "lv2Name", value = "二级区域名称")           
+    })
     @PostMapping("/updateRegion")
-    public R updateRegion(@ApiParam("数据对象")BdBusinessRegion data){
+    public R updateRegion(@RequestBody @ApiParam("数据对象")BdBusinessRegion data){
         return bdBusinessRegionService.updateRegion(data);
     }
     @ApiOperation("删除区域信息")
     @PostMapping("/deleteRegion")
-    public R deleteRegion(@ApiParam("数据对象id")String id){
+    public R deleteRegion(@ApiParam(value="数据id",required=true)String id){
     	BdBusinessRegion m=new BdBusinessRegion();
-    	m.setLv1Code(id);
+    	m.setId(id);
         return bdBusinessRegionService.deleteOneRegion(m);
     }
     @ApiOperation("获取list")
     @PostMapping("/getListRegion")
-    public R getListRegion(@ApiParam("当前页")int current,@ApiParam("分页大小")int pageSize){
-        Page<BdBusinessRegion> page=new Page<>(current,pageSize);
-        bdBusinessRegionService.getListRegion(page);
+    public R getListRegion(@ApiParam(value="当前页")String current,@ApiParam(value="分页大小")String pageSize,
+    		@ApiParam(value="编码/1级or2级")String code,
+    		@ApiParam(value="区域编码")String lv1Code,@ApiParam(value="2级区域编码")String lv2Code,
+    		@ApiParam(value="层级")String level){
+    	int offset = 1;
+		int limit = 1000; 
+		if (StringUtils.isNotBlank(current)) {
+			// 当前记录数
+			offset = Integer.parseInt(current);
+		}
+		if (StringUtils.isNotBlank(pageSize)) {
+			// 每页限制数
+			limit = Integer.parseInt(pageSize);
+		}
+        Page<BdBusinessRegion> page=new Page<>(offset,limit);
+        bdBusinessRegionService.getListRegion(page,code,lv1Code,lv2Code,level);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
     @ApiOperation("单条区域信息")
     @PostMapping("/getOneRegion")
-    public R getOneRegion(@ApiParam("区域编码")String lcodes,@ApiParam("层级")Integer level){
+    public R getOneRegion(@ApiParam(value="区域编码",required=true)String lcodes,@ApiParam(value="层级",required=true)Integer level){
     	
     	BdBusinessRegion bd=bdBusinessRegionService.selectOneRegion(lcodes,level);
         return R.ok().put("list", bd);
@@ -109,7 +129,7 @@ public class BdBusinessRegionController extends BaseController {
     }
     @ApiOperation("2级区域列表")
     @GetMapping("/getListLv2")
-    public R getListLv2(String lv1Code){    	
+    public R getListLv2(@ApiParam(value="区域编码",required=true)String lv1Code){    	
         return bdBusinessRegionService.bdLv2(lv1Code);
     }
 }

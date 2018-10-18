@@ -165,37 +165,33 @@ public class BdOrgController extends BaseController {
 //    public R getListCity(@ApiParam("省编码") String provinceCode){
 //        return bdOrgService.getCityList(provinceCode);
 //    }
+    
+    private void addItem(List<Map<String, String>> list, String code, String name) {
+    	Map<String, String> item = new HashMap<String, String>();
+    	item.put("code", code);
+    	item.put("name", name);
+    	list.add(item);
+    }
+    
     @ApiOperation("获取等级列表")
     @GetMapping("/getListLevel")
     public R getListLevel(){
-    	List<Map<String, Object>> hospitalLevels = new ArrayList<Map<String, Object>>();
-		Map<String, Object> hospitalLevel = null;
-		List<String> list=new ArrayList<String>();
-		list.add(Constans.HOSPITALLEVEL_A);
-		list.add(Constans.HOSPITALLEVEL_B);
-		list.add(Constans.HOSPITALLEVEL_C);
-		list.add(Constans.HOSPITALLEVEL_D);
-    	for (String str : list) {
-    		hospitalLevel = new HashMap<String, Object>();
-    		hospitalLevel.put("hospitalLevel", str);
-    		hospitalLevels.add(hospitalLevel);
-		}
-        return R.ok().put("list", hospitalLevels);
+    	
+		List<Map<String, String>> list=new ArrayList<Map<String, String>>();
+		addItem(list, Constans.HOSPITALLEVEL_A, Constans.HOSPITALLEVEL_A_NMAE);
+		addItem(list, Constans.HOSPITALLEVEL_B, Constans.HOSPITALLEVEL_B_NMAE);
+		addItem(list, Constans.HOSPITALLEVEL_C, Constans.HOSPITALLEVEL_C_NMAE);
+		addItem(list, Constans.HOSPITALLEVEL_D, Constans.HOSPITALLEVEL_D_NMAE);
+        return R.ok().put("list", list);
     }
+    
     @ApiOperation("获取状态列表")
     @GetMapping("/getListStatus")
     public R getListStatus(){
-    	List<Map<String, Object>> statuss = new ArrayList<Map<String, Object>>();
-		Map<String, Object> status = null;
-		List<String> list=new ArrayList<String>();
-		list.add(Constans.ACTIVE);
-		list.add(Constans.INVALID);
-    	for (String str : list) {
-    		status = new HashMap<String, Object>();
-    		status.put("status", str);
-    		statuss.add(status);
-		}
-    	return R.ok().put("list", statuss);
+    	List<Map<String, String>> list=new ArrayList<Map<String, String>>();
+		addItem(list, Constans.ACTIVE,"启用");
+		addItem(list, Constans.INVALID, "禁用");
+    	return R.ok().put("list", list);
     }
     
 }

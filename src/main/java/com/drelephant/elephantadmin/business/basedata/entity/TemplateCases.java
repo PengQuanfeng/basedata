@@ -69,6 +69,16 @@ public class TemplateCases implements Serializable {
      */
 	@TableField("lv2DeptName")
 	private String lv2DeptName;
+	 /**
+     * 三级科室编码
+     */
+	@TableField("lv3DeptCode")
+	private String lv3DeptCode;
+    /**
+     * 三级科室名称
+     */
+	@TableField("lv3DeptName")
+	private String lv3DeptName;
     /**
      * 主诉
      */
@@ -185,6 +195,21 @@ public class TemplateCases implements Serializable {
 	public void setLv2DeptName(String lv2DeptName) {
 		this.lv2DeptName = lv2DeptName;
 	}
+	public String getLv3DeptCode() {
+		return lv3DeptCode;
+	}
+
+	public void setLv3DeptCode(String lv3DeptCode) {
+		this.lv3DeptCode = lv3DeptCode;
+	}
+
+	public String getLv3DeptName() {
+		return lv3DeptName;
+	}
+
+	public void setLv3DeptName(String lv3DeptName) {
+		this.lv3DeptName = lv3DeptName;
+	}
 
 	public String getChiefComplaint() {
 		return chiefComplaint;
@@ -280,6 +305,8 @@ public class TemplateCases implements Serializable {
 			", lv1DeptName=" + lv1DeptName +
 			", lv2DeptCode=" + lv2DeptCode +
 			", lv2DeptName=" + lv2DeptName +
+			", lv3DeptCode=" + lv3DeptCode +
+			", lv3DeptName=" + lv3DeptName +
 			", chiefComplaint=" + chiefComplaint +
 			", illnessHistory=" + illnessHistory +
 			", anamnesis=" + anamnesis +

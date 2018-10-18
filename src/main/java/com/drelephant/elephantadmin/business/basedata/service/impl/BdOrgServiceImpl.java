@@ -209,7 +209,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			data.setStatus(data.getStatus());
 		}else{
 			data.setStatus(Constans.ACTIVE);
-		}						
+		}				
 		flag=insert(data);
 		return flag?R.ok().put("msg", "数据新增成功"):R.error("新增失败");
 	}

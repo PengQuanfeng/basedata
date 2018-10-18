@@ -37,6 +37,23 @@ public final class Constans {
     public static final String HOSPITALLEVEL_D = "D";//医院等级
 
     /**
+     * 三级甲等
+     */
+    public static final String HOSPITALLEVEL_A_NMAE = "三级甲等";//
+    /**
+     * 三级乙等
+     */
+    public static final String HOSPITALLEVEL_B_NMAE = "三级乙等";//
+    /**
+     * 三级丙等
+     */
+    public static final String HOSPITALLEVEL_C_NMAE = "三级丙等";//
+    /**
+     * 二级甲等
+     */
+    public static final String HOSPITALLEVEL_D_NMAE = "二级甲等";//
+
+    /**
      * 有效.
      */
     public static final String ACTIVE = "ACT";

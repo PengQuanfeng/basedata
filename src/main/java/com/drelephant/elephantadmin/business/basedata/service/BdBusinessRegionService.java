@@ -24,7 +24,7 @@ public interface BdBusinessRegionService extends IService<BdBusinessRegion> {
 	//业务区域数据删除
 	R deleteOneRegion(BdBusinessRegion mBdBusinessRegion);
 	//业务区域数据列表查询
-	Page<BdBusinessRegion> getListRegion(Page<BdBusinessRegion> page);
+	Page<BdBusinessRegion> getListRegion(Page<BdBusinessRegion> page,String code,String lv1Code,String lv2Code,String level);
 	/**
 	 * 单条业务区域信息
 	 * @param lv1Code

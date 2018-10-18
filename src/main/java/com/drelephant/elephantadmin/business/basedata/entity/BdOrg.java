@@ -172,7 +172,6 @@ public class BdOrg implements Serializable {
 	public void setHospitalLevel(String hospitalLevel) {
 		this.hospitalLevel = hospitalLevel;
 	}
-
 	public String getDetailedAddress() {
 		return detailedAddress;
 	}

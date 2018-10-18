@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +46,7 @@ public class TemplateCasesController extends BaseController {
 		@ApiImplicitParam(name = "tmpName", value = "模板名称", required = true),
 		@ApiImplicitParam(name = "lv1DeptCode", value = "一级科室编码", required = true),
 		@ApiImplicitParam(name = "lv2DeptCode", value = "二级科室编码", required = true),
+		@ApiImplicitParam(name = "lv3DeptCode", value = "三级科室编码", required = true),
 		@ApiImplicitParam(name = "chiefComplaint", value = "主诉", required = true),
 		@ApiImplicitParam(name = "anamnesis", value = "既往史", required = true),
 		@ApiImplicitParam(name = "illnessHistory", value = "现病史", required = true),
@@ -52,7 +54,7 @@ public class TemplateCasesController extends BaseController {
 	})
     @ApiOperation("模板新增")
     @PostMapping("/saveTemp")
-    public R saveTemp(@ApiParam("数据对象")TemplateCases data){
+    public R saveTemp(@RequestBody @ApiParam("数据对象")TemplateCases data){
         return templateCasesService.saveTemp(data);
     }
     @ApiOperation("单条删除模板数据")
@@ -133,7 +135,7 @@ public class TemplateCasesController extends BaseController {
     }
     @ApiOperation("单条查询模板数据")
     @GetMapping("/getOneTemp")
-    public R getOneTemp(@ApiParam("数据对象")String tmpCode){
+    public R getOneTemp(@ApiParam(value="模板code",required=true)String tmpCode){
     	TemplateCases temp=templateCasesService.selectOneTemp(tmpCode);
     	return R.ok().put("list", temp);
     }
