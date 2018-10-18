@@ -44,9 +44,9 @@ public class TemplateCasesController extends BaseController {
 /*****************新增**************/
     @ApiImplicitParams({
 		@ApiImplicitParam(name = "tmpName", value = "模板名称", required = true),
-		@ApiImplicitParam(name = "lv1DeptCode", value = "一级科室编码", required = true),
-		@ApiImplicitParam(name = "lv2DeptCode", value = "二级科室编码", required = true),
-		@ApiImplicitParam(name = "lv3DeptCode", value = "三级科室编码", required = true),
+		@ApiImplicitParam(name = "lv1DeptCode", value = "一级科室编码"),
+		@ApiImplicitParam(name = "lv2DeptCode", value = "二级科室编码"),
+		@ApiImplicitParam(name = "lv3DeptCode", value = "三级科室编码"),
 		@ApiImplicitParam(name = "chiefComplaint", value = "主诉", required = true),
 		@ApiImplicitParam(name = "anamnesis", value = "既往史", required = true),
 		@ApiImplicitParam(name = "illnessHistory", value = "现病史", required = true),
@@ -55,6 +55,9 @@ public class TemplateCasesController extends BaseController {
     @ApiOperation("模板新增")
     @PostMapping("/saveTemp")
     public R saveTemp(@RequestBody @ApiParam("数据对象")TemplateCases data){
+    	if(data==null){
+    		return R.error().put("msg", "参数为空");
+    	}
         return templateCasesService.saveTemp(data);
     }
     @ApiOperation("单条删除模板数据")
@@ -83,38 +86,24 @@ public class TemplateCasesController extends BaseController {
     @ApiOperation("获取模板类型下拉列表数据")
     @GetMapping("/getTempList")
     public R getTempList(){
-    	//templateType
-    	List<Map<String,Object>> templats=new ArrayList<Map<String,Object>>();
-    	Map<String,Object> map=null;
-    	List<String> templat=new ArrayList<String>();
-    	templat.add(Constans.TEMPTYPE);
-    	templat.add(Constans.PERSONAL);
-    	for (String str : templat) {
-			map=new HashMap<String,Object>();
-			map.put("templateType", str);
-			templats.add(map);
-		}   	
-    	return R.ok().put("list", templats);
+    	List<Map<String, String>> list=new ArrayList<Map<String, String>>();
+		addItem(list, Constans.TEMPTYPE, Constans.TEMPTYPE_D);
+		addItem(list, Constans.PERSONAL, Constans.PERSONAL_P);
+    	return R.ok().put("list", list);
     }
     @ApiOperation("获取状态下拉列表数据")
     @GetMapping("/getStatusList")
-    public R getStatusList(){
-    	List<Map<String,Object>> statuss=new ArrayList<Map<String,Object>>();
-    	Map<String,Object> map=null;
-    	List<String> status=new ArrayList<String>();
-    	status.add(Constans.ACTIVE);
-    	status.add(Constans.INVALID);
-    	for (String str : status) {
-			map=new HashMap<String,Object>();
-			map.put("status", str);
-			statuss.add(map);
-		} 
-    	return R.ok().put("list", statuss);
+    public R getStatusList(){ 
+    	List<Map<String, String>> list=new ArrayList<Map<String, String>>();
+		addItem(list, Constans.ACTIVE, Constans.ACTIVE_A);
+		addItem(list, Constans.INVALID, Constans.INVALID_I);
+    	return R.ok().put("list", list);
     }
    
     @ApiOperation("批量更新状态")
     @PostMapping("/updateBatchTemp")
-    public R updateBatchStatus(@ApiParam("模板编码")String tmpCode,@ApiParam("状态")String status){   	
+    public R updateBatchStatus(@ApiParam("模板编码")String tmpCode,@ApiParam("状态")String status){  
+    	
     	return templateCasesService.updateBatchTemp(tmpCode, status);
     }
     @ApiOperation("单条更新模板数据")
@@ -129,7 +118,7 @@ public class TemplateCasesController extends BaseController {
 		@ApiImplicitParam(name = "illnessHistory", value = "现病史", required = true),
 		@ApiImplicitParam(name = "status", value = "状态")
 	})
-    public R updateOneTemp(@ApiParam("数据对象")TemplateCases data){
+    public R updateOneTemp(@RequestBody @ApiParam("数据对象")TemplateCases data){
     	//如果模板类型是个人，则不用更新数据
     	return templateCasesService.updateOneTemp(data);
     }
@@ -158,5 +147,11 @@ public class TemplateCasesController extends BaseController {
     	Page<TemplateCases> page=new Page<>(offset,limit);
     	templateCasesService.getListTemp(page, offset, limit, lv1DeptCode, lv2DeptCode, tmpName, templateType, status);
     	return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
+    }
+    private void addItem(List<Map<String, String>> list, String code, String name) {
+    	Map<String, String> item = new HashMap<String, String>();
+    	item.put("code", code);
+    	item.put("name", name);
+    	list.add(item);
     }
 }

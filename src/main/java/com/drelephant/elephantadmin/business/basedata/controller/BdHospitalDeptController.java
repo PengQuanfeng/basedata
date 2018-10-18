@@ -50,6 +50,9 @@ public class BdHospitalDeptController extends BaseController {
 	})
     @PostMapping("/saveDept")
     public R saveDept(@RequestBody @ApiParam("数据对象")BdHospitalDept data){
+    	if(data==null){
+    		return R.error().put("msg", "参数为空");
+    	}
         return bdHospitalDeptService.insertHost(data);
     }
     @ApiOperation("单条更新科室信息")

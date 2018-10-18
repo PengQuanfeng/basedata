@@ -204,6 +204,23 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		}
 		data.setProvinceName(bdAreaRegion.getProvinceName());
 		data.setCityName(bdAreaRegion.getCityName());
+		String hospitalLevel=data.getHospitalLevel();
+		if(StringUtils.isBlank(hospitalLevel)){
+			return R.error().put("msg", "医院等级参数为空");
+		}else{
+			if(hospitalLevel.equals(Constans.HOSPITALLEVEL_A)){
+				data.setHospitalLevel(Constans.HOSPITALLEVEL_A);
+			}
+			if(hospitalLevel.equals(Constans.HOSPITALLEVEL_B)){
+				data.setHospitalLevel(Constans.HOSPITALLEVEL_B);
+			}
+			if(hospitalLevel.equals(Constans.HOSPITALLEVEL_C)){
+				data.setHospitalLevel(Constans.HOSPITALLEVEL_C);
+			}
+			if(hospitalLevel.equals(Constans.HOSPITALLEVEL_D)){
+				data.setHospitalLevel(Constans.HOSPITALLEVEL_D);
+			}
+		}
 		String status=data.getStatus();
 		if(status!=null){
 			data.setStatus(data.getStatus());

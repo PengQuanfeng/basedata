@@ -57,6 +57,20 @@ public final class Constans {
      * 有效.
      */
     public static final String ACTIVE = "ACT";
+
+    /**
+     * 禁用
+     */
+    public static final String INVALID = "INV";
+    /**
+     * 有效.value
+     */
+    public static final String ACTIVE_A = "有效";
+
+    /**
+     * 禁用.value
+     */
+    public static final String INVALID_I = "禁用";
     /**
      * 链接开启状态
      */
@@ -70,10 +84,6 @@ public final class Constans {
      */
     public static final String DELETED = "DEL";
 
-    /**
-     * 禁用
-     */
-    public static final String INVALID = "INV";
 
     /**
      * 病例模板类型 科室
@@ -84,6 +94,15 @@ public final class Constans {
      * 病例模板类型 个人
      */
     public static final String PERSONAL = "PER";
+    /**
+     * 病例模板类型 科室
+     */
+    public static final String TEMPTYPE_D = "科室";
+
+    /**
+     * 病例模板类型 个人
+     */
+    public static final String PERSONAL_P = "个人";
 
     /**
      * 供应商类型 - 商户

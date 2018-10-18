@@ -34,43 +34,56 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 	BdHospitalDeptMapper bdHospitalDeptMapper;
 	@Override
 	public R insertHost(BdHospitalDept entity) {
-		//TODO 三级关联
-		//默认层级三级
+		//TODO 默认层级三级
 		Integer level=entity.getLevel();
 		if(level==null){
 			level=3;
 			entity.setLevel(level);
-		}
-		if(StringUtils.isBlank(entity.getLv1Code())){
-			return R.error().put("msg", "科室编码为空");
+		}		
+		String regulatoryCode=entity.getRegulatoryCode();
+		if(StringUtils.isBlank(regulatoryCode)){
+			return R.error().put("msg", "监管编码不能为空");
 		}
 		if(StringUtils.isNotBlank(entity.getStatus())){
 			entity.setStatus(entity.getStatus());//状态
 		}else{
 			entity.setStatus(Constans.ACTIVE);//初始有效
 		}
-		Condition con=Condition.create();
-		con.eq("lv1Code", entity.getLv1Code());
-		con.eq("status", Constans.ACTIVE);
-		int countLv1Code=selectCount(con);
-		if(countLv1Code>0){
-			return R.error().put("msg", "科室编码已经存在");
-		}
 		if(level==1){
-			if(StringUtils.isBlank(entity.getLv1Name())||StringUtils.isBlank(entity.getRegulatoryCode())){
-				return R.error().put("msg", "参数为空");
+			String lv1Code=entity.getLv1Code();
+			if(StringUtils.isBlank(lv1Code)){
+				return R.error().put("msg", "科室编码为空");
 			}
-			entity.setLv2Code("-");
-			entity.setLv2Name("-");
-			entity.setLv3Code("-");
-			entity.setLv3Name("-");	
+			int sLv1Code=selectCount(Condition.create().eq("lv1Code", lv1Code).where("status !={0}", 
+					Constans.DELETED).eq("level", level));
+			if(sLv1Code>0){
+				return R.error().put("msg", "科室编码已存在");
+			}
+			String lv1Name=entity.getLv1Name();
+			if(StringUtils.isBlank(lv1Name)){
+				return R.error().put("msg", "科室名称为空");
+			}
+			if(lv1Name.length()>20){
+				return R.error().put("msg", "科室名称大于20");
+			}
+			int sLv1Name=selectCount(Condition.create().eq("lv1Name", lv1Name).where("status !={0}", Constans.DELETED).eq("level", 1));
+			if(sLv1Name>0){
+				return R.error().put("msg", "科室名称已存在");
+			}
+			entity.setLv1Name(lv1Name);
+			entity.setLv1Code(lv1Code);
+			entity.setRegulatoryCode(regulatoryCode);
+			entity.setLevel(level);
 		}else if(level==2){
 			
-		}else if(level==3){
+		}else{
 			
 		}
-//			entity.setRegulatoryCode("JG"+getRandom());//监管编码
-			boolean flag=insert(entity);		
+		if(1==1){
+			//DOTO 未写完
+			return R.error("DOTO");
+		}
+		boolean flag=insert(entity);		
 		return flag?R.ok():R.error("新增失败");
 	}
 	public static String getRandom(){

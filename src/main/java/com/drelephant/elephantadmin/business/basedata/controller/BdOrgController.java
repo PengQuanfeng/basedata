@@ -95,6 +95,9 @@ public class BdOrgController extends BaseController {
 		@ApiImplicitParam(name = "status", value = "状态", required = true)
 	})
     public R saveHospital(@RequestBody @ApiParam("数据对象")BdOrg data){
+    	if(data==null){
+    		return R.error().put("msg", "参数为空");
+    	}
 		return bdOrgService.addHospital(data);   	
     }
     @ApiOperation("获取医院信息的list")
