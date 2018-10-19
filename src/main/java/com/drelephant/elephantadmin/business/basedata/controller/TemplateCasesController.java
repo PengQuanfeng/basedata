@@ -50,7 +50,7 @@ public class TemplateCasesController extends BaseController {
 		@ApiImplicitParam(name = "chiefComplaint", value = "主诉", required = true),
 		@ApiImplicitParam(name = "anamnesis", value = "既往史", required = true),
 		@ApiImplicitParam(name = "illnessHistory", value = "现病史", required = true),
-		@ApiImplicitParam(name = "status", value = "状态")
+		@ApiImplicitParam(name = "status", value = "状态ACT(启用)/INV(禁用)")
 	})
     @ApiOperation("模板新增")
     @PostMapping("/saveTemp")

@@ -14,7 +14,12 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-10-09
  */
 public interface BdHospitalDeptService extends IService<BdHospitalDept> {
-	//新增科室信息字典
+	/**
+	 * 
+	 * @param data
+	 * @param code 科室编码
+	 * @return
+	 */
 	R insertHost(BdHospitalDept data);
 	//单条更改科室信息
 	R updateHost(BdHospitalDept data);

@@ -49,7 +49,7 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		}else{
 			entity.setStatus(Constans.ACTIVE);//初始有效
 		}
-		if(level==1){
+		if(level==1){			
 			String lv1Code=entity.getLv1Code();
 			if(StringUtils.isBlank(lv1Code)){
 				return R.error().put("msg", "科室编码为空");
@@ -76,11 +76,12 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 			entity.setLevel(level);
 		}else if(level==2){
 			
+			
 		}else{
 			
 		}
 		if(1==1){
-			//DOTO 未写完
+			//TODO 未写完
 			return R.error("DOTO");
 		}
 		boolean flag=insert(entity);		

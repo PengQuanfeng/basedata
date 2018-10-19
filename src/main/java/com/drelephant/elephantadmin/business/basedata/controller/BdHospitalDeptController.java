@@ -46,10 +46,24 @@ public class BdHospitalDeptController extends BaseController {
     /**********************新增接口方法***********************/
     @ApiOperation("新增科室信息")
     @ApiImplicitParams({
-		@ApiImplicitParam(name = "lv1Code", value = "一级科室编码", required = true)		
+//		@ApiImplicitParam(name = "code", value = "科室编码", required = true),
+		@ApiImplicitParam(name = "lv1Code", value = "一级科室编码"),
+		@ApiImplicitParam(name = "lv1Name", value = "一级科室名称新增一级时输入"),
+		@ApiImplicitParam(name = "lv2Code", value = "二级科室编码"),
+		@ApiImplicitParam(name = "lv2Name", value = "二级科室名称新增二级时输入"),
+		@ApiImplicitParam(name = "lv3Code", value = "二级科室编码"),
+		@ApiImplicitParam(name = "lv3Name", value = "二级科室名称新增三级时输入"),
+		@ApiImplicitParam(name = "regulatoryCode", value = "监管编码", required = true),
+		@ApiImplicitParam(name = "level", value = "层级"),
+		@ApiImplicitParam(name = "status", value = "状态ACT(启用)/INV(禁用)")
+		
 	})
     @PostMapping("/saveDept")
     public R saveDept(@RequestBody @ApiParam("数据对象")BdHospitalDept data){
+    	//code 接收前台传递的科室编码，1级时作为1级编码，2级时为2级编码，3级时为3级编码
+//    	if(StringUtils.isBlank(code)){
+//    		return R.error().put("msg", "科室编码不能为空");
+//    	}
     	if(data==null){
     		return R.error().put("msg", "参数为空");
     	}
