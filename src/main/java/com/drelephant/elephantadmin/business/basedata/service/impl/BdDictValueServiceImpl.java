@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 public class BdDictValueServiceImpl extends ServiceImpl<BdDictValueMapper, BdDictValue> implements BdDictValueService {
 
 	@Override
-	public List<BdDictValue> listValue(String typeCode) {
+	public List<BdDictValue> listByTypeCode(String typeCode) {
 		Condition con=Condition.create();
 		con.eq("typeCode", typeCode);
 		List<BdDictValue> BdDictValue=selectList(con);

@@ -20,5 +20,5 @@ public interface BdDictValueService extends IService<BdDictValue> {
 	 * @param typeCode
 	 * @return
 	 */
-	List<BdDictValue> listValue(String typeCode);
+	List<BdDictValue> listByTypeCode(String typeCode);
 }
