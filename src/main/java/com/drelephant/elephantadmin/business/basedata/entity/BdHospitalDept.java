@@ -1,10 +1,10 @@
 package com.drelephant.elephantadmin.business.basedata.entity;
 
+import java.io.Serializable;
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
-
-import java.io.Serializable;
 
 /**
  * <p>
@@ -82,7 +82,20 @@ public class BdHospitalDept implements Serializable {
 	private String updateUserName;
 	private String version;
 	private String status;
+	
+	/**
+	 * 科室编码。不存储到数据库中
+	 */
+	@TableField(exist = false)
+    private String code;
 
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 
 	public String getId() {
 		return id;

@@ -9,10 +9,7 @@
 		<include refid="BD_SERVICE_ACTIVITY_COLUMNS" />
 		from bd_service_activity
 		<where>
-			<if test="id != null and id !=''">
-				 id = #{id}
-			</if>
-			and status = 'ACT'
+			status = 'ACT'
 		</where>
 	</select>
 
@@ -74,10 +71,7 @@
 	<update id="deleteActivityById" parameterType="java.lang.String">
 		update /** 逻辑删除服务活动记录 **/ bd_service_activity 
 		<set>
-			<if test="status != null and status != ''">
-				status = #{status}
-			</if> 
-			<!-- 修改操作公共字段 E-->
+			status = 'DEL'
 		</set> 
 		where id = #{id}
 	</update>

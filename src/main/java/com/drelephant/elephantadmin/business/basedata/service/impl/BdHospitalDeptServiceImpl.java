@@ -1,15 +1,5 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
-import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
-import com.drelephant.elephantadmin.business.basedata.mapper.BdHospitalDeptMapper;
-import com.drelephant.elephantadmin.business.basedata.service.BdHospitalDeptService;
-import com.drelephant.elephantadmin.business.basedata.util.Constans;
-import com.drelephant.framework.base.common.R;
-import com.baomidou.mybatisplus.mapper.Condition;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +9,15 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.mapper.Condition;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
+import com.drelephant.elephantadmin.business.basedata.mapper.BdHospitalDeptMapper;
+import com.drelephant.elephantadmin.business.basedata.service.BdHospitalDeptService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+import com.drelephant.framework.base.common.R;
 
 /**
  * <p>
@@ -32,14 +31,21 @@ import org.springframework.stereotype.Service;
 public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper, BdHospitalDept> implements BdHospitalDeptService {
 	@Autowired
 	BdHospitalDeptMapper bdHospitalDeptMapper;
+	
 	@Override
 	public R insertHost(BdHospitalDept entity) {
-		//TODO 默认层级三级
+		// 默认层级三级
 		Integer level=entity.getLevel();
 		if(level==null){
 			level=3;
 			entity.setLevel(level);
-		}		
+		}
+		//
+		String code = entity.getCode();
+		if(StringUtils.isBlank(code)){
+			return R.error().put("msg", "科室编码不能为空");
+		}
+		//
 		String regulatoryCode=entity.getRegulatoryCode();
 		if(StringUtils.isBlank(regulatoryCode)){
 			return R.error().put("msg", "监管编码不能为空");
@@ -49,12 +55,8 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		}else{
 			entity.setStatus(Constans.ACTIVE);//初始有效
 		}
-		if(level==1){			
-			String lv1Code=entity.getLv1Code();
-			if(StringUtils.isBlank(lv1Code)){
-				return R.error().put("msg", "科室编码为空");
-			}
-			int sLv1Code=selectCount(Condition.create().eq("lv1Code", lv1Code).where("status !={0}", 
+		if(level==1){
+			int sLv1Code=selectCount(Condition.create().eq("lv1Code", code).where("status !={0}", 
 					Constans.DELETED).eq("level", level));
 			if(sLv1Code>0){
 				return R.error().put("msg", "科室编码已存在");
@@ -71,20 +73,53 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 				return R.error().put("msg", "科室名称已存在");
 			}
 			entity.setLv1Name(lv1Name);
-			entity.setLv1Code(lv1Code);
+			entity.setLv1Code(code);
 			entity.setRegulatoryCode(regulatoryCode);
 			entity.setLevel(level);
 		}else if(level==2){
-			
-			
+			int sLv2Code=selectCount(Condition.create().eq("lv2Code", code).where("status !={0}", 
+					Constans.DELETED).eq("level", level));
+			if(sLv2Code>0){
+				return R.error().put("msg", "科室编码已存在");
+			}
+			String lv2Name=entity.getLv2Name();
+			if(StringUtils.isBlank(lv2Name)){
+				return R.error().put("msg", "科室名称为空");
+			}
+			if(lv2Name.length()>20){
+				return R.error().put("msg", "科室名称大于20");
+			}
+			int sLv2Name=selectCount(Condition.create().eq("lv2Name", lv2Name).where("status !={0}", Constans.DELETED).eq("level", 2));
+			if(sLv2Name>0){
+				return R.error().put("msg", "科室名称已存在");
+			}
+			entity.setLv2Name(lv2Name);
+			entity.setLv2Code(code);
+			entity.setRegulatoryCode(regulatoryCode);
+			entity.setLevel(level);
 		}else{
-			
+			int sLv3Code=selectCount(Condition.create().eq("lv3Code", code).where("status !={0}", 
+					Constans.DELETED).eq("level", level));
+			if(sLv3Code>0){
+				return R.error().put("msg", "科室编码已存在");
+			}
+			String lv3Name=entity.getLv3Name();
+			if(StringUtils.isBlank(lv3Name)){
+				return R.error().put("msg", "科室名称为空");
+			}
+			if(lv3Name.length()>20){
+				return R.error().put("msg", "科室名称大于20");
+			}
+			int sLv3Name=selectCount(Condition.create().eq("lv3Name", lv3Name).where("status !={0}", Constans.DELETED).eq("level", 3));
+			if(sLv3Name>0){
+				return R.error().put("msg", "科室名称已存在");
+			}
+			entity.setLv3Name(lv3Name);
+			entity.setLv3Code(code);
+			entity.setRegulatoryCode(regulatoryCode);
+			entity.setLevel(level);
 		}
-		if(1==1){
-			//TODO 未写完
-			return R.error("DOTO");
-		}
-		boolean flag=insert(entity);		
+		boolean flag=insert(entity);
 		return flag?R.ok():R.error("新增失败");
 	}
 	public static String getRandom(){
@@ -100,21 +135,17 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		BdHospitalDept mBdHospitalDept=new BdHospitalDept();
 		boolean flag=false;
 		String status=data.getStatus();
-		String lv1Code=data.getLv1Code();
 		Integer level=data.getLevel();
-		if(status!=null&&lv1Code!=null&&level!=null){
+		if(status != null && level != null){
 			if(level==1){
 				mBdHospitalDept.setLv1Name(data.getLv1Name());
 			}else if(level==2){
-				mBdHospitalDept.setLv1Name(data.getLv1Name());
 				mBdHospitalDept.setLv2Name(data.getLv2Name());
 			}else{
-				mBdHospitalDept.setLv1Name(data.getLv1Name());
-				mBdHospitalDept.setLv2Name(data.getLv2Name());
 				mBdHospitalDept.setLv3Name(data.getLv3Name());	
 			}
-			mBdHospitalDept.setStatus(status);				
-			flag=update(mBdHospitalDept,Condition.create().eq("lv1Code", data.getLv1Code()));
+			mBdHospitalDept.setStatus(status);
+			flag=update(mBdHospitalDept,Condition.create().eq("id", data.getId()));
 		}
 		return flag?R.ok():R.error("状态更新失败");
 	}
@@ -149,7 +180,7 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		return flag?R.ok():R.error("删除失败");
 	}
 	@Override
-	public Page<BdHospitalDept> getListHost(Page<BdHospitalDept> page,String lv1Code,String lv2Code,
+	public Page<BdHospitalDept> getListHost(Page<BdHospitalDept> page,String code,String lv1Code,String lv2Code,
 			String lv3Code,String level,String status) {
 		Condition con=Condition.create();
 		if(StringUtils.isNotBlank(lv1Code)){
@@ -161,6 +192,9 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		if(StringUtils.isNotBlank(lv3Code)){
 			con.eq("lv3Code", lv3Code);
 		}
+		if(StringUtils.isNotBlank(code)){
+			con.or("(lv1Code like {0} or lv2Code like {1} or lv3Code like {2})", "%" + code + "%", "%" + code + "%", "%" + code + "%");
+		}
 		if(StringUtils.isNotBlank(level)){
 			con.eq("level", level);
 		}
@@ -170,6 +204,18 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 			con.where("status !={0}", Constans.DELETED);
 		}	
 		selectPage(page, con);
+		//
+		List<BdHospitalDept> list = page.getRecords();
+		for (BdHospitalDept item : list) {
+			if (item.getLevel() == 1) {
+				item.setCode(item.getLv1Code());
+			} else if (item.getLevel() == 2) {
+				item.setCode(item.getLv2Code());
+			} else if (item.getLevel() == 3) {
+				item.setCode(item.getLv3Code());
+			}
+		}
+		//
 		return page;
 	}
 	@Override

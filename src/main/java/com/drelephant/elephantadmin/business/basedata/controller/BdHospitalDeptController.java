@@ -1,20 +1,6 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
-import com.baomidou.mybatisplus.plugins.Page;
-import com.drelephant.framework.base.common.R;
-import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController; 
-import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
-import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
-import com.drelephant.elephantadmin.business.basedata.service.BdHospitalDeptService;
-import com.drelephant.elephantadmin.business.basedata.util.Constans;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +13,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
+import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
+import com.drelephant.elephantadmin.business.basedata.service.BdHospitalDeptService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
+import com.drelephant.framework.base.common.R;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * <p>
@@ -71,7 +70,15 @@ public class BdHospitalDeptController extends BaseController {
     }
     @ApiOperation("单条更新科室信息")
     @PostMapping("/updateOneDept")
-    @ApiImplicitParam(name = "lv1Code", value = "一级科室编码", required = true)
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "id", value = "ID"),
+		@ApiImplicitParam(name = "lv1Name", value = "一级科室名称"),
+		@ApiImplicitParam(name = "lv2Name", value = "二级科室名称"),
+		@ApiImplicitParam(name = "lv3Name", value = "二级科室名称"),
+		@ApiImplicitParam(name = "level", value = "层级"),
+		@ApiImplicitParam(name = "status", value = "状态ACT(启用)/INV(禁用)")
+		
+	})
     public R updateOneDept(@RequestBody @ApiParam("数据对象")BdHospitalDept data){
     	if(data==null){
     		return R.error().put("msg", "参数为空");
@@ -91,7 +98,7 @@ public class BdHospitalDeptController extends BaseController {
     }
     @ApiOperation("获取科室信息列表")
     @GetMapping("/getListDept")
-    public R getListDept(@ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize,@ApiParam("科室编码")String lv1Code,
+    public R getListDept(@ApiParam("科室编码")String code, @ApiParam("当前页")String current,@ApiParam("分页大小")String pageSize,@ApiParam("科室编码")String lv1Code,
     		@ApiParam("2级科室code")String lv2Code,@ApiParam("3级科室code")String lv3Code,
     		@ApiParam("层级")String level,@ApiParam("状态")String status){
     	int offset = 1;
@@ -105,9 +112,10 @@ public class BdHospitalDeptController extends BaseController {
 			limit = Integer.parseInt(pageSize);
 		}
         Page<BdHospitalDept> page=new Page<>(offset,limit);
-        bdHospitalDeptService.getListHost(page, lv1Code, lv2Code, lv3Code, level, status);
+        bdHospitalDeptService.getListHost(page, code, lv1Code, lv2Code, lv3Code, level, status);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
+    
     @ApiOperation("层级下拉数据")
     @GetMapping("/getListLevel")
     public R getListLevel(){

@@ -34,7 +34,7 @@ public interface BdHospitalDeptService extends IService<BdHospitalDept> {
 	//批量修改科室信息状态
 	R deleteBatchHostStatus(String lv1Code,String status);
 	//查询科室信息列表
-	Page<BdHospitalDept> getListHost(Page<BdHospitalDept> page,String lv1Code,String lv2Code,
+	Page<BdHospitalDept> getListHost(Page<BdHospitalDept> page,String code,String lv1Code,String lv2Code,
 			String lv3Code,String level,String status);
 
 	/**

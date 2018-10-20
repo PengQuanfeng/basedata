@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.drelephant.elephantadmin.business.basedata.entity.BdServiceActivity;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdServiceActivityMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdServiceActivityService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
 
 /**
  * <p>
@@ -30,6 +31,7 @@ public class BdServiceActivityServiceImpl extends ServiceImpl<BdServiceActivityM
 	@Override
     @Transactional
 	public void saveBdServiceActivity(BdServiceActivity entity) {
+		entity.setStatus(Constans.ACTIVE);
 		bdServiceActivityMapper.saveBdServiceActivity(entity);
 	}
 
