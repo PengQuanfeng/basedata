@@ -45,14 +45,14 @@
 			<if test="price != null and price != ''">
 				price = #{price}, 
 			</if>
-			<if test="startTime != null and startTime.trim() != ''">
+			<if test="startTime != null">
 				startTime = #{startTime}, 
 			</if>
-			<if test="endTime != null and endTime.trim() != ''">
+			<if test="endTime != null">
 				endTime = #{endTime}, 
 			</if> 
 			<!-- 修改操作公共字段 S-->
-			<if test="updateTime != null and updateTime != ''">
+			<if test="updateTime != null">
 				updateTime = #{updateTime}, 
 			</if>
 			<if test="updateUserCode != null and updateUserCode != ''">

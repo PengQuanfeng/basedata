@@ -97,6 +97,12 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 			entity.setLv2Code(code);
 			entity.setRegulatoryCode(regulatoryCode);
 			entity.setLevel(level);
+			
+			List<BdHospitalDept> list = bdHospitalDeptMapper.selectList(Condition.create().eq("lv1Code", entity.getLv1Code()));
+			if (list.size() > 0) {
+				BdHospitalDept bdHospitalDept = list.get(0);
+				entity.setLv1Name(bdHospitalDept.getLv1Name());
+			}
 		}else{
 			int sLv3Code=selectCount(Condition.create().eq("lv3Code", code).where("status !={0}", 
 					Constans.DELETED).eq("level", level));
@@ -118,6 +124,18 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 			entity.setLv3Code(code);
 			entity.setRegulatoryCode(regulatoryCode);
 			entity.setLevel(level);
+			
+			List<BdHospitalDept> list = bdHospitalDeptMapper.selectList(Condition.create().eq("lv1Code", entity.getLv1Code()));
+			if (list.size() > 0) {
+				BdHospitalDept bdHospitalDept = list.get(0);
+				entity.setLv1Name(bdHospitalDept.getLv1Name());
+			}
+			//
+			list = bdHospitalDeptMapper.selectList(Condition.create().eq("lv2Code", entity.getLv2Code()));
+			if (list.size() > 0) {
+				BdHospitalDept bdHospitalDept = list.get(0);
+				entity.setLv2Name(bdHospitalDept.getLv2Name());
+			}
 		}
 		boolean flag=insert(entity);
 		return flag?R.ok():R.error("新增失败");
@@ -139,13 +157,39 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		if(status != null && level != null){
 			if(level==1){
 				mBdHospitalDept.setLv1Name(data.getLv1Name());
+				//
+				BdHospitalDept mBdHospitalDept0=new BdHospitalDept();
+				mBdHospitalDept0.setLv1Name(data.getLv1Name());
+				update(mBdHospitalDept0, Condition.create().eq("lv1Code", data.getLv1Code()));
 			}else if(level==2){
+				List<BdHospitalDept> list = bdHospitalDeptMapper.selectList(Condition.create().eq("lv1Code", data.getLv1Code()));
+				if (list.size() > 0) {
+					BdHospitalDept bdHospitalDept = list.get(0);
+					mBdHospitalDept.setLv1Name(bdHospitalDept.getLv1Name());
+				}
+				//
 				mBdHospitalDept.setLv2Name(data.getLv2Name());
+				//
+				BdHospitalDept mBdHospitalDept0=new BdHospitalDept();
+				mBdHospitalDept0.setLv2Name(data.getLv2Name());
+				update(mBdHospitalDept0, Condition.create().eq("lv2Code", data.getLv2Name()));
 			}else{
+				List<BdHospitalDept> list = bdHospitalDeptMapper.selectList(Condition.create().eq("lv1Code", data.getLv1Code()));
+				if (list.size() > 0) {
+					BdHospitalDept bdHospitalDept = list.get(0);
+					mBdHospitalDept.setLv1Name(bdHospitalDept.getLv1Name());
+				}
+				//
+				list = bdHospitalDeptMapper.selectList(Condition.create().eq("lv2Code", data.getLv2Code()));
+				if (list.size() > 0) {
+					BdHospitalDept bdHospitalDept = list.get(0);
+					mBdHospitalDept.setLv2Name(bdHospitalDept.getLv2Name());
+				}
+				//
 				mBdHospitalDept.setLv3Name(data.getLv3Name());	
 			}
 			mBdHospitalDept.setStatus(status);
-			flag=update(mBdHospitalDept,Condition.create().eq("id", data.getId()));
+			flag=update(mBdHospitalDept, Condition.create().eq("id", data.getId()));
 		}
 		return flag?R.ok():R.error("状态更新失败");
 	}
@@ -231,6 +275,58 @@ public class BdHospitalDeptServiceImpl extends ServiceImpl<BdHospitalDeptMapper,
 		}
 		return R.ok().put("list", lv1s);
 	}
+	
+	@Override
+	public R batchUpdateHospitalDeptStatus(String status, String ids) {
+		if(StringUtils.isBlank(ids)){
+			return R.error().put("msg", "ID列表（逗号分隔）不能为空");
+		}
+    	//
+		if(StringUtils.isBlank(status)){
+			return R.error().put("msg", "状态不能为空");
+		}
+		//
+		if (!Constans.ACTIVE.equals(status) && !Constans.INVALID.equals(status)) {
+			return R.error().put("msg", "状态取值不正确。正确取值为: " + Constans.ACTIVE + " 或 " + Constans.INVALID);
+		}
+		//
+		List<String> list=new ArrayList<String>();
+		String[] str=null;
+		if(StringUtils.isNotBlank(ids)){
+			str=ids.trim().split(",");
+			for(int i=0;i<str.length;i++){				
+				list.add(str[i]);
+			}
+		}
+		boolean flag=false;
+		if(list!=null && !list.isEmpty()){
+			BdHospitalDept mBdHospitalDept=new BdHospitalDept();			
+			for(int j=0;j<list.size();j++){
+				String id = list.get(j);
+				//
+				Condition con=Condition.create();
+				con.eq("id", id);
+				BdHospitalDept bdHospitalDeptOne = selectOne(con);
+				if(bdHospitalDeptOne==null){
+					return R.error().put("msg", "根据ID(" + id + ")找不到相关的记录");
+				}
+				//
+				if (bdHospitalDeptOne.getLevel() == 1) {
+					bdHospitalDeptOne.setStatus(status);
+					bdHospitalDeptMapper.updateStatusForLevel1(bdHospitalDeptOne);
+				} else if (bdHospitalDeptOne.getLevel() == 2) {
+					bdHospitalDeptOne.setStatus(status);
+					bdHospitalDeptMapper.updateStatusForLevel2(bdHospitalDeptOne);
+				}
+				//
+				bdHospitalDeptOne.setStatus(status);
+				flag=update(bdHospitalDeptOne, Condition.create().eq("id", id));
+				
+			}
+		}
+		return flag?R.ok().put("msg", "成功"):R.error().put("msg", "失败");
+	}
+	
 	@Override
 	public R getLv2List(String lv1Code) {
 		List<BdHospitalDept> list=bdHospitalDeptMapper.getLv2List(lv1Code);

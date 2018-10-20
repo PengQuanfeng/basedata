@@ -39,13 +39,13 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("bdHospitalDept")
 public class BdHospitalDeptController extends BaseController {
+	
     @Autowired
     private BdHospitalDeptService bdHospitalDeptService;
 
-    /**********************新增接口方法***********************/
     @ApiOperation("新增科室信息")
     @ApiImplicitParams({
-//		@ApiImplicitParam(name = "code", value = "科室编码", required = true),
+		@ApiImplicitParam(name = "code", value = "科室编码", required = true),
 		@ApiImplicitParam(name = "lv1Code", value = "一级科室编码"),
 		@ApiImplicitParam(name = "lv1Name", value = "一级科室名称新增一级时输入"),
 		@ApiImplicitParam(name = "lv2Code", value = "二级科室编码"),
@@ -55,19 +55,15 @@ public class BdHospitalDeptController extends BaseController {
 		@ApiImplicitParam(name = "regulatoryCode", value = "监管编码", required = true),
 		@ApiImplicitParam(name = "level", value = "层级"),
 		@ApiImplicitParam(name = "status", value = "状态ACT(启用)/INV(禁用)")
-		
 	})
     @PostMapping("/saveDept")
     public R saveDept(@RequestBody @ApiParam("数据对象")BdHospitalDept data){
-    	//code 接收前台传递的科室编码，1级时作为1级编码，2级时为2级编码，3级时为3级编码
-//    	if(StringUtils.isBlank(code)){
-//    		return R.error().put("msg", "科室编码不能为空");
-//    	}
     	if(data==null){
     		return R.error().put("msg", "参数为空");
     	}
         return bdHospitalDeptService.insertHost(data);
     }
+    
     @ApiOperation("单条更新科室信息")
     @PostMapping("/updateOneDept")
     @ApiImplicitParams({
@@ -85,6 +81,20 @@ public class BdHospitalDeptController extends BaseController {
     	}
         return bdHospitalDeptService.updateHost(data);
     }
+    
+    @ApiOperation("批量更新科室的状态")
+    @PostMapping("/batchUpdateHospitalDeptStatus")
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "ids", value = "ID列表（逗号分隔）"),
+		@ApiImplicitParam(name = "status", value = "状态ACT(启用)/INV(禁用)")
+		
+	})
+    public R batchUpdateHospitalDeptStatus(@RequestBody @ApiParam("map") Map<String, String> map){
+    	String status = map.get("status");
+    	String ids = map.get("ids");
+        return bdHospitalDeptService.batchUpdateHospitalDeptStatus(status, ids);
+    }
+    
     @ApiOperation("单条查看科室信息")
     @PostMapping("/selectOneDept")
     public R selectOneDept(@ApiParam("一级科室编码")String lv1Code){

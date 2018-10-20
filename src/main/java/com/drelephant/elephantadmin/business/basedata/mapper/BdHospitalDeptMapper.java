@@ -1,15 +1,15 @@
 package com.drelephant.elephantadmin.business.basedata.mapper;
 
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
-
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
 
 /**
  * <p>
@@ -25,5 +25,15 @@ public interface BdHospitalDeptMapper extends BaseMapper<BdHospitalDept> {
 	List<BdHospitalDept> getLv2List(@Nonnull @Param("lv1Code") String lv1Code);
 	List<BdHospitalDept> getLv3List(@Nonnull @Param("lv2Code") String lv2Code);
 
+	/**
+	 * 更新 状态
+	 * @param entity
+	 */
+	void updateStatusForLevel1(BdHospitalDept entity);
 	
+	/**
+	 * 更新 状态
+	 * @param entity
+	 */
+	void updateStatusForLevel2(BdHospitalDept entity);
 }

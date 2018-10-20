@@ -1,9 +1,9 @@
 package com.drelephant.elephantadmin.business.basedata.service;
 
-import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
-import com.drelephant.framework.base.common.R;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.drelephant.elephantadmin.business.basedata.entity.BdHospitalDept;
+import com.drelephant.framework.base.common.R;
 
 /**
  * <p>
@@ -54,4 +54,6 @@ public interface BdHospitalDeptService extends IService<BdHospitalDept> {
 	 * @return
 	 */
 	R getLv3List(String lv2Code);
+	
+	R batchUpdateHospitalDeptStatus(String status, String ids);
 }

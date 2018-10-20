@@ -83,7 +83,6 @@ public class BdServiceActivityController extends BaseController {
     
     @ApiImplicitParams({
         @ApiImplicitParam(name = "id", value = "ID", required = true),
-        @ApiImplicitParam(name = "serviceName", value = "服务类型", required = true),
         @ApiImplicitParam(name = "price", value = "活动价格", required = true), 
         @ApiImplicitParam(name = "startTime", value = "开始时间", required = true),
         @ApiImplicitParam(name = "endTime", value = "结束时间", required = true),

@@ -1,7 +1,5 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
-import javax.validation.Valid;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
 import com.drelephant.elephantadmin.business.basedata.entity.BdQuickReply;
-import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
 import com.drelephant.elephantadmin.business.basedata.service.BdQuickReplyService;
-import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
 
 import io.swagger.annotations.Api;
