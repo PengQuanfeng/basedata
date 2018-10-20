@@ -30,6 +30,8 @@ public class BdBanner implements Serializable {
      */
 	@TableField("fileId")
 	private String fileId;
+
+	private String fileName;
     /**
      * 排序字段
      */
@@ -209,6 +211,15 @@ public class BdBanner implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	@Override
