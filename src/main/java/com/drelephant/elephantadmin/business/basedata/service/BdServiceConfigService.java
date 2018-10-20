@@ -23,7 +23,7 @@ public interface BdServiceConfigService extends IService<BdServiceConfig> {
 	
 	Map<String,String> getServiceType(String type);
 	
-	Page<BdServiceConfig> queryServiceConfigInfo(int offset, int limit,String id);
+	Page<BdServiceConfig> queryServiceConfigInfo(int offset, int limit);
 	/*
 	 *服务类型获取
 	 */

@@ -125,4 +125,44 @@ public final class Constans {
     public static final String SUPPLIER_WEIGHT_TYPE_AUTO = "2";
 
     public static final Integer HUNDRED = 100;
+    
+    /**
+     * 视频问诊
+     */
+    public static final String FWLB_SPWZ_NAME = "视频问诊";
+
+    /**
+     * 图文咨询
+     */
+    public static final String FWLB_TWZX_NAME = "图文咨询";
+
+    /**
+     * 普通门诊
+     */
+    public static final String SPWZ_PTMZ_NAME = "普通门诊";
+
+    /**
+     * 专科门诊
+     */
+    public static final String SPWZ_ZKMZ_NAME = "专科门诊";
+
+    /**
+     * 特需门诊
+     */
+    public static final String SPWZ_TXMZ_NAME = "特需门诊";
+
+    /**
+     * 在线咨询
+     */
+    public static final String TWZX_ZXZX_NAME = "在线咨询";
+
+    /**
+     * 开药门诊
+     */
+    public static final String TWZX_KYMZ_NAME = "开药门诊";
+
+    /**
+     * 检查
+     */
+    public static final String TWZX_JCMZ_NAME = "检查门诊";
 }

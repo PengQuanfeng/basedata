@@ -23,5 +23,5 @@ public interface BdServiceConfigMapper extends BaseMapper<BdServiceConfig> {
 
 	int updateBdServiceConfig(BdServiceConfig entity);
 	
-	List<BdServiceConfig> queryServiceConfigInfo(Pagination page, @Param("id") String id);
+	List<BdServiceConfig> queryServiceConfigInfo(Pagination page);
 }

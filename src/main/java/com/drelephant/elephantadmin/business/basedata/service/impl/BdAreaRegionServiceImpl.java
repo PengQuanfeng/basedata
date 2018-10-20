@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,19 +32,25 @@ import com.drelephant.framework.base.common.R;
 public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdAreaRegion> implements BdAreaRegionService {
 	@Autowired
 	BdAreaRegionMapper mBdAreaRegionMapper;
+	
 	@Override
 	@Transactional
 	public R insertBdAreaRegion(BdAreaRegion data) {
-		// TODO Auto-generated method stub
 		if(StringUtils.isBlank(data.getCode())){ 
-			return R.error().put("msg", "地区编码为空");
+			return R.error().put("msg", "编码为空");
 		}
+		if(StringUtils.isNotBlank(data.getStatus())){
+			if (!Constans.ACTIVE.equals(data.getStatus()) && !Constans.INVALID.equals(data.getStatus())) {
+				return R.error().put("msg", "状态取值不正确。正确取值为: " + Constans.ACTIVE + " 或 " + Constans.INVALID);
+			}
+		}
+		//
 		Condition con=Condition.create();
 		con.eq("code", data.getCode());
 		con.where("status !={0}", Constans.DELETED);
 		int count=selectCount(con);
 		if(count>0){
-			return R.error().put("msg", "地区编码已经存在");
+			return R.error().put("msg", "编码已经存在");
 		}						
 		Integer level=data.getLevel();
 		if(level==null){
@@ -54,24 +59,39 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 		if(level==1){
 			String provinceName=data.getProvinceName();
 			if(StringUtils.isBlank(provinceName)){
-				return R.error().put("msg", "省名称不能为空");
+				return R.error().put("msg", "省份名称不能为空");
 			}
+			//
 			Condition con1=Condition.create();
 			con1.eq("provinceName", provinceName);
 			con1.eq("level", 1);
 			con1.where("status !={0}", Constans.DELETED);
 			int countPro=selectCount(con1);
 			if(countPro>0){
-				return R.error().put("msg", "省名称已经存在");
+				return R.error().put("msg", "省份名称已经存在");
 			}
-			data.setProvinceCode(getRandom());
+			//
+			if (provinceName.length() > 20) {
+				return R.error().put("msg", "省份名称字符长度超过20");
+			}
+			//
+			data.setProvinceCode(data.getCode());
 			data.setLevel(1);
 		}else if(level==2){
 			String provinceCode=data.getProvinceCode();
-			String cityName=data.getCityName();
-			if(StringUtils.isBlank(provinceCode)||StringUtils.isBlank(cityName)){
-				return R.error().put("msg", "参数不能为空");
+			if(StringUtils.isBlank(provinceCode)){
+				return R.error().put("msg", "省份编码不能为空");
 			}
+			//
+			String cityName=data.getCityName();
+			if(StringUtils.isBlank(cityName)){
+				return R.error().put("msg", "城市名称不能为空");
+			}
+			//
+			if (cityName.length() > 20) {
+				return R.error().put("msg", "城市名称字符长度超过20");
+			}
+			//
 			Condition con2=Condition.create();
 			con2.eq("level", 2);
 			con2.where("status !={0}", Constans.DELETED);
@@ -81,30 +101,52 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 			if(countC>0){
 				return R.error().put("msg", "城市名称已经存在");
 			}
-			BdAreaRegion  BdAreaRegion =mBdAreaRegionMapper.selectPName(provinceCode);
-			data.setProvinceName(BdAreaRegion.getProvinceName());			
-			data.setCityCode(getRandom());	
+			//
+			BdAreaRegion bdAreaRegion =mBdAreaRegionMapper.selectPName(provinceCode);
+			if(bdAreaRegion==null){
+				return R.error().put("msg", "根据省份编码(" + provinceCode + ")找不到相关的记录");
+			}
+			data.setProvinceName(bdAreaRegion.getProvinceName());			
+			data.setCityCode(data.getCode());	
 			data.setLevel(2);
-		}else {
+		}else { // (level==3)
 			String provinceCode=data.getProvinceCode();
+			if(StringUtils.isBlank(provinceCode)){
+				return R.error().put("msg", "省份编码不能为空");
+			}
+			//
 			String cityCode=data.getCityCode();
+			if(StringUtils.isBlank(cityCode)){
+				return R.error().put("msg", "城市编码不能为空");
+			}
+			//
 			String countyName=data.getCountyName();
 			if(StringUtils.isBlank(countyName)){
-				return R.error().put("msg", "参数不能为空");
+				return R.error().put("msg", "区县名称不能为空");
 			}
+			//
+			if (countyName.length() > 20) {
+				return R.error().put("msg", "区县名称字符长度超过20");
+			}
+			//
 			Condition con3=Condition.create();
 			con3.eq("provinceCode", provinceCode);
 			con3.eq("cityCode", cityCode);
 			con3.eq("level", 3);
 			con3.where("status !={0}", Constans.DELETED);
-			con3.eq("countyName", countyName);							
-			BdAreaRegion bdAreaRegion=mBdAreaRegionMapper.selectProviceNameFromCode(provinceCode,cityCode);
-			if(bdAreaRegion==null||StringUtils.isBlank(data.getCountyName())){
-				return R.error().put("msg", "区县参数错误");
+			con3.eq("countyName", countyName);			
+			int countC=selectCount(con3);
+			if(countC>0){
+				return R.error().put("msg", "区县名称已经存在");
+			}
+			//
+			BdAreaRegion bdAreaRegion=mBdAreaRegionMapper.selectProviceNameFromCode(provinceCode, cityCode);
+			if(bdAreaRegion==null){
+				return R.error().put("msg", "根据省份编码(" + provinceCode + ")和城市编码(" + cityCode + ")找不到相关的记录");
 			}
 			data.setProvinceName(bdAreaRegion.getProvinceName());
 			data.setCityName(bdAreaRegion.getCityName());
-			data.setCountyCode(getRandom());
+			data.setCountyCode(data.getCode());
 			data.setLevel(3);
 		}
 		String status=data.getStatus();
@@ -119,7 +161,7 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 
 	@Override
 	@Transactional
-	public R updateStatus(BdAreaRegion entity) {				
+	public R updateAreaRegion(BdAreaRegion entity) {				
 		if (StringUtils.isBlank(entity.getCode())) {
 			return R.error().put("msg", "编码为空");
 		}
@@ -127,27 +169,52 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 		con.eq("code", entity.getCode());
 		con.where("status !={0}", Constans.DELETED);
 		BdAreaRegion bdAreaRegionOne =selectOne(con);
+		if(bdAreaRegionOne==null){
+			return R.error().put("msg", "根据编码(" + entity.getCode() + ")找不到相关的记录");
+		}
+		//
 		int level=bdAreaRegionOne.getLevel();
 		if(level==1){
 			String provinceName=entity.getProvinceName();
 			if(StringUtils.isBlank(provinceName)){
-				return R.error().put("msg", "省名称不能为空");
+				return R.error().put("msg", "省份名称不能为空");
 			}
+			//
+			if (provinceName.length() > 20) {
+				return R.error().put("msg", "省份名称字符长度超过20");
+			}
+			
 			Condition con1=Condition.create();
+			con1.ne("code", entity.getCode());
 			con1.eq("provinceName", provinceName);
 			con1.eq("level", 1);
 			con1.where("status !={0}", Constans.DELETED);
 			int countPro=selectCount(con1);
 			if(countPro>0){
-				return R.error().put("msg", "省名称已经存在");
+				return R.error().put("msg", "省份名称已经存在");
 			}
+			//
+			BdAreaRegion bdAreaRegion1 = new BdAreaRegion();
+			bdAreaRegion1.setProvinceCode(entity.getCode());
+			bdAreaRegion1.setProvinceName(entity.getProvinceName());
+			mBdAreaRegionMapper.updateProvinceName(bdAreaRegion1);
 		}else if(level==2){
 			String provinceCode=entity.getProvinceCode();
-			String cityName=entity.getCityName();
-			if(StringUtils.isBlank(provinceCode)||StringUtils.isBlank(cityName)){
-				return R.error().put("msg", "参数不能为空");
+			if(StringUtils.isBlank(provinceCode)){
+				return R.error().put("msg", "省份编码不能为空");
 			}
+			//
+			String cityName=entity.getCityName();
+			if(StringUtils.isBlank(cityName)){
+				return R.error().put("msg", "城市名称不能为空");
+			}
+			//
+			if (cityName.length() > 20) {
+				return R.error().put("msg", "城市名称字符长度超过20");
+			}
+			//
 			Condition con2=Condition.create();
+			con2.ne("code", entity.getCode());
 			con2.eq("level", 2);
 			con2.where("status !={0}", Constans.DELETED);
 			con2.eq("provinceCode", provinceCode);
@@ -156,26 +223,56 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 			if(countC>0){
 				return R.error().put("msg", "城市名称已经存在");
 			}
-			BdAreaRegion  bdAreaRegion =mBdAreaRegionMapper.selectPName(provinceCode);
-			entity.setProvinceName(bdAreaRegion.getProvinceName());	
+			//
+			BdAreaRegion bdAreaRegion =mBdAreaRegionMapper.selectPName(provinceCode);
+			if(bdAreaRegion==null){
+				return R.error().put("msg", "根据省份编码(" + provinceCode + ")找不到相关的记录");
+			}
+			//
+			entity.setProvinceName(bdAreaRegion.getProvinceName());
+			//
+			BdAreaRegion bdAreaRegion2 = new BdAreaRegion();
+			bdAreaRegion2.setCityCode(entity.getCode());
+			bdAreaRegion2.setCityName(entity.getCityName());
+			mBdAreaRegionMapper.updateCityName(bdAreaRegion2);
 		}else { 
 			String provinceCode=entity.getProvinceCode();
-			String cityCode=entity.getCityCode();
-			String countyName=entity.getCountyName();
-			if(StringUtils.isBlank(provinceCode)||StringUtils.isBlank(cityCode)||StringUtils.isBlank(countyName)){
-				return R.error().put("msg", "参数不能为空");
+			if(StringUtils.isBlank(provinceCode)){
+				return R.error().put("msg", "省份编码不能为空");
 			}
+			//
+			String cityCode=entity.getCityCode();
+			if(StringUtils.isBlank(provinceCode)){
+				return R.error().put("msg", "城市编码不能为空");
+			}
+			//
+			String countyName=entity.getCountyName();
+			if(StringUtils.isBlank(countyName)){
+				return R.error().put("msg", "区县名称不能为空");
+			}
+			//
+			if (countyName.length() > 20) {
+				return R.error().put("msg", "区县名称字符长度超过20");
+			}
+			//
 			Condition con3=Condition.create();
+			con3.ne("code", entity.getCode());
 			con3.eq("provinceCode", provinceCode);
 			con3.eq("cityCode", cityCode);
 			con3.eq("level", 3);
 			con3.where("status !={0}", Constans.DELETED);
-			con3.eq("countyName", countyName);							
-			BdAreaRegion bdAreaRegion=mBdAreaRegionMapper.selectProviceNameFromCode(provinceCode,cityCode);
-			if(bdAreaRegion==null||StringUtils.isBlank(entity.getCountyName())){
-				return R.error().put("msg", "省编码和市编码为空");
+			con3.eq("countyName", countyName);			
+			int countC=selectCount(con3);
+			if(countC>0){
+				return R.error().put("msg", "区县名称已经存在");
+			}
+			//			
+			BdAreaRegion bdAreaRegion =mBdAreaRegionMapper.selectPName(provinceCode);
+			if(bdAreaRegion==null){
+				return R.error().put("msg", "根据省份编码(" + provinceCode + ")找不到相关的记录");
 			}
 			entity.setProvinceName(bdAreaRegion.getProvinceName());
+			//
 			entity.setCityName(bdAreaRegion.getCityName());
 		}
 		Condition cons=Condition.create();
@@ -187,10 +284,18 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 
 	@Override
 	@Transactional
-	public R deleteBdAreaRegion( String code) {
+	public R deleteBdAreaRegion(String code) {
 		if(StringUtils.isBlank(code)){
-			return R.error("参数为空");
+			return R.error().put("msg", "编码不能为空");
 		}
+		//
+		BdAreaRegion oneBdAreaRegion = new BdAreaRegion();
+		oneBdAreaRegion.setCode(code);
+		Integer count = mBdAreaRegionMapper.getCountOfSubAreaRegions(oneBdAreaRegion);
+		if (count != null && count.intValue() > 0) {
+			return R.error().put("msg", "该地区有子级地区信息，禁止删除");
+		}
+		//
 		BdAreaRegion mBdAreaRegion=new BdAreaRegion();
 		mBdAreaRegion.setStatus(Constans.DELETED);
 		Condition con=Condition.create();
@@ -229,8 +334,19 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 	}
 
 	@Override
-	public R updateBatchBdAreaRegion(String status,String codes) {
-		// TODO Auto-generated method stub
+	public R updateBatchBdAreaRegion(String status, String codes) {
+		if(StringUtils.isBlank(codes)){
+			return R.error().put("msg", "地区编码列表(逗号分隔)不能为空");
+		}
+    	//
+		if(StringUtils.isBlank(status)){
+			return R.error().put("msg", "状态不能为空");
+		}
+		//
+		if (!Constans.ACTIVE.equals(status) && !Constans.INVALID.equals(status)) {
+			return R.error().put("msg", "状态取值不正确。正确取值为: " + Constans.ACTIVE + " 或 " + Constans.INVALID);
+		}
+		//
 		List<String> list=new ArrayList<String>();
 		String[] str=null;
 		if(StringUtils.isNotBlank(codes)){
@@ -243,8 +359,26 @@ public class BdAreaRegionServiceImpl extends ServiceImpl<BdAreaRegionMapper, BdA
 		if(list!=null && !list.isEmpty()){
 			BdAreaRegion mBdAreaRegion=new BdAreaRegion();			
 			for(int j=0;j<list.size();j++){
+				String code = list.get(j);
+				//
+				Condition con=Condition.create();
+				con.eq("code", code);
+				BdAreaRegion bdAreaRegionOne = selectOne(con);
+				if(bdAreaRegionOne==null){
+					return R.error().put("msg", "根据编码(" + code + ")找不到相关的记录");
+				}
+				//
+				if (bdAreaRegionOne.getLevel() == 1) {
+					bdAreaRegionOne.setStatus(status);
+					mBdAreaRegionMapper.updateStatusForLevel1(bdAreaRegionOne);
+				} else if (bdAreaRegionOne.getLevel() == 2) {
+					bdAreaRegionOne.setStatus(status);
+					mBdAreaRegionMapper.updateStatusForLevel2(bdAreaRegionOne);
+				}
+				//
 				mBdAreaRegion.setStatus(status);
-				flag=update(mBdAreaRegion,Condition.create().eq("code", list.get(j)));
+				flag=update(mBdAreaRegion,Condition.create().eq("code", code));
+				
 			}
 		}
 		return flag?R.ok().put("msg", "成功"):R.error().put("msg", "失败");

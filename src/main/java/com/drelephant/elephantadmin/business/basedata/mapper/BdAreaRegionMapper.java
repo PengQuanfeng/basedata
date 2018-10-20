@@ -58,4 +58,35 @@ public interface BdAreaRegionMapper extends BaseMapper<BdAreaRegion> {
 	 */
 	BdAreaRegion selectPName(@Param("provinceCode")String provinceCode);
 	
+	/**
+	 * 更新 省份名称
+	 * @param entity
+	 */
+	void updateProvinceName(BdAreaRegion entity);
+	
+	/**
+	 * 更新 城市名称
+	 * @param entity
+	 */
+	void updateCityName(BdAreaRegion entity);
+	
+	/**
+	 * 更新 状态
+	 * @param entity
+	 */
+	void updateStatusForLevel1(BdAreaRegion entity);
+	
+	/**
+	 * 更新 状态
+	 * @param entity
+	 */
+	void updateStatusForLevel2(BdAreaRegion entity);
+	
+	/**
+	 * 获取 子级（包括 子级的子级）区域数量
+	 * @param entity
+	 * @return
+	 */
+	Integer getCountOfSubAreaRegions(BdAreaRegion entity);
+	
 }

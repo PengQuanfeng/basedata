@@ -52,10 +52,10 @@ public class BdServiceActivityController extends BaseController {
 		Page<BdServiceActivity> page = bdServiceActivityService.queryServiceActivityInfo(offset, limit, id);
 		return R.ok().put("list", page.getRecords()).put("total", page.getTotal());
 	}
+    
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "serviceCategoryName", value = "服务类别编码", required = true),
-        @ApiImplicitParam(name = "serviceCategoryCode", value = "服务类别名称", required = true),
-        @ApiImplicitParam(name = "serviceName", value = "服务类型", required = true),
+        @ApiImplicitParam(name = "serviceCategoryCode", value = "服务类别编码", required = true),
+        @ApiImplicitParam(name = "serviceCode", value = "服务类型编码", required = true),
         @ApiImplicitParam(name = "price", value = "活动价格", required = true), 
         @ApiImplicitParam(name = "startTime", value = "开始时间", required = true),
         @ApiImplicitParam(name = "endTime", value = "结束时间", required = true),
@@ -69,6 +69,7 @@ public class BdServiceActivityController extends BaseController {
 		bdServiceActivityService.saveBdServiceActivity(entity);
 		return R.ok().put("msg", "新增活动记录成功！");
 	}
+    
     @ApiImplicitParams({
         @ApiImplicitParam(name = "serviceCategoryName", value = "服务类别编码", required = true),
         @ApiImplicitParam(name = "serviceCategoryCode", value = "服务类别名称", required = true),

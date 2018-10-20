@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
 import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
 import com.drelephant.elephantadmin.business.basedata.service.BdServiceConfigService;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
 
 import io.swagger.annotations.Api;
@@ -37,7 +38,7 @@ public class BdServiceConfigController extends BaseController {
 
 	@ApiOperation("查询服务配置")
 	@GetMapping("/list")
-	public R list(@ApiParam("当前页") String current, @ApiParam("每页显示记录数") String pageSize, @ApiParam("id") String id) {
+	public R list(@ApiParam("当前页") String current, @ApiParam("每页显示记录数") String pageSize) {
 		int offset = 1;
 		int limit = 1000;
 		if (StringUtils.isNotBlank(current)) {
@@ -48,7 +49,7 @@ public class BdServiceConfigController extends BaseController {
 			// 每页限制数
 			limit = Integer.parseInt(pageSize);
 		}
-		Page<BdServiceConfig> page = bdServiceConfigService.queryServiceConfigInfo(offset, limit, id);
+		Page<BdServiceConfig> page = bdServiceConfigService.queryServiceConfigInfo(offset, limit);
 		return R.ok().put("list", page.getRecords()).put("total", page.getTotal());
 	}
 	
@@ -62,7 +63,6 @@ public class BdServiceConfigController extends BaseController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "serviceCategoryCode", value = "服务类别编码", required = true),
-            @ApiImplicitParam(name = "serviceCategoryName", value = "服务类别名称", required = true),
             @ApiImplicitParam(name = "serviceCode", value = "服务类型编码"),
             @ApiImplicitParam(name = "serviceName", value = "服务类型名称", required = true),
             @ApiImplicitParam(name = "isDocCanConfig", value = "医生服务配置", required = true),
@@ -84,9 +84,19 @@ public class BdServiceConfigController extends BaseController {
 		if(entity == null){
 			return R.error("保存服务配置信息失败，参数无效!");
 		}
+		String serviceCategoryCode = entity.getServiceCategoryCode();
+		if ("SPWZ".equals(serviceCategoryCode)) {
+			entity.setServiceCategoryName(Constans.FWLB_SPWZ_NAME);
+		} else if ("TWZX".equals(serviceCategoryCode)) {
+			entity.setServiceCategoryName(Constans.FWLB_TWZX_NAME);
+		} else {
+			return R.error("服务类别编码不正确");
+		}
+		
 		bdServiceConfigService.saveServiceConfig(entity);
 		return R.ok().put("msg", "新增服务配置成功！");
 	}
+    
     @ApiImplicitParams({
         @ApiImplicitParam(name = "serviceCode", value = "服务类型编码"),
         @ApiImplicitParam(name = "serviceName", value = "服务类型名称", required = true),

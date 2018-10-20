@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,66 +42,65 @@ import io.swagger.annotations.ApiParam;
 public class BdAreaRegionController extends BaseController {
     @Autowired
     private BdAreaRegionService bdAreaRegionService;
- /*******************新增接口地址***************/  
     
     @ApiImplicitParams({
         @ApiImplicitParam(name = "level", value = "层级", required = true),
         @ApiImplicitParam(name = "code", value = "编码", required = true),
-        @ApiImplicitParam(name = "provinceName", value = "省份") ,
+        @ApiImplicitParam(name = "provinceName", value = "省份名称") ,
         @ApiImplicitParam(name = "provinceCode", value = "省份编码") ,
-        @ApiImplicitParam(name = "cityName", value = "城市") ,
-        @ApiImplicitParam(name = "cityCode", value = "城市") ,
-        @ApiImplicitParam(name = "countyName", value = "区县"),
+        @ApiImplicitParam(name = "cityName", value = "城市编码") ,
+        @ApiImplicitParam(name = "cityCode", value = "城市名称") ,
+        @ApiImplicitParam(name = "countyName", value = "区县名称"),
         @ApiImplicitParam(name = "status", value = "状态") 
     })
-    @ApiOperation("行政地区新增")
-    @PostMapping("/saveAdmin")
-    public R saveAdmin(@RequestBody @ApiParam("数据对象")BdAreaRegion entity){
+    @ApiOperation("新增 行政地区")
+    @PostMapping("/addAreaRegion")
+    public R addAreaRegion(@RequestBody @ApiParam("数据对象")BdAreaRegion entity){
     	if(entity == null){
 			return R.error("保存行政地区失败，参数无效!");
 		}
     	
         return bdAreaRegionService.insertBdAreaRegion(entity);
     }
-    @ApiOperation("更新状态")
-    @PostMapping("/updateStatus")
+    
+    @ApiOperation("更新 行政地区")
+    @PostMapping("/updateAreaRegion")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "level", value = "层级", required = true),
         @ApiImplicitParam(name = "code", value = "编码", required = true),
-        @ApiImplicitParam(name = "provinceName", value = "省份") ,
+        @ApiImplicitParam(name = "provinceName", value = "省份名称") ,
         @ApiImplicitParam(name = "provinceCode", value = "省份编码") ,
-        @ApiImplicitParam(name = "cityName", value = "城市") ,
-        @ApiImplicitParam(name = "cityCode", value = "城市") ,
-        @ApiImplicitParam(name = "countyName", value = "区县"),
+        @ApiImplicitParam(name = "cityName", value = "城市名称") ,
+        @ApiImplicitParam(name = "cityCode", value = "城市编码") ,
+        @ApiImplicitParam(name = "countyName", value = "区县名称"),
         @ApiImplicitParam(name = "status", value = "状态") 
     })
-    public R updateStatus(@RequestBody @ApiParam("数据对象") BdAreaRegion entity){
+    public R updateAreaRegion(@RequestBody @ApiParam("数据对象") BdAreaRegion entity){
     	if(entity == null){
 			return R.error("修改行政地区失败，参数无效!");
 		}
     	
-        return bdAreaRegionService.updateStatus(entity);
+        return bdAreaRegionService.updateAreaRegion(entity);
     }
     @ApiOperation("单条删除")
     @PostMapping("/deleteBdAreaRegion")
-    public R deleteBdAreaRegion(@RequestBody Map<String, String> map ){  
-    	String code = map.get("code");
-    	if(StringUtils.isBlank(code)){
-			return R.error().put("msg", "删除失败");
-		}
-        return bdAreaRegionService.deleteBdAreaRegion(code);
-    } 
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "code", value = "编码", required = true),
+    })
+    public R deleteBdAreaRegion(@RequestBody Map<String, String> map){
+        return bdAreaRegionService.deleteBdAreaRegion(map.get("code"));
+    }
+    
     @ApiOperation("批量更新地区状态")
-    @PostMapping("/updateBatchCode")
-    public R updateBatchCode(@ApiParam(value="是否启用")String status,@ApiParam("地区编码")String codes ){
-    	if(StringUtils.isNotBlank(status)){
-    		if(status.equals(Constans.ACTIVE)){
-    			status=Constans.ACTIVE;
-    		}else{
-    			status=Constans.INVALID;
-    		}
-    	}
-        return bdAreaRegionService.updateBatchBdAreaRegion(status,codes);
+    @PostMapping("/batchUpdateStatus")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "codes", value = "地区编码列表(逗号分隔)", required = true),
+        @ApiImplicitParam(name = "status", value = "状态") 
+    })
+    public R batchUpdateStatus(@RequestBody Map<String, String> map){
+    	String status = map.get("status");
+		String codes = map.get("codes");
+    	
+        return bdAreaRegionService.updateBatchBdAreaRegion(status, codes);
     }
     
 //    @ApiOperation("获取行政地区tree")
@@ -141,8 +138,8 @@ public class BdAreaRegionController extends BaseController {
 		@ApiImplicitParam(name = "level", value = "层级"),
 		@ApiImplicitParam(name = "status", value = "状态")
 	})
-    @GetMapping("/getListAdmin")
-    public R getListAdmin(@ApiParam(value="当前页")@RequestParam(value="current" ,defaultValue="1" ,required=false)String current,
+    @GetMapping("/getList")
+    public R getList(@ApiParam(value="当前页")@RequestParam(value="current" ,defaultValue="1" ,required=false)String current,
     		@RequestParam(value="pageSize" ,defaultValue="1000" ,required=false)String pageSize,
     		String code,String provinceCode,String cityCode,String countyCode,
     		Integer level,String status ){ 
@@ -179,7 +176,7 @@ public class BdAreaRegionController extends BaseController {
     }
     @ApiOperation("状态下拉数据")
     @GetMapping("/getListStatus")
-    public R getListStatus(){  
+    public R getListStatus(){
     	List<Map<String, Object>> statuss = new ArrayList<Map<String, Object>>();
 		Map<String, Object> status = null;
 		List<String> list=new ArrayList<String>();

@@ -8,10 +8,7 @@
 		<include refid="BD_SERVICE_CONFIG_COLUMNS" />
 		from bd_service_config
 		<where>
-			<if test="id != null and id !=''">
-				 id = #{id}
-			</if>
-			and status = 'ACT'
+			status = 'ACT'
 		</where>
 	</select>
 	
@@ -49,12 +46,9 @@
 		#{status}
 		)
 	</insert>
-	<update id="updateServiceConfig" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig">
-		update /** 修改医疗服务配置表信息 **/ dbo.bd_service_config 
+	<update id="updateBdServiceConfig" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig">
+		update /** 修改医疗服务配置表信息 **/ bd_service_config
 		<set>
-			<if test="serviceCode != null and serviceCode.trim() != ''">
-				serviceCode = #{serviceCode}, 
-			</if>
 			<if test="serviceName != null and serviceName.trim() != ''">
 				serviceName = #{serviceName}, 
 			</if>

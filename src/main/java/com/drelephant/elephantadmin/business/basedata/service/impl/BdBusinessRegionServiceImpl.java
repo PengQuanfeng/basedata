@@ -42,7 +42,7 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 		}
 		if(StringUtils.isBlank(lv1Code)){
 			return R.error().put("msg", "区域编码为空");
-		}							
+		}
 		//1级区域
 		if(level==1){	
 			int count=selectCount(Condition.create().eq("lv1Code", lv1Code).eq("level", level)
@@ -155,7 +155,7 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 		boolean flag=update(mBdBusinessRegion,Condition.create().eq("id", data.getId()));			 
 		return flag?R.ok("删除成功"):R.error("删除失败");
 	}
-//TODO 搜索查询
+
 	@Override
 	public Page<BdBusinessRegion> getListRegion(Page<BdBusinessRegion> page,String code,String lv1Code,String lv2Code,String level) {
 		Condition con=Condition.create();
@@ -163,14 +163,13 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 			con.eq("lv1Code", lv1Code);
 		}
 		if(StringUtils.isNotBlank(lv2Code)){
-			con.like("lv2Code", lv2Code);
+			con.eq("lv2Code", lv2Code);
 		}
 		if(StringUtils.isNotBlank(level)){
 			con.eq("level", level);
 		}
-		//TODO 
 		if(StringUtils.isNotBlank(code)){
-			
+			con.or("(lv1Code like {0} or lv2Code like {1})", "%" + code + "%", "%" + code + "%");
 		}
 		con.where("status !={0}", Constans.DELETED);
 		selectPage(page, con);

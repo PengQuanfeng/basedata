@@ -1,5 +1,20 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
@@ -7,16 +22,6 @@ import com.drelephant.elephantadmin.business.basedata.mapper.BdHealthCalendarMap
 import com.drelephant.elephantadmin.business.basedata.service.BdHealthCalendarService;
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.elephantadmin.business.basedata.util.DateUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
 
 /**
  * <p>
@@ -67,7 +72,7 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
         Date date;
         try {
             date = s.parse(dateStr);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             date = new Date();
         }
         //todo 根据时间 ，得出一周的时间范围。
@@ -128,7 +133,7 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
         //3.select
         List<BdHealthCalendar> listBetween = getListBetween(start, end);
         List<String> hasDateList = new ArrayList<String>();
-        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat s = new SimpleDateFormat("y-M-d");
         listBetween.forEach(v -> {
             hasDateList.add(s.format(v.getPublishTime()));
         });

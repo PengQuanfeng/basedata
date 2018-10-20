@@ -18,5 +18,5 @@ public interface BdServicePriceService extends IService<BdServicePrice> {
 
 	void updateBdServicePrice(BdServicePrice entity);
 	
-	Page<BdServicePrice> queryServicePriceInfo(int offset, int limit, String id);
+	Page<BdServicePrice> queryServicePriceInfo(int offset, int limit);
 }

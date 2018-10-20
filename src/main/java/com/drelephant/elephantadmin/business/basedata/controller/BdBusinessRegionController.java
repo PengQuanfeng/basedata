@@ -74,8 +74,9 @@ public class BdBusinessRegionController extends BaseController {
     	m.setId(id);
         return bdBusinessRegionService.deleteOneRegion(m);
     }
+    
     @ApiOperation("获取list")
-    @PostMapping("/getListRegion")
+    @GetMapping("/getListRegion")
     public R getListRegion(@ApiParam(value="当前页")String current,@ApiParam(value="分页大小")String pageSize,
     		@ApiParam(value="编码/1级or2级")String code,
     		@ApiParam(value="区域编码")String lv1Code,@ApiParam(value="2级区域编码")String lv2Code,
@@ -94,13 +95,15 @@ public class BdBusinessRegionController extends BaseController {
         bdBusinessRegionService.getListRegion(page,code,lv1Code,lv2Code,level);
         return R.ok().put("list",page.getRecords()).put("total",page.getTotal());
     }
+    
     @ApiOperation("单条区域信息")
-    @PostMapping("/getOneRegion")
+    @GetMapping("/getOneRegion")
     public R getOneRegion(@ApiParam(value="区域编码",required=true)String lcodes,@ApiParam(value="层级",required=true)Integer level){
     	
     	BdBusinessRegion bd=bdBusinessRegionService.selectOneRegion(lcodes,level);
         return R.ok().put("list", bd);
     }
+    
     @ApiOperation("层级下拉数据")
     @GetMapping("/getListLevel")
     public R getListLevel(){

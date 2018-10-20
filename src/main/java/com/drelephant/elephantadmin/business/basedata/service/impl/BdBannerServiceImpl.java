@@ -72,7 +72,7 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
 	public List<BdBanner> getListBd() {		
 		Condition con=Condition.create();
 		con.where(" status !={0}", Constans.DELETED);
-		con.orderBy("orderNumber", false);
+		con.orderBy("orderNumber", true);
 //		List<BdBanner> list=selectList(con);
 //		for
 		return selectList(con);

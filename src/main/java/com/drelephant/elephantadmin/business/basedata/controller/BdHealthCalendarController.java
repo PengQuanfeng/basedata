@@ -1,11 +1,10 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
-import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
-import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
-import com.drelephant.elephantadmin.business.basedata.service.BdHealthCalendarService;
-import com.drelephant.framework.base.common.R;
-import io.swagger.annotations.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
+import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
+import com.drelephant.elephantadmin.business.basedata.service.BdHealthCalendarService;
+import com.drelephant.framework.base.common.R;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * <p>
@@ -30,16 +40,16 @@ public class BdHealthCalendarController extends BaseController {
     private BdHealthCalendarService bdHealthCalendarService;
 
     /**
-     * 图片上传时保存信息
+     * 保存 图片
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "title", value = "标题", required = false),
             @ApiImplicitParam(name = "contentPicId", value = "图片ID", required = true),
             @ApiImplicitParam(name = "publishTime", value = "发布时间", required = true)
     })
-    @ApiOperation("上传接口")
-    @PostMapping("/upload")
-    public R fileUpload(@RequestBody @ApiParam("数据对象") BdHealthCalendar entity) {
+    @ApiOperation("保存")
+    @PostMapping("/save")
+    public R save(@RequestBody @ApiParam("数据对象") BdHealthCalendar entity) {
         if (entity == null) {
             return R.error("上传失败，参数无效!");
         }
@@ -52,12 +62,27 @@ public class BdHealthCalendarController extends BaseController {
      */
     @ApiOperation("删除")
     @PostMapping("/deletePic")
-    public R deletePic(@ApiParam("id") String id) {
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "ID", required = true)
+    })
+    public R deletePic(@RequestBody Map<String, String> map){
+    	String id = map.get("id");
         if (StringUtils.isBlank(id)) {
-            return R.error("删除失败，参数无效!");
+            return R.error("ID不能为空");
         }
         boolean flag = bdHealthCalendarService.deleteBdHealthCalendar(id);
         return flag?R.ok().put("msg", "删除成功"):R.error("删除失败");
+    }
+
+    /**
+     * 获取 当天日期
+     *
+     * @return 当天日期
+     */
+    @GetMapping("/getToday")
+    public R getToday() {
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return R.ok().put("data", format.format(new Date()));
     }
 
     /**

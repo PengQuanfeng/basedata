@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice;
@@ -30,7 +31,21 @@ public class BdServicePriceServiceImpl extends ServiceImpl<BdServicePriceMapper,
 	@Override
     @Transactional
 	public void saveBdServicePrice(BdServicePrice entity) {
-		bdServicePriceMapper.saveBdServicePrice(entity);
+		Condition con2=Condition.create();
+		con2.eq("serviceCategoryCode", entity.getServiceCategoryCode());
+		con2.eq("serviceCode", entity.getServiceCode());
+		BdServicePrice one = (BdServicePrice) this.selectObj(con2);
+		if (one == null) {
+			bdServicePriceMapper.saveBdServicePrice(entity);
+		} else {
+			one.setPlatformFloatNumber(entity.getPlatformFloatNumber());
+			one.setPlatformPriceMax(entity.getPlatformPriceMax());
+			one.setPlatformPriceMin(entity.getPlatformPriceMin());
+			one.setPlatformUnifiedPrice(entity.getPlatformUnifiedPrice());
+			one.setActivityPrice(entity.getActivityPrice());
+			//
+			bdServicePriceMapper.updateById(one);
+		}
 	}
 
 	@Override
@@ -40,10 +55,10 @@ public class BdServicePriceServiceImpl extends ServiceImpl<BdServicePriceMapper,
 	}
 
 	@Override
-	public Page<BdServicePrice> queryServicePriceInfo(int offset, int limit, String id) {
+	public Page<BdServicePrice> queryServicePriceInfo(int offset, int limit) {
 		// 构造分页实体
 		Page<BdServicePrice> page = new Page<BdServicePrice>(offset, limit);
-		List<BdServicePrice> servicePriceList = bdServicePriceMapper.queryServicePriceInfo(page, id);
+		List<BdServicePrice> servicePriceList = bdServicePriceMapper.queryServicePriceInfo(page);
 		if (CollectionUtils.isNotEmpty(servicePriceList)) {
 			page.setRecords(servicePriceList);
 			return page;

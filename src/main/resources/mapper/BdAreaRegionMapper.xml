@@ -77,4 +77,24 @@
 		</set> 
 		where id = #{id}
 	</update>
+	
+	<update id="updateProvinceName" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
+		update bd_area_region set provinceName = #{provinceName} where provinceCode = #{provinceCode}
+	</update>
+	
+	<update id="updateCityName" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
+		update bd_area_region set cityName = #{cityName} where cityCode = #{cityCode}
+	</update>
+	
+	<update id="updateStatusForLevel1" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
+		update bd_area_region set status = #{status} where code = #{code} or provinceCode = #{code}
+	</update>
+	
+	<update id="updateStatusForLevel2" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion">
+		update bd_area_region set status = #{status} where code = #{code} or cityCode = #{code}
+	</update>
+	
+	<select id="getCountOfSubAreaRegions" resultType="java.lang.Integer">
+		select count(*) from bd_area_region where code != #{code} and (provinceCode = #{code} or cityCode = #{code}) and status !='DEL'
+	</select>
 </mapper>

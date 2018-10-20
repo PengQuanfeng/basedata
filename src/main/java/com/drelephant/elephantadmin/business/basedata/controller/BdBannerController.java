@@ -71,34 +71,52 @@ public class BdBannerController extends BaseController {
     		return R.error().put("msg", "参数为空,更新失败");
     	}
         return bdBannerService.updateBdBander(data);
-    }   
+    }
+    
     @ApiOperation("删除单条首页图片信息")
     @PostMapping("/deleteOneBaner")
-    public R deleteOneBaner(@ApiParam(name="id",value="数据列id",required=true)String  id){
-    	if(StringUtils.isBlank(id)){
-			return R.error("删除活动记录失败，参数无效!");
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "id", value = "id", required=true)
+	})
+    public R deleteOneBaner(@RequestBody Map<String, String> map){
+    	if(StringUtils.isBlank(map.get("id"))){
+			return R.error("id不能为空");
 		}
     	//进行逻辑删除   	
-        return bdBannerService.updateStatus(id);
+        return bdBannerService.updateStatus(map.get("id"));
     }
+    
     @ApiOperation("列表查询")
     @GetMapping("/getListBanner")
     public R getListBanner(){
     	//最多10张图片，未要求排序    	    	
         return R.ok().put("list", bdBannerService.getListBd());
-    }    
+    }
+    
     @ApiOperation("上移")
     @PostMapping("/moveUp")
-    public R moveUp(@ApiParam(name="id",value="字段id列")String id){
-    	return bdBannerService.moveUp(id);
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "id", value = "id", required=true)
+	})
+    public R moveUp(@RequestBody Map<String, String> map){
+    	if(StringUtils.isBlank(map.get("id"))){
+			return R.error("id不能为空");
+		}
+    	return bdBannerService.moveUp(map.get("id"));
     }
     
     @ApiOperation("下移")
     @PostMapping("/moveDown")
-    public R moveDown(@ApiParam(name="id",value="字段id列")String id){
-    	return bdBannerService.moveDown(id);
+    @ApiImplicitParams({
+		@ApiImplicitParam(name = "id", value = "id", required=true)
+	})
+    public R moveDown(@RequestBody Map<String, String> map){
+    	if(StringUtils.isBlank(map.get("id"))){
+			return R.error("id不能为空");
+		}
+    	return bdBannerService.moveDown(map.get("id"));
     }
- //TODO 增加单条查询的接口
+
     @ApiOperation("单条查询接口")
     @ApiImplicitParams({
 		@ApiImplicitParam(name = "id", value = "本条数据对应的id")

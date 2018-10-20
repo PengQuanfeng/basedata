@@ -15,7 +15,7 @@ import com.drelephant.framework.base.common.R;
  */
 public interface BdAreaRegionService extends IService<BdAreaRegion> {
 	R insertBdAreaRegion(BdAreaRegion data);
-	R updateStatus(BdAreaRegion data);
+	R updateAreaRegion(BdAreaRegion data);
 	R deleteBdAreaRegion(String id);//单条更新地区信息状态
 	//根据是否传入条件查询列表
 	Page<BdAreaRegion> getListBdAreaRegion(Page<BdAreaRegion> page,String code,String provinceCode,

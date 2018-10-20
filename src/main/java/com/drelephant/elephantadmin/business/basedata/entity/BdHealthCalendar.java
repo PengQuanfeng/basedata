@@ -61,7 +61,22 @@ public class BdHealthCalendar implements Serializable {
     private String version;
     private String status;
     
-    /**
+	/**
+	 * 不存储到数据库中
+	 */
+    @JsonFormat(timezone = "GMT+8", pattern = "y-M-d")
+	@TableField(exist = false)
+    private Date publishTime2;
+    
+    public Date getPublishTime2() {
+		return publishTime2;
+	}
+
+	public void setPublishTime2(Date publishTime2) {
+		this.publishTime2 = publishTime2;
+	}
+
+	/**
      * 标题
      */
     @TableField("title")
@@ -106,6 +121,7 @@ public class BdHealthCalendar implements Serializable {
 
     public void setPublishTime(Date publishTime) {
         this.publishTime = publishTime;
+        this.publishTime2 = publishTime;
     }
 
     public Date getCreateTime() {

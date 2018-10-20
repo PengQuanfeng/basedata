@@ -52,10 +52,10 @@ public class BdServiceConfigServiceImpl extends ServiceImpl<BdServiceConfigMappe
 	}
 
 	@Override
-	public Page<BdServiceConfig> queryServiceConfigInfo(int offset, int limit, String id) {
+	public Page<BdServiceConfig> queryServiceConfigInfo(int offset, int limit) {
 		// 构造分页实体
 		Page<BdServiceConfig> page = new Page<BdServiceConfig>(offset, limit);
-		List<BdServiceConfig> servicePriceList = bdServiceConfigMapper.queryServiceConfigInfo(page, id);
+		List<BdServiceConfig> servicePriceList = bdServiceConfigMapper.queryServiceConfigInfo(page);
 		if (CollectionUtils.isNotEmpty(servicePriceList)) {
 			page.setRecords(servicePriceList);
 			return page;
@@ -68,16 +68,16 @@ public class BdServiceConfigServiceImpl extends ServiceImpl<BdServiceConfigMappe
 		Map<String,String> map = new HashMap<String,String>();
 		//TODO:后续改用读数据字典方式
 		if(StringUtils.equals("FWLB", type)){
-			map.put("SPWZ", "视频问诊");
-			map.put("TWZX", "图文咨询");
+			map.put("SPWZ", Constans.FWLB_SPWZ_NAME);
+			map.put("TWZX", Constans.FWLB_TWZX_NAME);
 		}else if(StringUtils.equals("SPWZ", type)){
-			map.put("PTMZ", "普通门诊");
-			map.put("ZKMZ", "专科门诊");
-			map.put("TXMZ", "特需门诊");
+			map.put("PTMZ", Constans.SPWZ_PTMZ_NAME);
+			map.put("ZKMZ", Constans.SPWZ_ZKMZ_NAME);
+			map.put("TXMZ", Constans.SPWZ_TXMZ_NAME);
 		}else if(StringUtils.equals("TWZX", type)){
-			map.put("SPWZ", "在线咨询");
-			map.put("TWZX", "开药门诊");
-			map.put("TWZX", "检查门诊");
+			map.put("ZXZX", Constans.TWZX_ZXZX_NAME);
+			map.put("KYMZ", Constans.TWZX_KYMZ_NAME);
+			map.put("JCMZ", Constans.TWZX_JCMZ_NAME);
 		}
 		return map;
 	}

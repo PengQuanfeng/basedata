@@ -9,10 +9,7 @@
 		<include refid="BD_SERVICE_PRICE_COLUMNS" />
 		from bd_service_price
 		<where>
-			<if test="id != null and id !=''">
-				 id = #{id}
-			</if>
-			and status = 'ACT'
+			status = 'ACT'
 		</where>
 	</select>
 
@@ -44,7 +41,7 @@
 	</insert>
 	 
 	<update id="updateBdServicePrice" parameterType="com.drelephant.elephantadmin.business.basedata.entity.BdServicePrice">
-		update /** 修改服务定价信息 **/ dbo.bd_service_price 
+		update /** 修改服务定价信息 **/ bd_service_price
 		<set>
 			<if test="platformUnifiedPrice != null and platformUnifiedPrice != ''">
 				platformUnifiedPrice = #{platformUnifiedPrice}, 

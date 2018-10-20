@@ -11,7 +11,7 @@ public class DateUtils {
 	public static void main(String[] args) throws ParseException {
             //1，截取,异常则返回空数组。
         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = s.parse("2018-10-14");
+        Date date = s.parse("2018-11-01");
         List<Date> dates = dateToWeek(date);
         dates.forEach(v-> System.out.println(v.getDate()));
 
@@ -44,11 +44,12 @@ public class DateUtils {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         int day = c.get(Calendar.DAY_OF_WEEK);
-        if (day == 1) { // 星期日
-        	c.add(Calendar.DAY_OF_YEAR, -7);
-        } else {
-        	c.add(Calendar.DAY_OF_YEAR, -1 * day + 1);
-        }
+//        if (day == 1) { // 星期日
+//        	c.add(Calendar.DAY_OF_YEAR, -7);
+//        } else {
+//        	c.add(Calendar.DAY_OF_YEAR, -1 * day + 1);
+//        }
+        c.add(Calendar.DAY_OF_YEAR, -1 * day);
         //
     	List<Date> list = new ArrayList<>();
     	for (int a = 0; a <= 6; a++) {
