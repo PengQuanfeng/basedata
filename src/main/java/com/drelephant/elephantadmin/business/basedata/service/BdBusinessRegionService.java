@@ -8,6 +8,8 @@ import java.util.List;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 
+import javax.annotation.Nonnull;
+
 /**
  * <p>
  *  服务类
@@ -41,4 +43,12 @@ public interface BdBusinessRegionService extends IService<BdBusinessRegion> {
 	 * @return
 	 */
 	R bdLv2(String lv1Code);
+
+	/**
+	 * 逻辑删除业务区域.
+     *
+	 * @param id 数据记录id
+	 * @return
+	 */
+	R deleteLogicById(@Nonnull String id);
 }

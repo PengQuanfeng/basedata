@@ -21,6 +21,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nonnull;
+
 /**
  * <p>
  *  服务实现类
@@ -219,5 +221,15 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 			lv2s.add(lv2);
 		}
 		return R.ok().put("list", lv2s);
+	}
+
+	@Override
+	public R deleteLogicById(@Nonnull String id) {
+		BdBusinessRegion entity =new BdBusinessRegion() ;
+		entity.setStatus(Constans.DELETED);
+
+		final boolean update = update(entity, Condition.create().eq("id", id).eq("status", Constans.ACTIVE));
+
+		return update? R.ok():R.error("数据不存在或已被删除");
 	}
 }
