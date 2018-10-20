@@ -3,6 +3,8 @@ package com.drelephant.elephantadmin.business.basedata.entity;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 
@@ -67,6 +69,10 @@ public class BdBanner implements Serializable {
 	private String createUserCode;
 	@TableField("createUserName")
 	private String createUserName;
+
+
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	@TableField("updateTime")
 	private Date updateTime;
 	@TableField("updateUserCode")

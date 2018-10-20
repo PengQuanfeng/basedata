@@ -84,7 +84,7 @@ public class BdBusinessRegionServiceImpl extends ServiceImpl<BdBusinessRegionMap
 			BdBusinessRegion bd=selectOne(Condition.create().eq("lv1Code", lv1Code)
 					.where("status !={0}", Constans.DELETED));
 			if(bd==null){
-				return R.error().put("msg", "参数错误");
+				return R.error().put("msg", "一级区域编码不存在");
 			}
 			data.setLv1Name(bd.getLv1Name());
 			data.setLv1Code(lv1Code);
