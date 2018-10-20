@@ -1,27 +1,23 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdHealthCalendarMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdHealthCalendarService;
+import com.drelephant.elephantadmin.business.basedata.util.BdUtil;
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.elephantadmin.business.basedata.util.DateUtils;
+import com.drelephant.framework.base.common.R;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 
 /**
  * <p>
@@ -37,33 +33,40 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
     BdHealthCalendarMapper bdHealthCalendarMapper;
 
     @Override
-    public void saveBdHealthCalendar(BdHealthCalendar entity) {
-    	BdHealthCalendar con = new BdHealthCalendar();
-    	con.setPublishTime(entity.getPublishTime());
-    	BdHealthCalendar oldBdHealthCalendar = bdHealthCalendarMapper.selectOne(con);
-    	if (oldBdHealthCalendar == null) {
-    		entity.setStatus(Constans.ACTIVE);
-            bdHealthCalendarMapper.saveBdHealthCalendar(entity); // 新增
-    	} else {
-    		oldBdHealthCalendar.setPublishTime(entity.getPublishTime());
-    		//
-    		Condition con0 = Condition.create();
-    		con0.eq("id", oldBdHealthCalendar.getId());
-			//
-    		oldBdHealthCalendar.setStatus(Constans.ACTIVE);
-    		oldBdHealthCalendar.setContentPicId(entity.getContentPicId());
-    		oldBdHealthCalendar.setTitle(entity.getTitle());
-    		update(oldBdHealthCalendar, con0); // 更新
-    	}
+    public R saveBdHealthCalendar(BdHealthCalendar entity) {
+        //check
+        if (BdUtil.isAnyBlank(entity.getContentPicId(), entity.getContentPicPath(), entity.getTitle())) {
+            return R.error("contentPicId, contentPicPath, title 必填");
+        }
+        if (entity.getPublishTime() == null) {
+            return R.error("发布日期必填");
+        }
+        if (StringUtils.length(entity.getTitle()) > 200) {
+            return R.error("title 不得大于 200 个字");
+        }
+        //check
+
+
+        BdHealthCalendar con = new BdHealthCalendar();
+        con.setPublishTime(entity.getPublishTime());
+        con.setStatus("ACT");
+        BdHealthCalendar oldBdHealthCalendar = bdHealthCalendarMapper.selectOne(con);
+        if (oldBdHealthCalendar != null) {
+            return R.error("指定日期已经有记录, 无法执行新增操作");
+        }
+        //SET
+        entity.setStatus("ACT");
+        final boolean insert = insert(entity);
+        return insert ? R.ok() : R.error("数据保存失败");
     }
 
     @Override
-    public boolean deleteBdHealthCalendar(String id) {    	
+    public boolean deleteBdHealthCalendar(String id) {
         BdHealthCalendar item = new BdHealthCalendar();
         item.setStatus(Constans.DELETED);
-		Condition con = Condition.create();
-		con.eq("id", id);
-		return update(item, con);
+        Condition con = Condition.create();
+        con.eq("id", id);
+        return update(item, con);
     }
 
     @Override
@@ -138,6 +141,22 @@ public class BdHealthCalendarServiceImpl extends ServiceImpl<BdHealthCalendarMap
             hasDateList.add(s.format(v.getPublishTime()));
         });
         return hasDateList;
+    }
+
+    @Override
+    public R updateRecord(@Nonnull BdHealthCalendar data) {
+        if (BdUtil.isAnyBlank(data.getId(), data.getContentPicId(), data.getContentPicPath(), data.getTitle())) {
+            return R.error("id,contentPicId, contentPicPath, title 必填");
+        }
+        data.setPublishTime(null);
+        data.setPublishTime2(null);
+        if (StringUtils.length(data.getTitle()) > 200) {
+            return R.error("title 不得大于 200 个字");
+        }
+        data.setStatus("ACT");
+        final boolean update = updateById(data);
+
+        return update ? R.ok() : R.error();
     }
 
     /**

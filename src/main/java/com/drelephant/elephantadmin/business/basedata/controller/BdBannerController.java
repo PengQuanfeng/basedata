@@ -25,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("bdBanner")
 public class BdBannerController extends BaseController {
+
     @Autowired
     private BdBannerService bdBannerService;
 

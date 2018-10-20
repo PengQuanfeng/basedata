@@ -54,7 +54,14 @@ public class BdBannerServiceImpl extends ServiceImpl<BdBannerMapper, BdBanner> i
         // save
         entity.setStatus("ACT");
         entity.setId(null);
-        entity.setOrderNumber(selectCount + 1);
+        //set order
+
+        BdBanner maxEntity = selectOne(Condition.create().eq("status", "ACT").setSqlSelect("id,MAX(orderNumber) as orderNumber"));
+        if (maxEntity != null) {
+            entity.setOrderNumber(maxEntity.getOrderNumber() + 1);
+        } else {
+            entity.setOrderNumber(0);
+        }
         entity.setUpdateTime(new Date());
 
         final boolean insert = insert(entity);

@@ -2,8 +2,10 @@ package com.drelephant.elephantadmin.business.basedata.service;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.drelephant.framework.base.common.R;
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.service.IService;
@@ -18,7 +20,7 @@ import com.drelephant.elephantadmin.business.basedata.entity.BdHealthCalendar;
  * @since 2018-10-09
  */
 public interface BdHealthCalendarService extends IService<BdHealthCalendar> {
-    void saveBdHealthCalendar(BdHealthCalendar entity);
+    R saveBdHealthCalendar(BdHealthCalendar entity);
 
     boolean deleteBdHealthCalendar(@Param("id") String id);
 
@@ -38,4 +40,6 @@ public interface BdHealthCalendarService extends IService<BdHealthCalendar> {
      * @return list
      */
     List<String> selectListMonth(@Nullable  String dateStr);
+
+    R updateRecord(@Nonnull BdHealthCalendar data);
 }

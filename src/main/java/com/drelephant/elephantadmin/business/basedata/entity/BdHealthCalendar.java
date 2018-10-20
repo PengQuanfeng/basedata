@@ -35,6 +35,8 @@ public class BdHealthCalendar implements Serializable {
      */
     @TableField("contentPicId")
     private String contentPicId;
+
+    private String contentPicPath;
     /**
      * 发布时间
      */
@@ -188,7 +190,15 @@ public class BdHealthCalendar implements Serializable {
         this.status = status;
     }
 
-	@Override
+    public String getContentPicPath() {
+        return contentPicPath;
+    }
+
+    public void setContentPicPath(String contentPicPath) {
+        this.contentPicPath = contentPicPath;
+    }
+
+    @Override
 	public String toString() {
 		return "BdHealthCalendar [id=" + id + ", coverPicId=" + coverPicId + ", contentPicId=" + contentPicId
 				+ ", publishTime=" + publishTime + ", createTime=" + createTime + ", createUserCode=" + createUserCode
