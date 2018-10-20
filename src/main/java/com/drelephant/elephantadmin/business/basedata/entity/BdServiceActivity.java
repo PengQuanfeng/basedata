@@ -1,11 +1,12 @@
 package com.drelephant.elephantadmin.business.basedata.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
-
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * <p>
@@ -45,11 +46,13 @@ public class BdServiceActivity implements Serializable {
      * 生效日期
      */
 	@TableField("startTime")
+	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
     /**
      * 生效结束日期
      */
 	@TableField("endTime")
+	@JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
 	private Date endTime;
     /**
      * 价格

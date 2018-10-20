@@ -1,5 +1,9 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +16,6 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
 import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
 import com.drelephant.elephantadmin.business.basedata.service.BdServiceConfigService;
-import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
 
 import io.swagger.annotations.Api;
@@ -36,6 +39,14 @@ public class BdServiceConfigController extends BaseController {
 	@Autowired
 	private BdServiceConfigService bdServiceConfigService;
 
+	@ApiOperation("查询服务类型(二级)列表")
+	@GetMapping("/getServiceTypeList")
+	public R getServiceTypeList(@ApiParam("服务类别编码") String serviceCategoryCode) {
+		List<Map<String, String>> list = bdServiceConfigService.getServiceTypeList(serviceCategoryCode);
+		
+		return R.ok().put("list", list);
+	}
+	
 	@ApiOperation("查询服务配置")
 	@GetMapping("/list")
 	public R list(@ApiParam("当前页") String current, @ApiParam("每页显示记录数") String pageSize) {
@@ -53,17 +64,14 @@ public class BdServiceConfigController extends BaseController {
 		return R.ok().put("list", page.getRecords()).put("total", page.getTotal());
 	}
 	
-	@ApiOperation("服务类型")
+	@ApiOperation("获取 服务类别 列表")
 	@GetMapping("/serviceType")
-	public R serviceType( ) { 
-		//getServiceTypes
-		//R.ok().put("serviceType", bdServiceConfigService.getServiceType(dataType));
-		return R.ok().put("serviceType", bdServiceConfigService.getServiceTypes());
+	public R getServiceCategoryList( ) {
+		return R.ok().put("serviceType", bdServiceConfigService.getServiceCategoryList());
 	}
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "serviceCategoryCode", value = "服务类别编码", required = true),
-            @ApiImplicitParam(name = "serviceCode", value = "服务类型编码"),
             @ApiImplicitParam(name = "serviceName", value = "服务类型名称", required = true),
             @ApiImplicitParam(name = "isDocCanConfig", value = "医生服务配置", required = true),
             @ApiImplicitParam(name = "serviceNoticeDesc", value = "用户服务须知", required = true),
@@ -84,21 +92,17 @@ public class BdServiceConfigController extends BaseController {
 		if(entity == null){
 			return R.error("保存服务配置信息失败，参数无效!");
 		}
-		String serviceCategoryCode = entity.getServiceCategoryCode();
-		if ("SPWZ".equals(serviceCategoryCode)) {
-			entity.setServiceCategoryName(Constans.FWLB_SPWZ_NAME);
-		} else if ("TWZX".equals(serviceCategoryCode)) {
-			entity.setServiceCategoryName(Constans.FWLB_TWZX_NAME);
-		} else {
-			return R.error("服务类别编码不正确");
-		}
+		entity.setServiceCode(uuid());
 		
-		bdServiceConfigService.saveServiceConfig(entity);
-		return R.ok().put("msg", "新增服务配置成功！");
+		return bdServiceConfigService.saveServiceConfig(entity);
 	}
+	
+    private String uuid() {
+    	return UUID.randomUUID().toString().replaceAll("-", "");
+    }
     
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "serviceCode", value = "服务类型编码"),
+        @ApiImplicitParam(name = "id", value = "ID", required = true),
         @ApiImplicitParam(name = "serviceName", value = "服务类型名称", required = true),
         @ApiImplicitParam(name = "isDocCanConfig", value = "医生服务配置", required = true),
         @ApiImplicitParam(name = "serviceNoticeDesc", value = "用户服务须知", required = true),
@@ -119,7 +123,6 @@ public class BdServiceConfigController extends BaseController {
 		if(entity == null){
 			return R.error("编辑服务配置信息失败，参数无效!");
 		}
-		bdServiceConfigService.updateBdServiceConfig(entity);
-		return R.ok().put("msg", "编辑服务配置成功！");
+		return bdServiceConfigService.updateBdServiceConfig(entity);
 	}
 }

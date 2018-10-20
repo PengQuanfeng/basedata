@@ -109,8 +109,12 @@ public class BdServicePriceController extends BaseController {
 		if(entity.getPlatformUnifiedPrice() == null){ 
 			return R.error().put("msg", "平台统一原价为空");
 		}
-		bdServicePriceService.saveBdServicePrice(entity);
-		return R.ok().put("msg", "新增服务定价成功！");
+		
+		Map<String, String> map = bdServiceConfigService.getServiceName(entity.getServiceCode());
+		entity.setServiceCategoryName(map.get("serviceCategoryName"));
+		entity.setServiceName(map.get("serviceName"));
+		
+		return bdServicePriceService.saveBdServicePrice(entity);
 	}
 	
 	@ApiImplicitParams({
@@ -130,7 +134,11 @@ public class BdServicePriceController extends BaseController {
 		if(entity.getPlatformUnifiedPrice() == null){ 
 			return R.error().put("msg", "平台统一原价为空");
 		}
-		bdServicePriceService.updateBdServicePrice(entity);
-		return R.ok().put("msg", "编辑服务定价成功！");
+		
+		Map<String, String> map = bdServiceConfigService.getServiceName(entity.getServiceCode());
+		entity.setServiceCategoryName(map.get("serviceCategoryName"));
+		entity.setServiceName(map.get("serviceName"));
+		
+		return bdServicePriceService.updateBdServicePrice(entity);
 	}
 }

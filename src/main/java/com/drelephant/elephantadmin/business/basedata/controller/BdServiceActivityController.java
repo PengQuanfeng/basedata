@@ -1,6 +1,8 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.drelephant.elephantadmin.business.basedata.controller.base.BaseController;
 import com.drelephant.elephantadmin.business.basedata.entity.BdServiceActivity;
 import com.drelephant.elephantadmin.business.basedata.service.BdServiceActivityService;
+import com.drelephant.elephantadmin.business.basedata.service.BdServiceConfigService;
 import com.drelephant.framework.base.common.R;
 
 import io.swagger.annotations.Api;
@@ -35,6 +38,9 @@ import io.swagger.annotations.ApiParam;
 public class BdServiceActivityController extends BaseController {
     @Autowired
     private BdServiceActivityService bdServiceActivityService;
+    
+    @Autowired
+    private BdServiceConfigService bdServiceConfigService;
     
     @ApiOperation("查询活动记录")
 	@GetMapping("/list")
@@ -66,13 +72,17 @@ public class BdServiceActivityController extends BaseController {
 		if(entity == null){
 			return R.error("保存活动记录信息失败，参数无效!");
 		}
+		
+		Map<String, String> map = bdServiceConfigService.getServiceName(entity.getServiceCode());
+		entity.setServiceCategoryName(map.get("serviceCategoryName"));
+		entity.setServiceName(map.get("serviceName"));
+		
 		bdServiceActivityService.saveBdServiceActivity(entity);
 		return R.ok().put("msg", "新增活动记录成功！");
 	}
     
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "serviceCategoryName", value = "服务类别编码", required = true),
-        @ApiImplicitParam(name = "serviceCategoryCode", value = "服务类别名称", required = true),
+        @ApiImplicitParam(name = "id", value = "ID", required = true),
         @ApiImplicitParam(name = "serviceName", value = "服务类型", required = true),
         @ApiImplicitParam(name = "price", value = "活动价格", required = true), 
         @ApiImplicitParam(name = "startTime", value = "开始时间", required = true),
@@ -84,12 +94,17 @@ public class BdServiceActivityController extends BaseController {
 		if(entity == null){
 			return R.error("编辑活动记录失败，参数无效!");
 		}
+		
+		Map<String, String> map = bdServiceConfigService.getServiceName(entity.getServiceCode());
+		entity.setServiceCategoryName(map.get("serviceCategoryName"));
+		entity.setServiceName(map.get("serviceName"));
+		
 		bdServiceActivityService.updateBdServiceActivity(entity);
 		return R.ok().put("msg", "编辑活动记录成功！");
 	}
 	@ApiOperation("删除活动记录")
 	@PostMapping("/delete")
-	public R edit( @ApiParam("id") String id) {
+	public R delete( @ApiParam("id") String id) {
 		if(StringUtils.isBlank(id)){
 			return R.error("删除活动记录失败，参数无效!");
 		}

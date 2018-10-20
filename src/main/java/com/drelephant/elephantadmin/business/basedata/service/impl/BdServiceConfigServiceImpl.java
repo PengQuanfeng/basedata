@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,7 @@ import com.drelephant.elephantadmin.business.basedata.mapper.BdDictValueMapper;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdServiceConfigMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdServiceConfigService;
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
+import com.drelephant.framework.base.common.R;
 
 /**
  * <p>
@@ -38,17 +38,38 @@ public class BdServiceConfigServiceImpl extends ServiceImpl<BdServiceConfigMappe
 	
 	@Autowired
 	BdDictValueMapper bdDictValueMapper;
+	
 	@Override
     @Transactional
-	public void saveServiceConfig(BdServiceConfig entity) {
+	public R saveServiceConfig(BdServiceConfig entity) {
+		Condition con=Condition.create();
+		con.eq("serviceName", entity.getServiceName());
+		con.where("status !={0}", Constans.DELETED);
+		int count=selectCount(con);
+		if(count>0){
+			return R.error().put("msg", "服务类型名称已经存在");
+		}
+		
 		entity.setStatus(Constans.ACTIVE);
 		bdServiceConfigMapper.saveServiceConfig(entity);
+		
+		return R.ok();
 	}
 
 	@Override
     @Transactional
-	public void updateBdServiceConfig(BdServiceConfig entity) {
+	public R updateBdServiceConfig(BdServiceConfig entity) {
+		Condition con=Condition.create();
+		con.eq("serviceName", entity.getServiceName());
+		con.ne("id", entity.getId());
+		con.where("status !={0}", Constans.DELETED);
+		int count=selectCount(con);
+		if(count>0){
+			return R.error().put("msg", "服务类型名称已经存在");
+		}
+		
 		bdServiceConfigMapper.updateBdServiceConfig(entity);
+		return R.ok();
 	}
 
 	@Override
@@ -63,25 +84,44 @@ public class BdServiceConfigServiceImpl extends ServiceImpl<BdServiceConfigMappe
 		return page;
 	}
 
+	/**
+	 * 查询服务类型(二级)列表
+	 */
 	@Override
-	public Map<String, String> getServiceType(String type) {
-		Map<String,String> map = new HashMap<String,String>();
-		//TODO:后续改用读数据字典方式
-		if(StringUtils.equals("FWLB", type)){
-			map.put("SPWZ", Constans.FWLB_SPWZ_NAME);
-			map.put("TWZX", Constans.FWLB_TWZX_NAME);
-		}else if(StringUtils.equals("SPWZ", type)){
-			map.put("PTMZ", Constans.SPWZ_PTMZ_NAME);
-			map.put("ZKMZ", Constans.SPWZ_ZKMZ_NAME);
-			map.put("TXMZ", Constans.SPWZ_TXMZ_NAME);
-		}else if(StringUtils.equals("TWZX", type)){
-			map.put("ZXZX", Constans.TWZX_ZXZX_NAME);
-			map.put("KYMZ", Constans.TWZX_KYMZ_NAME);
-			map.put("JCMZ", Constans.TWZX_JCMZ_NAME);
+	public List<Map<String, String>> getServiceTypeList(String serviceCategoryCode) {
+		List<Map<String, String>> serviceTypes = new ArrayList<Map<String, String>>();
+		Map<String,String> item = null;
+		List<BdServiceConfig> list=bdServiceConfigMapper.selectList(Condition.create().eq("serviceCategoryCode", serviceCategoryCode));
+		for (BdServiceConfig bdServiceConfig : list) {
+			item = new HashMap<String,String>();
+			//
+			item.put("code", bdServiceConfig.getServiceCode());
+			item.put("name", bdServiceConfig.getServiceName());
+			//
+			serviceTypes.add(item);
+		}
+		return serviceTypes;
+	}
+
+	/**
+	 * 获取服务名称(包括：服务类别名称 和 服务类型名称)
+	 */
+	@Override
+	public Map<String, String> getServiceName(String serviceCode) {
+		Map<String, String> map = new HashMap<String, String>();
+		List<BdServiceConfig> list = bdServiceConfigMapper.selectList(Condition.create().eq("serviceCode", serviceCode));
+		if (list.size() > 0) {
+			BdServiceConfig bdServiceConfig = list.get(0);
+			map.put("serviceName", bdServiceConfig.getServiceName());
+			map.put("serviceCategoryName", bdServiceConfig.getServiceCategoryName());
 		}
 		return map;
 	}
-	public List<Map<String, String>> getServiceTypes() {
+	
+	/**
+	 * 获取 服务类别 列表
+	 */
+	public List<Map<String, String>> getServiceCategoryList() {
 		List<Map<String, String>> serviceTypes = new ArrayList<Map<String, String>>();
 		Map<String,String> item = null;
 		List<BdDictValue> list=bdDictValueMapper.selectList(Condition.create().eq("typeCode", "FWLB"));

@@ -6,6 +6,7 @@ import java.util.Map;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
+import com.drelephant.framework.base.common.R;
 
 /**
  * <p>
@@ -17,15 +18,20 @@ import com.drelephant.elephantadmin.business.basedata.entity.BdServiceConfig;
  */
 public interface BdServiceConfigService extends IService<BdServiceConfig> {
 	
-	void saveServiceConfig(BdServiceConfig entity);
+	R saveServiceConfig(BdServiceConfig entity);
 
-	void updateBdServiceConfig(BdServiceConfig entity);
+	R updateBdServiceConfig(BdServiceConfig entity);
 	
-	Map<String,String> getServiceType(String type);
+	public List<Map<String, String>> getServiceTypeList(String serviceCategoryCode);
 	
 	Page<BdServiceConfig> queryServiceConfigInfo(int offset, int limit);
 	/*
-	 *服务类型获取
+	 * 获取 服务类别 列表
 	 */
-	List<Map<String, String>> getServiceTypes();
+	List<Map<String, String>> getServiceCategoryList();
+	
+	/**
+	 * 获取服务名称(包括：服务类别名称 和 服务类型名称)
+	 */
+	Map<String, String> getServiceName(String serviceCode);
 }
