@@ -1,9 +1,13 @@
 package com.drelephant.elephantadmin.business.basedata.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.baomidou.mybatisplus.mapper.Condition;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +27,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * <p>
@@ -124,5 +129,21 @@ public class BdServiceConfigController extends BaseController {
 			return R.error("编辑服务配置信息失败，参数无效!");
 		}
 		return bdServiceConfigService.updateBdServiceConfig(entity);
+	}
+
+	/**
+	 * api- 根据 二级code in (str) 查询 list
+	 * used by elephant-admin
+	 * @param codeStr
+	 * @return list
+	 */
+	@ApiIgnore
+	@GetMapping("/listByCodes2InStrApi")
+	public List<BdServiceConfig> listByCodes2InStrApi(String codeStr){
+		if(StringUtils.isBlank(codeStr)){
+			return Collections.emptyList();
+		}
+		Wrapper  w = Condition.create().in("serviceCode",codeStr).eq("status",Constans.ACTIVE).orderBy("createTime");
+		return bdServiceConfigService.selectList(w);
 	}
 }
