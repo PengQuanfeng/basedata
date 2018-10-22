@@ -51,4 +51,10 @@ public interface BdOrgService extends IService<BdOrg> {
 	 * @return
 	 */
 	R getOrgList(DbOrgRequest request);
+
+	/**
+	 * 获取所有机构选项
+	 * @return
+	 */
+    R getAllOrgOption();
 }

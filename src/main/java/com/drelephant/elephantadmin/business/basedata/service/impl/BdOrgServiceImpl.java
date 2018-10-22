@@ -1,33 +1,24 @@
 package com.drelephant.elephantadmin.business.basedata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.drelephant.elephantadmin.business.basedata.dto.reqeuest.DbOrgRequest;
+import com.drelephant.elephantadmin.business.basedata.dto.response.BdOrgAllOptionResponse;
 import com.drelephant.elephantadmin.business.basedata.entity.BdAreaRegion;
 import com.drelephant.elephantadmin.business.basedata.entity.BdOrg;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdAreaRegionMapper;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdCompanyDeptMapper;
 import com.drelephant.elephantadmin.business.basedata.mapper.BdOrgMapper;
 import com.drelephant.elephantadmin.business.basedata.service.BdOrgService;
+import com.drelephant.elephantadmin.business.basedata.util.CollectionUtil;
 import com.drelephant.elephantadmin.business.basedata.util.Constans;
 import com.drelephant.framework.base.common.R;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -47,13 +38,13 @@ import java.util.UUID;
 public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements BdOrgService {
 	@Autowired
 	BdOrgMapper bdOrgMapper;
-	
+
 	@Autowired
 	BdCompanyDeptMapper mBdCompanyDeptMapper;
-	
+
 	@Autowired
 	BdAreaRegionMapper mBdAreaRegionMapper;
-	
+
 	@Override
 	public R addCompany(BdOrg entity) {
 		String name = entity.getName();
@@ -69,7 +60,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		if (nameCount > 0) {
 			return R.error("公司名称已被使用过");
 		}
-		
+
 		BdOrg mBdOrg=new BdOrg();
 		mBdOrg.setName(name);
 		//
@@ -97,13 +88,13 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		bdOrgMapper.insertBdOrg(mBdOrg);
 		return R.ok().put("msg", "新增公司成功！");
 	}
-	
+
 	@Override
 	public R updateCompany(BdOrg data) {
 		if (StringUtils.isBlank(data.getCode())) {
 			return R.error("公司编号为空");
 		}
-		
+
 		String name = data.getName();
 		if (StringUtils.isBlank(name)) {
 			return R.error("公司名称为空");
@@ -117,11 +108,11 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		if (nameCount > 0) {
 			return R.error("公司名称已被使用过");
 		}
-		
+
 		BdOrg bdOrg=new BdOrg();
 		bdOrg.setName(data.getName());
 		boolean flag=update(bdOrg,Condition.create().eq("code", data.getCode()));
-		
+
 		return flag?R.ok():R.error("更新失败");
 	}
 	@Override
@@ -135,7 +126,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			con.eq("code", code);
 			flag=update(bdOrg,con);
 		}
-		
+
 		return flag?R.ok():R.error("部门信息不为空，禁止删除公司信息");
 	}
 	@Override
@@ -144,7 +135,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		con.eq("orgNature", Constans.ORG_NATURE_COMPANY);
 		con.where("status !={0}", Constans.DELETED);//未删除状态下的公司
 		List<BdOrg> list = selectList(con);
-		
+
 		// 按 编码降序排序
 		java.util.Collections.sort(list, new Comparator<BdOrg>() {
 			@Override
@@ -152,7 +143,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 				return o1.getCode().compareTo(o2.getCode());
 			}
 		});
-		
+
 		for (BdOrg bdOrg : list) {
 			String code=bdOrg.getCode();
 			Condition ccon=Condition.create();
@@ -160,9 +151,9 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			con.where("status !={0}", Constans.DELETED);//未删除状态下的部门个数
 			int count=mBdCompanyDeptMapper.selectCount(ccon);
 			bdOrg.setDeptCount(count);
-		}				 
+		}
 		return R.ok().put("list", list);
-	}	
+	}
 	/**
 	 * 公司编码生成的通用方法
 	 * @return
@@ -226,7 +217,7 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			data.setStatus(data.getStatus());
 		}else{
 			data.setStatus(Constans.ACTIVE);
-		}				
+		}
 		flag=insert(data);
 		return flag?R.ok().put("msg", "数据新增成功"):R.error("新增失败");
 	}
@@ -257,12 +248,12 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 			con.eq("status", status);
 		}else{
 			con.where("status !={0}", Constans.DELETED);
-		}				
+		}
 		selectPage(page, con);
 		return page;
 	}
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public R updateOneHosStatus(BdOrg entity) {
@@ -312,13 +303,13 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		String[] str=null;
 		if(StringUtils.isNotBlank(code)){
 			str=code.trim().split(",");
-			for(int i=0;i<str.length;i++){				
+			for(int i=0;i<str.length;i++){
 				list.add(str[i]);
 			}
 		}
 		boolean flag=false;
 		if(list!=null && !list.isEmpty()){
-			BdOrg bdOrg=new BdOrg();			
+			BdOrg bdOrg=new BdOrg();
 			for(int j=0;j<list.size();j++){
 				bdOrg.setStatus(status);
 				flag=update(bdOrg,Condition.create().eq("code", list.get(j)));
@@ -370,4 +361,10 @@ public class BdOrgServiceImpl extends ServiceImpl<BdOrgMapper, BdOrg> implements
 		List<BdOrg> records = pageResult.getRecords();
 		return R.ok().put("list", records).put("total",pageResult.getTotal());
 	}
+
+	@Override
+	public R getAllOrgOption() {
+        List<BdOrg> allOrgOption = bdOrgMapper.getAllOrgOption();
+        return R.ok().put("list", CollectionUtil.copyCollectionAs(allOrgOption, BdOrgAllOptionResponse.class));
+    }
 }

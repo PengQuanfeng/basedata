@@ -52,4 +52,11 @@ public interface BdOrgMapper extends BaseMapper<BdOrg> {
 	 * @return
 	 */
 	int selectNameCount(@Param("name")String name,@Param("orgNature")String orgNature);
+
+
+	/**
+	 * 获取所有的机构选项
+	 * @return
+	 */
+	List<BdOrg> getAllOrgOption();
 }

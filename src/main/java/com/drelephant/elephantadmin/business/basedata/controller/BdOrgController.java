@@ -210,5 +210,11 @@ public class BdOrgController extends BaseController {
 		addItem(list, Constans.INVALID, "禁用");
     	return R.ok().put("list", list);
     }
+
+    @ApiOperation("获取机构")
+	@GetMapping("/getOrg")
+	public R getAllOrgOption(){
+		return bdOrgService.getAllOrgOption();
+	}
     
 }

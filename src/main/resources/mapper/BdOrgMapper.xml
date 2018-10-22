@@ -41,7 +41,10 @@
 	<select id="selectNameCount" parameterType="String" resultType="java.lang.Integer">
 		select count(*) from bd_org where name=#{name} and status !='del' and orgNature=#{orgNature}  
 	</select>
-	<sql id="Bd_ORG_COLUMN">
+    <select id="getAllOrgOption" resultType="com.drelephant.elephantadmin.business.basedata.entity.BdOrg">
+		SELECT `name`,code,orgCategory FROM bd_org
+	</select>
+    <sql id="Bd_ORG_COLUMN">
 		id,
 		name,
 		code,
