@@ -212,7 +212,7 @@ public class BdOrgController extends BaseController {
     }
 
     @ApiOperation("获取机构")
-	@GetMapping("/getOrg")
+	@GetMapping("/getAllOrgOption")
 	public R getAllOrgOption(){
 		return bdOrgService.getAllOrgOption();
 	}
