@@ -65,7 +65,7 @@ mybatis-plus:
     logic-not-delete-value: 0
     sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
     #自定义填充策略接口实现
-    #meta-object-handler: com.baomidou.springboot.xxx
+    meta-object-handler: com.drelephant.elephantadmin.business.store.config.FullMetaObjectHandler
     #自定义SQL注入器
     #sql-injector: com.baomidou.springboot.xxx
   configuration:
